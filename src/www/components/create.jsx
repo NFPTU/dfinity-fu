@@ -23,6 +23,7 @@ class Create extends React.Component {
     };
     const superhero = { name, superpowers };
     superhero.superpowers = idl.toList(superhero.superpowers);
+    console.log(superhero);
     superheroes.create(superhero).then((superheroId) => {
       this.setState({ superheroId });
     });

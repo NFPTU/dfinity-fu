@@ -4,6 +4,7 @@ import { superheroes } from "../../declarations";
 
 const $ = document.getElementById.bind(document);
 const idl = require('../utilities/idl');
+import './style.scss'
 
 class Read extends React.Component {
 
@@ -16,7 +17,7 @@ class Read extends React.Component {
     event.preventDefault();
     const superheroId = parseInt($('read-superhero-id').value, 10);
     superheroes.read(superheroId).then((result) => {
-      const superhero = idl.fromOptional(result);
+      const superhero = idl.fromOptional(result, );
       if (superhero) {
         superhero.superpowers = idl.fromList(superhero.superpowers);
       };

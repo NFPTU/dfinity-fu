@@ -1,7 +1,11 @@
 {
   "canisters": {
     "superheroes": {
-      "main": "src/superheroes/Main.mo",
+      "main": "src/superheroes/main.mo",
+      "type": "motoko"
+    },
+    "sale": {
+      "main": "src/superheroes/sale.mo",
       "type": "motoko"
     },
     "www": {

@@ -36,7 +36,8 @@ Verify the following before running this demo:
    ```text
    dfx canister create --all
    ```
-
+dfx canister install superheroes --argument='("Test logo", "Test NFT1", "NFT1", "This is a NFT demo test!", principal \"$(dfx identity get-principal)\")'
+eval dfx canister  install superheroes --argument="(\"Test logo\", \"Test NFT1\", \"NFT1\", \"This is a NFT demo test\", principal \"$(dfx identity get-principal)\")"
 1. Build your front-end.
 
    ```text
