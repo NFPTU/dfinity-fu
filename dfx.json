@@ -1,13 +1,10 @@
 {
   "canisters": {
     "superheroes": {
-      "main": "src/superheroes/main.mo",
+      "main": "src/superheroes/Main.mo",
       "type": "motoko"
     },
     "www": {
-      "dependencies": [
-        "superheroes"
-      ],
       "frontend": {
         "entrypoint": "src/www/index.html"
       },
