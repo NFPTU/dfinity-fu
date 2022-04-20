@@ -1,19 +1,19 @@
 import React from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "./App.scss";
 import { CreateNFTPage } from "./pages/create-nft";
+import Footer from "./components/footer"
 import 'react-toastify/dist/ReactToastify.css';
 
 class App extends React.Component {
     render() {
         return (
             <div>
-            <BrowserRouter>
                 <Routes>
-                    <Route path="" element={<CreateNFTPage />} />
+                    <Route path="/" element={<CreateNFTPage />} />
+                    <Route path="/footer" element={<Footer />} />
                 </Routes>
-            </BrowserRouter>
             <ToastContainer />
             </div>
         );
