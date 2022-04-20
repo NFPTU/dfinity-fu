@@ -8,6 +8,7 @@ import { toList } from "../../utilities/idl";
 import { idlFactory } from "../../../declarations/superheroes.did.js";
 import { customAxios } from "../../utils/custom-axios";
 import { toast } from "react-toastify";
+import { Link } from "react-router-dom";
 
 const { Dragger } = Upload;
 
