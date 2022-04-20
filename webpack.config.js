@@ -87,7 +87,7 @@ module.exports = {
         }),
         new webpack.EnvironmentPlugin({
             NODE_ENV: "development",
-            SUPERHEROES_CANISTER_ID: canisters["superheroes"],
+            SUPERHEROES_CANISTER_ID: 'fij5p-siaaa-aaaai-acata-cai',
         }),
         new webpack.ProvidePlugin({
             Buffer: [require.resolve("buffer/"), "Buffer"],
