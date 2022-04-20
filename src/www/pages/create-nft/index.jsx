@@ -1,10 +1,13 @@
-import { Upload, message, Form, Input, Button } from "antd";
+import { Upload, message, Form, Input, Button, Skeleton } from "antd";
 import { InboxOutlined } from "@ant-design/icons";
 import React, { useState, useEffect } from "react";
 import { client } from "../../utilities/ipfs";
 import { superheroes } from "../../../declarations";
 import { Principal } from "@dfinity/principal";
 import { toList } from "../../utilities/idl";
+import { idlFactory } from "../../../declarations/superheroes.did.js";
+import { customAxios } from "../../utils/custom-axios";
+import { toast } from "react-toastify";
 
 const { Dragger } = Upload;
 
@@ -13,6 +16,8 @@ const IPFS_LINK = "https://dweb.link/ipfs/";
 export const CreateNFTPage = (props) => {
     const [fileImg, setFileImg] = useState(true);
     const [prinpId, setPrinpId] = useState();
+    const [listNFt, setListNFt] = useState([]);
+    const [listAllNFt, setListAllNFt] = useState([]);
 
     const onChangeFile = async (info) => {
         const { status } = info.file;
@@ -26,38 +31,53 @@ export const CreateNFTPage = (props) => {
         info.onSuccess("okk");
     };
 
-    useEffect(async() => {
+    useEffect(async () => {
         const connected = await window.ic.plug.isConnected();
-        console.log(connected, 'connected');
+        getListAll()
+        console.log(connected, "connected");
         if (connected) {
             const principalId = await window.ic.plug.agent.getPrincipal();
             setPrinpId(principalId);
+            console.log(principalId);
         }
-        getLIst();
     }, []);
+    useEffect(async () => {
+        getLIst();
+    }, [prinpId]);
+
+    const getListAll = async  () => {
+        const res = await superheroes.getAllTokens();
+        const promise4all = Promise.all(
+            res.map(function (el) {
+                return customAxios(el.metadata[0]?.tokenUri);
+            })
+        );
+        const resu = await promise4all;
+        console.log(resu);
+        setListAllNFt(resu);
+    };
 
     const onFinish = async (values) => {
-        console.log(values);
+        toast("Minting NFT!!!")
         const cid = await client.put([fileImg]);
-        console.log(cid);
         const nFile = new File(
             [
                 JSON.stringify({
                     description: values?.description,
                     name: values?.name,
-                    image: IPFS_LINK + cid,
+                    image: `${IPFS_LINK}${cid}/${values?.image?.file?.name}`,
                 }),
             ],
             `${values?.name}.json`,
             { type: "text/plain" }
         );
         const metadataCID = await client.put([nFile]);
-        console.log(metadataCID);
         const res = await superheroes.mint(prinpId, [
-            { tokenUri: IPFS_LINK + metadataCID },
+            { tokenUri: `${IPFS_LINK}${metadataCID}/${values?.name}.json` },
         ]);
-        console.log(res);
-        console.log("Success:", values);
+        toast("Minted NFT success!!!")
+        getLIst();
+        getListAll()
     };
 
     const onFinishFailed = (errorInfo) => {
@@ -66,15 +86,28 @@ export const CreateNFTPage = (props) => {
 
     const getLIst = async () => {
         const res = await superheroes.getUserTokens(prinpId);
-        console.log(res);
+        const promise4all = Promise.all(
+            res.map(function (el) {
+                return customAxios(el.metadata[0]?.tokenUri);
+            })
+        );
+        const resu = await promise4all;
+        setListNFt(resu);
     };
 
     const onConnectWallet = async () => {
         try {
             const publicKey = await window.ic.plug.requestConnect({
-                whitelist: ['hozae-racaq-aaaaa-aaaaa-c'],
-                host: 'http://127.0.0.1:8000/',
+                whitelist: [process.env.SUPERHEROES_CANISTER_ID],
             });
+            const NNSUiActor = await window.ic.plug.createActor({
+                canisterId: process.env.SUPERHEROES_CANISTER_ID,
+                interfaceFactory: idlFactory,
+            });
+
+            const princi = await window.ic.plug.agent.getPrincipal();
+            setPrinpId(princi);
+
             console.log(`The connected user's public key is:`, publicKey);
         } catch (e) {
             console.log(e);
@@ -88,7 +121,7 @@ export const CreateNFTPage = (props) => {
                     Connect Wallet
                 </Button>
             ) : (
-                <>Connected Wallet : {prinpId} </>
+                <>Connected Wallet : {prinpId?.toString()} </>
             )}
             <Form
                 name="basic"
@@ -138,6 +171,19 @@ export const CreateNFTPage = (props) => {
                     </Button>
                 </Form.Item>
             </Form>
+            <div>
+                Your NFTs
+                {listNFt.map((el) => (
+                    <img src={el.image} />
+                ))}
+            </div>
+
+            <Skeleton loading={!listAllNFt.length}>
+                All NFTs
+                {listAllNFt.map((el) => (
+                    <img src={el.image} />
+                ))}
+            </Skeleton>
         </>
     );
 };
