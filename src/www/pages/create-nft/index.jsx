@@ -117,6 +117,9 @@ export const CreateNFTPage = (props) => {
 
     return (
         <>
+        <Link to="/footer"> 
+        Test Link
+        </Link>
             {!prinpId ? (
                 <Button type="primary" onClick={onConnectWallet}>
                     Connect Wallet
