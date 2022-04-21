@@ -60,6 +60,15 @@ export const OptionWrapper = styled.div`
     margin-top: 10px;
 `
 
+export const WalletAddress = styled.div`
+    border: 3px solid black;
+    border-radius: 20px;
+    padding: 2px 10px;
+    font-size: 17px;
+    margin-bottom: 8px;
+    width: 110px;
+`
+
 export const Menu = styled.ul`
     display: flex;
     align-items: center;
@@ -79,8 +88,27 @@ export const Option = styled.div`
     flex: 1;
 `
 
+export const Balance = styled.div`
+    display: flex;
+    align-items: center;
+    border: 3px solid black;
+    border-radius: 20px;
+    padding: 2px 10px;
+    margin-bottom: 8px;
+`
+
+export const BalanceNumber = styled.div`
+    font-size: 17px;
+    margin-right: 10px;
+`
+
+export const IcpLogo = styled.img`
+    height: 30px;
+`
+
 export const OptionItem = styled.div`
     margin-right: 35px;
+    cursor: pointer;
 `
 
 
