@@ -4,6 +4,7 @@ import { ToastContainer } from "react-toastify";
 import "./App.scss";
 import { CreateNFTPage } from "./pages/create-nft";
 import 'react-toastify/dist/ReactToastify.css';
+import ListCollections from "./pages/list-collections"
 import Navbar from "./components/navbar"
 import Footer from "./components/footer"
 import Home from "./pages/home"
@@ -14,6 +15,7 @@ class App extends React.Component {
             <>
                 <Navbar />
                 <Routes>
+                    <Route path="/" element={<ListCollections />} />
                     <Route path="/" element={<Home />} />
                     <Route path="/footer" element={<Footer />} />
                 </Routes>

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import {
 	Body,
 	BodyItem,
@@ -21,23 +22,22 @@ import {
 	Group,
 } from './top-collections.elements';
 import { Done } from '@mui/icons-material';
-import { data, tabs } from './mock-data' 
+import { data, tabs } from './mock-data';
 
 function TopCollections() {
-	const [tab, setTab] = useState(1)
-	const [tabName, setTabName] = useState('1 day')
-	const [isOpen, setIsOpen] = useState(false)
- 	
+	const [tab, setTab] = useState(1);
+	const [tabName, setTabName] = useState('1 day');
+	const [isOpen, setIsOpen] = useState(false);
+
 	const handleOpenBox = () => {
-		setIsOpen(prev => !prev)
-	}
+		setIsOpen((prev) => !prev);
+	};
 
 	const handleTab = (id, name) => {
-		setTab(id)
-		setTabName(name)
-		setIsOpen(false)
-	}
-
+		setTab(id);
+		setTabName(name);
+		setIsOpen(false);
+	};
 
 	return (
 		<Container>
@@ -45,16 +45,13 @@ function TopCollections() {
 				<TopLeft>
 					<Title>Top collection in</Title>
 					<Select onClick={handleOpenBox}>{tabName}</Select>
-					<Box display={isOpen}> 
+					<Box display={isOpen}>
 						{tabs.map((item, index) => (
-							<BoxItem 
-							key={index}
-							onClick={() => handleTab(item.id, item.name)}>
+							<BoxItem
+								key={index}
+								onClick={() => handleTab(item.id, item.name)}>
 								<BoxItemName>{item.name}</BoxItemName>
-								{
-									item.id === tab &&
-									<Done style={{color: '#0066FF'}}/>
-								}
+								{item.id === tab && <Done style={{ color: '#0066FF' }} />}
 							</BoxItem>
 						))}
 					</Box>
@@ -69,7 +66,10 @@ function TopCollections() {
 					{data.map((item, index) => (
 						<BodySubItem key={index}>
 							<Id>{item.id}</Id>
-							<Image src={item.imgUrl} alt='' />
+							<Link to="/listCollections">
+								<Image src={item.imgUrl} alt='' />
+							</Link>
+
 							<Info>
 								<NFTName>{item.name}</NFTName>
 								<Price>{item.price}</Price>

@@ -7,7 +7,7 @@ export const Container = styled.div`
     height: 55px;
     position: sticky;
     z-index: 100;
-    top: 0;
+    top: 0; // cứng ở 1 chỗ 
     box-shadow: 0px 5px 8px -9px rgba(0, 0, 0, 0.75);
     background-color: white;
 `
