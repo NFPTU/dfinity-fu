@@ -8,7 +8,7 @@ export const Container = styled.div`
 export const LeftBox = styled.div`
   height: auto;
   width: 20%;
-  border: 1px solid;
+  border: 1px solid gray;
 `;
 export const FilltersOn = styled.div`
   cursor: pointer;
@@ -43,7 +43,7 @@ export const CheckBox = styled.input`
 `;
 export const FilltersOff = styled.div`
   width: 100%;
-  height: 50x;
+  height: auto;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -60,10 +60,17 @@ export const TextFillterNon = styled.p`
 export const IconOff = styled.div`
   
 `;
+
+export const DetailContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: 260px;
+  overflow: auto;
+`
+
 export const DetailsWrapper = styled.div`
     display: flex;
     flex-direction: column;
-    margin-top: 22px;
     width: 100%;
 `
 export const DetailsToggle = styled.div`
@@ -75,8 +82,6 @@ export const DetailsToggle = styled.div`
     padding-right: 25px;
     font-size: 18px;
     font-weight: 600;
-    border-top-right-radius: 10px;
-    border-top-left-radius: 10px;
     border: 2px solid rgb(229, 232, 235);
     cursor: pointer;
 `
@@ -97,7 +102,7 @@ export const DetailsInfo = styled.div`
     align-items: center;
     justify-content: space-between;
     padding: 10px 25px 0px 25px;
-    opacity: ${(props) => (props.isToggle === true ? 1 : 0)};
+    display: ${(props) => (props.isToggle === true ? 'none' : '')};
 `
 export const DetailsInfoLeftItem = styled.div`
     margin-bottom: 20px;

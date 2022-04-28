@@ -77,7 +77,7 @@ function Navbar() {
 						<Link to="/" style={{color: 'black'}} onClick={scrollToTop}> 
 						<MenuItem>Home</MenuItem>
 						</Link>
-						<Link to="/" style={{color: 'black'}}>
+						<Link to="/nft/detail" style={{color: 'black'}}>
 						<MenuItem>Stats</MenuItem>
 						</Link>
 						<Link to="nft/create" style={{color: 'black'}}> 
