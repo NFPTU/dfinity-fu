@@ -24,6 +24,7 @@ import {
 	DetailsInfoRightItem,
 	DetailsInfoLeft,
 	DetailsInfoRight,
+	DetailContainer
 } from './left-fillter-element';
 
 function LeftFillterEle() {
@@ -72,6 +73,7 @@ function LeftFillterEle() {
 					<ArrowBackIcon fontSize='small' />
 				</IconOff>
 			</FilltersOff>
+			<DetailContainer>
 			<DetailsWrapper>
 				<DetailsToggle onClick={() => handleToggle('status')}>
 					<DetailsToggleLeft>
@@ -187,6 +189,7 @@ function LeftFillterEle() {
 					</TotalButton>
 				</DetailsInfo>
 			</DetailsWrapper>
+			</DetailContainer>
 		</LeftBox>
 	);
 }
