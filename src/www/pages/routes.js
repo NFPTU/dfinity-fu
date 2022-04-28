@@ -1,7 +1,7 @@
 import { lazy } from 'react'
 
 const HomePage = lazy(() => import("./home"))
-const ListCollections = lazy(() => import("./list-collections"))
+const DetailCollections = lazy(() => import("./detail-collections"))
 const DetailNft = lazy(() => import("./detail-nft"))
 const CreateNft = lazy(() => import("./create-nft"))
 
@@ -10,13 +10,13 @@ const routes = [
         path: "/",
         exact: true,
         public: true,
-        component: HomePage
+        component: DetailCollections
     },
     {
         path: "/collection/detail",
         exact: true,
         public: true,
-        component: ListCollections
+        component: HomePage
     },
     {
         path: "/nft/detail",
