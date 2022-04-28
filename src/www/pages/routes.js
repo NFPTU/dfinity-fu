@@ -10,13 +10,13 @@ const routes = [
         path: "/",
         exact: true,
         public: true,
-        component: DetailCollections
+        component: HomePage
     },
     {
         path: "/collection/detail",
         exact: true,
         public: true,
-        component: HomePage
+        component: DetailCollections
     },
     {
         path: "/nft/detail",
