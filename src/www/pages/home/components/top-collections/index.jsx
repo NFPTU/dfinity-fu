@@ -66,7 +66,7 @@ function TopCollections() {
 					{data.map((item, index) => (
 						<BodySubItem key={index}>
 							<Id>{item.id}</Id>
-							<Link to="/listCollections">
+							<Link to="/collection/detail">
 								<Image src={item.imgUrl} alt='' />
 							</Link>
 

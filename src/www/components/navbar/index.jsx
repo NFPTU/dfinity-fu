@@ -23,6 +23,7 @@ import {
 	BalanceNumber,
 	IcpLogo,
 } from './navbar-elements';
+import { Link } from 'react-router-dom'
 
 function Navbar() {
 	const [prinpId, setPrinpId] = useState();
@@ -48,13 +49,20 @@ function Navbar() {
 		}
 	};
 
+	const scrollToTop = () => {
+		window.scrollTo({ top: 0, behavior: 'smooth' });
+	}
+
 	return (
 		<Container>
 			<LogoWrapper>
+			<Link to="/" style={{color: 'black'}}>
 				<Logo
 					src='https://motoko-lsp-client.gallerycdn.vsassets.io/extensions/motoko-lsp-client/motoko-lsp-client/2.2.0/1583876431744/Microsoft.VisualStudio.Services.Icons.Default'
 					alt=''
+					onClick={scrollToTop}
 				/>
+				</Link>
 				<Name>NFPTU</Name>
 			</LogoWrapper>
 
@@ -66,9 +74,15 @@ function Navbar() {
 
 				<OptionWrapper>
 					<Menu>
+						<Link to="/" style={{color: 'black'}} onClick={scrollToTop}> 
 						<MenuItem>Home</MenuItem>
+						</Link>
+						<Link to="/" style={{color: 'black'}}>
 						<MenuItem>Stats</MenuItem>
+						</Link>
+						<Link to="nft/create" style={{color: 'black'}}> 
 						<MenuItem>Create</MenuItem>
+						</Link>
 					</Menu>
 
 					<Option>
