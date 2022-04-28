@@ -56,7 +56,7 @@ export const ListButtonItem = styled.div`
   
 `;
 
-export const Title = styled.p`
+export const Title = styled.div`
   text-align: center;
   font-weight: bold;
   size: 20px;
@@ -72,7 +72,7 @@ export const CheckCircle = styled.div`
 
 
 `
-export const TotalInfor = styled.p`
+export const TotalInfor = styled.div`
   display: flex;
   border-radius: 10px;
   align-items: center;
@@ -98,12 +98,24 @@ export const TittleReport = styled.div`
 export const CurrencyBitcoinIcon = styled.div`
   
 `
-export const IntroTitle = styled.p`
+export const IntroTitle = styled.div`
   text-align: center;
+  padding-left: 150px;
+  padding-right: 150px;
+  
 `;
 export const IconSelect = styled.button`
-
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
+export const TittleIcon = styled.div`
+  text-align: center;
+  align-self: center;
+`;
+
+
+
 export const Box = styled.div`
 
 `;
@@ -111,7 +123,9 @@ export const LeftBox = styled.div`
 
 `;
 export const Fillters = styled.div`
-
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
 `;
 export const ScrollSelect = styled.div`
 
