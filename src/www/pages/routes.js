@@ -3,6 +3,7 @@ import { lazy } from 'react'
 const HomePage = lazy(() => import("./home"))
 const ListCollections = lazy(() => import("./list-collections"))
 const DetailNft = lazy(() => import("./detail-nft"))
+const CreateNft = lazy(() => import("./create-nft"))
 
 const routes = [
     {
@@ -12,7 +13,7 @@ const routes = [
         component: HomePage
     },
     {
-        path: "/collection/list",
+        path: "/collection/detail",
         exact: true,
         public: true,
         component: ListCollections
@@ -23,6 +24,12 @@ const routes = [
         public: true,
         component: DetailNft
     },
+    {
+        path: "nft/create",
+        exact: true,
+        public: true,
+        component: CreateNft
+    }
 ]
 
 export default routes

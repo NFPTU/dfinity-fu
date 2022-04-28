@@ -22,6 +22,7 @@ export const LogoWrapper = styled.div`
 
 export const Logo = styled.img`
     height: 30px;
+    cursor: pointer;
 `
 
 export const Name = styled.p`
@@ -52,6 +53,7 @@ export const SearchWrapper = styled.div`
 export const SearchInput = styled.input`
     width: 100%;
     padding-left: 5px;
+    outline: none;
 `
 
 export const OptionWrapper = styled.div`
@@ -80,6 +82,7 @@ export const Menu = styled.ul`
 export const MenuItem = styled.li`
     font-size: 17px;
     margin-right: 35px;
+    cursor: pointer;
 `
 
 export const Option = styled.div`
