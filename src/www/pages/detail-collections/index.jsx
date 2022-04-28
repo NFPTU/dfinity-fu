@@ -1,4 +1,4 @@
-import { Container } from '@mui/material';
+// import { Container } from '@mui/material';
 import React from 'react';
 
 import Avatar from '@mui/material/Avatar';
@@ -13,6 +13,8 @@ import InstagramIcon from '@mui/icons-material/Instagram';
 import TwitterIcon from '@mui/icons-material/Twitter';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CurrencyBitcoinIcon from '@mui/icons-material/CurrencyBitcoin';
+import ViewListIcon from '@mui/icons-material/ViewList';
+import Fillters from './components/fillter-collection'
 import {
 	CaptionImage,
 	Container,
@@ -48,8 +50,9 @@ import {
 	NumerReport,
 	TittleReport,
 	CurrencyBitcoinIcon,
+	TittleIcon
 } from './list-elements';
-import { Block } from '@mui/icons-material';
+
 
 function ListCollections() {
 	return (
@@ -130,8 +133,13 @@ function ListCollections() {
 				infancy. Various versions have evolved over the years, sometimes by
 				accident, sometimes on purpose (injected humour and the like).
 			</IntroTitle>
+				
+			<IconSelect>
+			<ViewListIcon sx={{ fontSize: 40 }}/> <TittleIcon>Items</TittleIcon>
 
-			<IconSelect></IconSelect>
+			</IconSelect>
+
+			<Fillters />
 		</Container>
 	);
 }
