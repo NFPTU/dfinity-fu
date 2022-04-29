@@ -33,7 +33,6 @@ function Navbar() {
 	const onConnectWallet = async () => {
 		try {
 			const publicKey = await window.ic.plug.requestConnect({
-				whitelist: [process.env.SUPERHEROES_CANISTER_ID],
 			});
 			const NNSUiActor = await window.ic.plug.createActor({
 				canisterId: process.env.SUPERHEROES_CANISTER_ID,

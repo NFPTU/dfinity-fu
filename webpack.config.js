@@ -6,6 +6,8 @@ const CopyPlugin = require("copy-webpack-plugin");
 
 let localCanisters, prodCanisters, canisters;
 
+const superheroes_IC = "fij5p-siaaa-aaaai-acata-cai"
+
 try {
     localCanisters = require(path.resolve(
         ".dfx",
@@ -35,13 +37,14 @@ function initCanisterIds() {
         process.env[canister.toUpperCase() + "_CANISTER_ID"] =
             canisters[canister][network];
     }
+    process.env.SUPERHEROES_CANISTER_ID = superheroes_IC
 }
 initCanisterIds();
 
 const isDevelopment = process.env.NODE_ENV !== "production";
 const asset_entry = path.join("src", "www", "index.html");
 
-module.exports = {
+module.exports = env => ({
     target: "web",
     mode: isDevelopment ? "development" : "production",
     entry: {
@@ -85,9 +88,12 @@ module.exports = {
             template: path.join(__dirname, asset_entry),
             cache: false,
         }),
-        new webpack.EnvironmentPlugin({
+        new webpack.EnvironmentPlugin(env.devM == "mo" ?{
             NODE_ENV: "development",
-            SUPERHEROES_CANISTER_ID: 'fij5p-siaaa-aaaai-acata-cai',
+        } : {
+            NODE_ENV: "development",
+            SUPERHEROES_CANISTER_ID: superheroes_IC,
+
         }),
         new webpack.ProvidePlugin({
             Buffer: [require.resolve("buffer/"), "Buffer"],
@@ -98,7 +104,7 @@ module.exports = {
     devServer: {
         proxy: {
             "/api": {
-                target: "http://localhost:8000",
+                target: "https://ic0.app",
                 changeOrigin: true,
                 pathRewrite: {
                     "^/api": "/api",
@@ -110,4 +116,4 @@ module.exports = {
         liveReload: true,
         historyApiFallback: true,
     },
-};
+})

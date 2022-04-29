@@ -69,7 +69,9 @@ function CreateNft() {
 	}, [prinpId]);
 
 	const getListAll = async () => {
+		console.log('SUPERHEROES_CANISTER_ID', process.env.SUPERHEROES_CANISTER_ID );
 		const res = await superheroes.getAllTokens();
+		console.log(res);
 		const promise4all = Promise.all(
 			res.map(function (el) {
 				return customAxios(el.metadata[0]?.tokenUri);
