@@ -2,7 +2,7 @@ export const data = [
     {
         id: 1,
         imgUrl:
-            'https://imgv3.fotor.com/images/slider-image/goart_guide_pc_now_3.jpg',
+            'https://dbgbh.bn-ent.net/assets/img/news/news_thumb_kv.png',
 
         nameItems: 'Lion',
         nameActor: 'TienDat',
@@ -13,7 +13,7 @@ export const data = [
     {
         id: 2,
         imgUrl:
-            'https://imgv3.fotor.com/images/slider-image/goart_guide_pc_now_3.jpg',
+            'https://dbgbh.bn-ent.net/assets/img/news/news_thumb_kv.png',
 
         nameItems: 'Lion',
         nameActor: 'TienDat',
@@ -24,7 +24,7 @@ export const data = [
     {
         id: 3,
         imgUrl:
-            'https://imgv3.fotor.com/images/slider-image/goart_guide_pc_now_3.jpg',
+            'https://dbgbh.bn-ent.net/assets/img/news/news_thumb_kv.png',
 
         nameItems: 'Lion',
         nameActor: 'TienDat',
@@ -35,7 +35,7 @@ export const data = [
     {
         id: 4,
         imgUrl:
-            'https://imgv3.fotor.com/images/slider-image/goart_guide_pc_now_3.jpg',
+            'https://dbgbh.bn-ent.net/assets/img/news/news_thumb_kv.png',
 
         nameItems: 'Lion',
         nameActor: 'TienDat',
@@ -46,7 +46,7 @@ export const data = [
     {
         id: 5,
         imgUrl:
-            'https://imgv3.fotor.com/images/slider-image/goart_guide_pc_now_3.jpg',
+            'https://dbgbh.bn-ent.net/assets/img/news/news_thumb_kv.png',
 
         nameItems: 'Lion',
         nameActor: 'TienDat',
