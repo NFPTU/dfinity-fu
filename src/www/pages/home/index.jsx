@@ -5,6 +5,7 @@ import {
 import Banner from './components/banner'
 import Statistic from './components/statistic'
 import TopCollections from './components/top-collections'
+import ListNft from '../list-nft'
 
 function Home() {
   return (
@@ -12,6 +13,7 @@ function Home() {
       <Banner />
       <Statistic />
       <TopCollections />
+      <ListNft />
     </>
   )
 }

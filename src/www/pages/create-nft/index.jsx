@@ -120,6 +120,8 @@ function CreateNft() {
 		setListNFt(resu);
 	};
 
+	console.log('listAllNFt', listAllNFt)
+
 	return (
 		<Container>
 			<Wrapper>
