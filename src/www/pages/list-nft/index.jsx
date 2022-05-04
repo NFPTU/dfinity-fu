@@ -20,7 +20,7 @@ function ListNft() {
         getListAll()
         console.log(connected, "connected");
         if (connected) {
-            const principalId = await window.ic.plug.agent.getPrincipal();
+            const principalId = await window?.ic?.plug?.agent?.getPrincipal();
             setPrinpId(principalId);
             console.log(principalId);
         }
@@ -51,8 +51,6 @@ function ListNft() {
         const resu = await promise4all;
         setListNFt(resu);
     };
-
-    console.log('listAllNFt', listAllNFt)
 
 	return (
 		<Container>

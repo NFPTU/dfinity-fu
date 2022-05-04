@@ -25,6 +25,8 @@ export const ImageContainer = styled.div`
     align-items: center;
     box-shadow: 0px 0px 5px 0px #888888;
     border-radius: 10px;
+    height: 420px;
+    width: 500px;
 `
 
 export const ImageTop = styled.div`
