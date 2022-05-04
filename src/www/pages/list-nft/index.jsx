@@ -25,7 +25,6 @@ function ListNft() {
 			console.log(principalId);
 		}
 	}, []);
-	//Call API, setState khi trang load
 	useEffect(async () => {
 		getLIst();
 	}, [prinpId]);
@@ -52,8 +51,6 @@ function ListNft() {
 		const resu = await promise4all;
 		setListNFt(resu);
 	};
-
-	console.log('listAllNFt', listAllNFt);
 
 	return (
 		<Container>

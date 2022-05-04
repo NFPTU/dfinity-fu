@@ -18,8 +18,10 @@ import {
 	NameWrapper
 } from './nft-item.elements'
 import { FavoriteBorder } from '@mui/icons-material';
+import { Link } from 'react-router-dom'
 
 function NftItem({ item }) {
+
 
   return (
                 <ProductItem>
@@ -27,7 +29,11 @@ function NftItem({ item }) {
 						<ProductItemImage src={item?.image} alt='' />
 						<FilterImage>
 							<Mask></Mask>
-							<ViewProductBtn>View NFT</ViewProductBtn>
+							<ViewProductBtn>
+								<Link to={`/nft/${item?.description}`} style={{textDecoration: 'none', color: '#fecc45'}}>
+								View NFT
+								</Link>
+							</ViewProductBtn>
 						</FilterImage>
 					</ProductItemTop>
 
