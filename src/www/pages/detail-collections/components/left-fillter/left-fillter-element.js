@@ -9,6 +9,10 @@ export const LeftBox = styled.div`
   height: auto;
   width: 20%;
   border: 1px solid gray;
+  border-right: ${(flag) => flag === 'right' ? '' : '1px solid rgb(229, 232, 235)'};
+  border-bottom: 1px solid rgb(229, 232, 235);
+  border-left: ${(flag) => flag === 'left' ? '' : '1px solid rgb(229, 232, 235)'};
+  border-top: 1px solid rgb(229, 232, 235);
 `;
 export const FilltersOn = styled.div`
   cursor: pointer;
@@ -38,9 +42,6 @@ export const ScrollCheckBox = styled.div`
 
 `;
 
-export const CheckBox = styled.input`
-
-`;
 export const FilltersOff = styled.div`
   width: 100%;
   height: auto;
@@ -48,6 +49,11 @@ export const FilltersOff = styled.div`
   align-items: center;
   justify-content: space-between;
   cursor: pointer;
+  border: 1px solid gray;
+  border-right: 1px solid rgb(229, 232, 235);
+  border-left: 1px solid rgb(229, 232, 235);
+  border-top: 1px solid rgb(229, 232, 235);
+  border-bottom: 1px solid rgb(229, 232, 235);
 `;
 export const TextFillter = styled.div`
     display: flex;
@@ -65,7 +71,12 @@ export const DetailContainer = styled.div`
   display: flex;
   flex-direction: column;
   height: 260px;
-  overflow: auto;
+  overflow-y: auto;
+  border: 1px solid gray;
+  border-right: 1px solid rgb(229, 232, 235);
+  border-left: 1px solid rgb(229, 232, 235);
+  border-top: 1px solid rgb(229, 232, 235);
+  border-bottom: 1px solid rgb(229, 232, 235);
 `
 
 export const DetailsWrapper = styled.div`
@@ -116,4 +127,27 @@ export const DetailsInfoLeft = styled.div`
 `
 export const DetailsInfoRight = styled.div`
 `
+export const ListIconCollection = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  flex-wrap:wrap ;
+`
+export const IconCollection = styled.div`
+  display: flex;
 
+`
+export const CheckBox = styled.div`
+  display: flex;
+  flex-direction: column;
+ 
+
+`
+export const CheckBoxInfor = styled.div`
+  display: flex;
+  justify-content: space-between;
+
+`
+export const Number = styled.div`
+  margin-top: 10px;
+`
