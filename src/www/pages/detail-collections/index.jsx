@@ -14,7 +14,7 @@ import TwitterIcon from '@mui/icons-material/Twitter';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CurrencyBitcoinIcon from '@mui/icons-material/CurrencyBitcoin';
 import ViewListIcon from '@mui/icons-material/ViewList';
-import Fillters from './components/fillter-collection'
+import Fillters from './components/fillter-collection';
 import {
 	CaptionImage,
 	Container,
@@ -50,9 +50,8 @@ import {
 	NumerReport,
 	TittleReport,
 	CurrencyBitcoinIcon,
-	TittleIcon
+	TittleIcon,
 } from './list-elements';
-
 
 function ListCollections() {
 	return (
@@ -77,16 +76,16 @@ function ListCollections() {
 				</ButtonWatchlist>
 
 				<ListButton>
-					<ListButtonItem>
+					<ListButtonItem flag={'right'}>
 						<LanguageIcon sx={{ fontSize: 20 }} />
 					</ListButtonItem>
 					<ListButtonItem>
 						<FacebookIcon sx={{ fontSize: 20 }} />
 					</ListButtonItem>
-					<ListButtonItem>
+					<ListButtonItem flag={'left'}>
 						<InstagramIcon sx={{ fontSize: 20 }} />
 					</ListButtonItem>
-					<ListButtonItem>
+					<ListButtonItem flag={'left'}>
 						<TwitterIcon sx={{ fontSize: 20 }} />
 					</ListButtonItem>
 				</ListButton>
@@ -98,7 +97,7 @@ function ListCollections() {
 			</Title>
 
 			<TotalInfor>
-				<ListButtonView>
+				<ListButtonView flag={'right'}>
 					<NumerReport>1.5K</NumerReport>
 					<TittleReport>items</TittleReport>
 				</ListButtonView>
@@ -106,14 +105,14 @@ function ListCollections() {
 					<NumerReport>1.8K</NumerReport>
 					<TittleReport>Owners</TittleReport>
 				</ListButtonView>
-				<ListButtonView>
+				<ListButtonView flag={'left'}>
 					<NumerReport>
 						<CurrencyBitcoinIcon sx={{ fontSize: 18 }} />
 						1.2K{' '}
 					</NumerReport>
 					<TittleReport>floor price</TittleReport>
 				</ListButtonView>
-				<ListButtonView>
+				<ListButtonView flag={'left'}>
 					<NumerReport>
 						<CurrencyBitcoinIcon sx={{ fontSize: 18 }} />
 						1.1K
@@ -133,10 +132,9 @@ function ListCollections() {
 				infancy. Various versions have evolved over the years, sometimes by
 				accident, sometimes on purpose (injected humour and the like).
 			</IntroTitle>
-				
-			<IconSelect>
-			<ViewListIcon sx={{ fontSize: 40 }}/> <TittleIcon>Items</TittleIcon>
 
+			<IconSelect>
+				<ViewListIcon sx={{ fontSize: 40 }} /> <TittleIcon>Items</TittleIcon>
 			</IconSelect>
 
 			<Fillters />

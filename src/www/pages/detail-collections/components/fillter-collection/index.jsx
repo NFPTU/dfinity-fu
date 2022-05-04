@@ -1,6 +1,7 @@
 import React from 'react';
 // import { Container } from '@mui/material';
 import LeftBox from '../left-fillter';
+import RighttBox from '../right-fillter';
 import {
 	Box,
 	Button,
@@ -13,7 +14,6 @@ import {
 	Image,
 	ImageTitle,
 	Price,
-	RightBox,
 	ScrollCheckBox,
 	ScrollSelect,
 	Select,
@@ -32,29 +32,7 @@ function FillterEle() {
 	return (
 		<Container>
 			<LeftBox />
-			<RightBox>
-				<Sreachbox></Sreachbox>
-
-				<Select></Select>
-
-				<Select></Select>
-
-				<FillterItems></FillterItems>
-
-				<FillterItems></FillterItems>
-
-				<TotalItems></TotalItems>
-
-				<ImageTitle>
-					<Image />
-
-					<CollectionID></CollectionID>
-
-					<Price></Price>
-
-					<FeedBack></FeedBack>
-				</ImageTitle>
-			</RightBox>
+			<RighttBox />
 		</Container>
 	);
 }

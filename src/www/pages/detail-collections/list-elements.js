@@ -42,17 +42,24 @@ export const ButtonWatchlist = styled.div`
 
 export const ListButton = styled.div`
   display: flex;
-  border-radius: 10px;
+  /* border-radius: 10px; */
   
 `;
 
 export const ListButtonItem = styled.div`
-  border: 1px solid;
+  border-right: ${(flag) => flag === 'right' ? '' : '1px solid rgb(229, 232, 235)'};
+    border-bottom: 1px solid rgb(229, 232, 235);
+    border-left: ${(flag) => flag === 'left' ? '' : '1px solid rgb(229, 232, 235)'};
+    border-top: 1px solid rgb(229, 232, 235);
+    padding: 7px 10px;
+    &:hover {
+        box-shadow: 0px 0px 3px 0px #888888;
+    }
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 5px;
-  border-radius: 0px 0px 0px 5px;
+
   
 `;
 
@@ -80,12 +87,20 @@ export const TotalInfor = styled.div`
 `;
 
 export const ListButtonView = styled.div`
-  border: 1px solid;
+  /* border: 1px solid; */
   padding: 10px;
-  border-radius: 0px 0px 0px 5px;
+  /* border-radius: 0px 0px 0px 5px; */
   text-align: center;
   padding: 4%;
   width: 200px;
+  border-right: ${(flag) => flag === 'right' ? '' : '1px solid rgb(229, 232, 235)'};
+    border-bottom: 1px solid rgb(229, 232, 235);
+    border-left: ${(flag) => flag === 'left' ? '' : '1px solid rgb(229, 232, 235)'};
+    border-top: 1px solid rgb(229, 232, 235);
+    padding: 7px 10px;
+    &:hover {
+        box-shadow: 0px 0px 3px 0px #888888;
+    }
 `
 export const NumerReport = styled.div`
   display: flex;
@@ -159,7 +174,7 @@ export const Image = styled.img`
 `;
 export const CollectionID = styled.button`
 
-`;  
+`;
 export const Price = styled.button`
 
 `;
