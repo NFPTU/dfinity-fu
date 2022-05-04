@@ -4,6 +4,7 @@ const HomePage = lazy(() => import("./home"))
 const DetailCollections = lazy(() => import("./detail-collections"))
 const DetailNft = lazy(() => import("./detail-nft"))
 const CreateNft = lazy(() => import("./create-nft"))
+const ListNft = lazy(() => import("./list-nft"))
 
 const routes = [
     {
@@ -29,6 +30,12 @@ const routes = [
         exact: true,
         public: true,
         component: CreateNft
+    },
+    {
+        path: "nft/list",
+        exact: true,
+        public: true,
+        component: ListNft
     }
 ]
 
