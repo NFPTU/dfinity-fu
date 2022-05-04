@@ -6,6 +6,7 @@ import { Ballot, ExpandMore, ExpandLess } from '@mui/icons-material';
 import CurrencyBitcoinIcon from '@mui/icons-material/CurrencyBitcoin';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
+import AttachFileIcon from '@mui/icons-material/AttachFile';
 import {
 	LeftBox,
 	FilltersOn,
@@ -103,7 +104,7 @@ function LeftFillterEle() {
 				<DetailsWrapper>
 					<DetailsToggle onClick={() => handleToggle('price')}>
 						<DetailsToggleLeft>
-							<Ballot />
+							<AttachFileIcon />
 							<DetailsToggleLeftTitle>Details</DetailsToggleLeftTitle>
 						</DetailsToggleLeft>
 						{isToggleDetails1 ? (
