@@ -24,10 +24,12 @@ import {
 	IcpLogo,
 } from './navbar-elements';
 import { Link } from 'react-router-dom'
+import { withContext } from '../../hooks';
 
-function Navbar() {
-	const [prinpId, setPrinpId] = useState();
+function Navbar(props) {
 
+	const {prinpId, setPrinpId} = props
+	
 	const walletAddress = prinpId?.toString();
 
 	const onConnectWallet = async () => {
@@ -118,4 +120,4 @@ function Navbar() {
 	);
 }
 
-export default Navbar;
+export default withContext(Navbar);

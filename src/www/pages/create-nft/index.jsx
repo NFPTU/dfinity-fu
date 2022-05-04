@@ -22,15 +22,17 @@ import { idlFactory } from '../../../declarations/superheroes.did.js';
 import { customAxios } from '../../utils/custom-axios';
 import { toast } from 'react-toastify';
 import { Link } from 'react-router-dom';
+import { withContext } from '../../hooks';
 
 const { Dragger } = Upload;
 const { Option } = Select;
 
 const IPFS_LINK = 'https://dweb.link/ipfs/';
 
-function CreateNft() {
+function CreateNft(props) {
+
+	const {prinpId, setPrinpId} = props
 	const [fileImg, setFileImg] = useState(true);
-	const [prinpId, setPrinpId] = useState();
 	const [listNFt, setListNFt] = useState([]);
 	const [listAllNFt, setListAllNFt] = useState([]);
 
@@ -234,4 +236,4 @@ function CreateNft() {
 	);
 }
 
-export default CreateNft;
+export default withContext(CreateNft);
