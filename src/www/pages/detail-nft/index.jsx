@@ -52,8 +52,19 @@ import {
     MakeOfferWrapper
 } from './detail-nft.elements'
 import ItemActivity from './components/item-activity'
+import { useLocation } from 'react-router-dom';
+import { superheroes } from "../../../declarations";
+import { customAxios } from "../../utils/custom-axios";
 
 function DetailNft() {
+    const [prinpId, setPrinpId] = useState();
+    const [listAllNFt, setListAllNFt] = useState([]);
+    const [nft, setNft] = useState()
+
+    const location = useLocation();
+
+    const desc = location.pathname.split('/')[2];
+
     const [isToggleDetails, setIsToggleDetails] = useState(true)
 
     const handleToggle = (type) => {
@@ -61,6 +72,40 @@ function DetailNft() {
             setIsToggleDetails(prev => !prev)
         }
     }
+
+    useEffect(async () => {
+        const connected = await window.ic.plug.isConnected();
+        getListAll()
+       
+        if (connected) {
+            const principalId = await window?.ic?.plug?.agent?.getPrincipal();
+            setPrinpId(principalId);
+           
+        }
+    }, []);
+
+    const getListAll = async  () => {
+        const res = await superheroes.getAllTokens();
+        const promise4all = Promise.all(
+            res.map(function (el) {
+                return customAxios(el.metadata[0]?.tokenUri);
+            })
+        );
+        const resu = await promise4all;
+      
+        setListAllNFt(resu);
+    };
+
+    const getNft = () => {
+        const nft = listAllNFt.find((item) => item.description === desc)
+        setNft(nft)
+    }
+
+    useEffect(() => {
+        getNft()     
+    }, [listAllNFt])
+
+    
 
   return (
     <Container>
@@ -75,7 +120,7 @@ function DetailNft() {
                         </HeartWrapper>
                     </ImageTop>
 
-                    <Image src="https://lh3.googleusercontent.com/F6w8g8ZVJJkRo7VbfjppXLlprPQvIU9YRaYhChszhZV3ijOJKZgWglT7u50pbP13MUjizZIk_nE-dkPHbqmYzpD-d94yRC4GDuB7=w600" alt=""/>
+                    <Image src={nft?.image} alt=""/>
                 </ImageContainer>
 
                 <DescWrapper>
@@ -84,7 +129,7 @@ function DetailNft() {
                         Description
                     </DescToggle>
                     <DescScroll>
-                    <DescInfo>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum</DescInfo>
+                    <DescInfo>{nft?.description}</DescInfo>
                     </DescScroll>
                 </DescWrapper>
 
@@ -131,7 +176,7 @@ function DetailNft() {
                     </IconWrapper>
                 </CollectionWrapper>
 
-                <NftName>Staked JELLY</NftName>
+                <NftName>{nft?.name}</NftName>
 
                 <OwnerWrapper>
                     <OwnedBy>

@@ -20,7 +20,7 @@ const routes = [
         component: DetailCollections
     },
     {
-        path: "/nft/detail",
+        path: "/nft/:id",
         exact: true,
         public: true,
         component: DetailNft
