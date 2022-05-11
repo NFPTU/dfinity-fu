@@ -62,6 +62,11 @@ module {
         allowedTokens: [Nat];
         tokens: [Nat];
     };
+
+    public type OrderInfo = {
+        price: Nat;
+    };
+
     /// Update call operations
     public type Operation = {
         #mint: ?TokenMetadata;  

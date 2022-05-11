@@ -28,16 +28,9 @@ shared(msg) actor class NFTSale(
     _symbol: Text,
     _desc: Text,
     _owner: Principal,
-    _startTime: Int,
-    _endTime: Int,
-    _minPerUser: Nat,
-    _maxPerUser: Nat,
-    _amount: Nat,
     _devFee: Nat, // /1e6
     _devAddr: Principal,
-    _price: Nat,
     _paymentToken: Principal,
-    _whitelist: ?Principal
     ) = this {
 
     type Metadata = Types.Metadata;
@@ -48,6 +41,7 @@ shared(msg) actor class NFTSale(
     type TxRecord = Types.TxRecord;
     type Operation = Types.Operation;
     type TokenInfo = Types.TokenInfo;
+    type OrderInfo = Types.OrderInfo;
     type TokenInfoExt = Types.TokenInfoExt;
     type UserInfo = Types.UserInfo;
     type UserInfoExt = Types.UserInfoExt;
@@ -69,35 +63,21 @@ shared(msg) actor class NFTSale(
     };
 
     public type SaleInfo = {
-        startTime: Int;
-        endTime: Int;
-        minPerUser: Nat;
-        maxPerUser: Nat;
-        amount: Nat;
         var amountLeft: Nat;
         var fundRaised: Nat;
         devFee: Nat; // /1e6
         devAddr: Principal;
-        price: Nat;
         paymentToken: Principal;
-        whitelist: ?Principal;
         var fundClaimed: Bool;
         var feeClaimed: Bool;
     };
 
     public type SaleInfoExt = {
-        startTime: Int;
-        endTime: Int;
-        minPerUser: Nat;
-        maxPerUser: Nat;
-        amount: Nat;
         amountLeft: Nat;
         fundRaised: Nat;
         devFee: Nat; // /1e6
         devAddr: Principal;
-        price: Nat;
         paymentToken: Principal;
-        whitelist: ?Principal;
         fundClaimed: Bool;
         feeClaimed: Bool;
     };
@@ -144,16 +124,9 @@ shared(msg) actor class NFTSale(
     };
 
     private stable var saleInfo: ?SaleInfo = ?{
-        startTime = _startTime;
-        endTime = _endTime;
-        minPerUser = _minPerUser;
-        maxPerUser = _maxPerUser;
-        amount = _amount;
-        var amountLeft = _amount;
         var fundRaised = 0;
         devFee = _devFee;
         devAddr = _devAddr;
-        price = _price;
         paymentToken = _paymentToken;
         whitelist = _whitelist;
         var fundClaimed = false;
@@ -170,10 +143,12 @@ shared(msg) actor class NFTSale(
 
     private stable var tokensEntries : [(Nat, TokenInfo)] = [];
     private stable var usersEntries : [(Principal, UserInfo)] = [];
-    private var tokens = HashMap.HashMap<Nat, TokenInfo>(1, Nat.equal, Hash.hash);
+     private var tokens = HashMap.HashMap<Nat, TokenInfo>(1, Nat.equal, Hash.hash);
     private var users = HashMap.HashMap<Principal, UserInfo>(1, Principal.equal, Principal.hash);
+    private var orders = HashMap.HashMap<Nat, OrderInfo>(1, Nat.equal, Hash.hash);
     private stable var txs: [TxRecord] = [];
     private stable var txIndex: Nat = 0;
+    private stable var totalOrders: Nat = 0;
 
     private func addTxRecord(
         caller: Principal, op: Operation, tokenIndex: ?Nat,
@@ -384,18 +359,11 @@ shared(msg) actor class NFTSale(
         switch(info) {
             case(?i) {
                 saleInfo := ?{
-                    startTime = i.startTime;
-                    endTime = i.endTime;
-                    minPerUser = i.minPerUser;
-                    maxPerUser = i.maxPerUser;
-                    amount = i.amount;
                     var amountLeft = i.amountLeft;
                     var fundRaised = i.fundRaised;
                     devFee = i.devFee;
                     devAddr = i.devAddr;
-                    price = i.price;
                     paymentToken = i.paymentToken;
-                    whitelist = i.whitelist;
                     var fundClaimed = false;
                     var feeClaimed = false;
                 };
@@ -412,10 +380,6 @@ shared(msg) actor class NFTSale(
         switch(saleInfo) {
             case(?i) {
                 ?{
-                    startTime = i.startTime;
-                    endTime = i.endTime;
-                    minPerUser = i.minPerUser;
-                    maxPerUser = i.maxPerUser;
                     amount = i.amount;
                     amountLeft = i.amountLeft;
                     fundRaised = i.fundRaised;
@@ -434,27 +398,42 @@ shared(msg) actor class NFTSale(
         }
     };
 
+    public shared(msg) func createOrder(Nat _tokenId) {
+        var owner: Principal = switch (_ownerOf(tokenId)) {
+            case (?own) {
+                own;
+            }
+            case (_) {
+                return #Err(#TokenNotExist)
+            }
+        };
+        if(owner != msg.caller) {
+            return #Err(#Unauthorized);
+        };
+
+        let txid = addTxRecord(msg.caller, #transfer, ?tokenId, #user(msg.caller), #user(to), Time.now());
+        return #Ok(txid);
+
+    }
+
     public shared(msg) func buy(amount: Nat): async Result.Result<Nat, Text> {
         let info = switch(saleInfo) {
             case(?i) { i };
             case(_) { return #err("not in sale"); };
         };
-        if(Time.now() < info.startTime or Time.now() > info.endTime) return #err("sale not started or already ended");
         let userBalance = _balanceOf(msg.caller);
-        if(amount < info.minPerUser or userBalance + amount > info.maxPerUser) return #err("amount error");
-        if(amount > info.amountLeft) return #err("not enough tokens left for sale");
-        switch(info.whitelist){
-            case(?whitelist){
-                let whitelistActor: WhitelistActor = actor(Principal.toText(whitelist));
-                switch(await whitelistActor.check(msg.caller)){
-                    case(false) {
-                        return #err("you are not in the whitelist");
-                    };
-                    case(true) { };
-                };
-            };
-            case(_) {};
-        };
+        // switch(info.whitelist){
+        //     case(?whitelist){
+        //         let whitelistActor: WhitelistActor = actor(Principal.toText(whitelist));
+        //         switch(await whitelistActor.check(msg.caller)){
+        //             case(false) {
+        //                 return #err("you are not in the whitelist");
+        //             };
+        //             case(true) { };
+        //         };
+        //     };
+        //     case(_) {};
+        // };
         let tokenActor: TokenActor = actor(Principal.toText(info.paymentToken));
         switch(await tokenActor.transferFrom(msg.caller, Principal.fromActor(this), amount * info.price)) {
             case(#Ok(id)) {
@@ -896,9 +875,11 @@ shared(msg) actor class NFTSale(
     system func postupgrade() {
         type TokenInfo = Types.TokenInfo;
         type UserInfo = Types.UserInfo;
+        type OrderInfo = Types.OrderInfo;
 
         users := HashMap.fromIter<Principal, UserInfo>(usersEntries.vals(), 1, Principal.equal, Principal.hash);
         tokens := HashMap.fromIter<Nat, TokenInfo>(tokensEntries.vals(), 1, Nat.equal, Hash.hash);
+        orders := HashMap.fromIter<Nat, OrderInfo>(ordersEntries.vals(), 1 , Nat.equal, Hash.hash);
         usersEntries := [];
         tokensEntries := [];
     };
