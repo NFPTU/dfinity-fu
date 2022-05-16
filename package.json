@@ -49,6 +49,8 @@
     "last 2 edge version"
   ],
   "dependencies": {
+    "@connect2ic/core": "^0.0.5",
+    "@connect2ic/react": "^0.0.5",
     "@emotion/react": "^11.9.0",
     "@emotion/styled": "^11.8.1",
     "@mui/icons-material": "^5.6.2",
