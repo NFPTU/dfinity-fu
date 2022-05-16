@@ -65,6 +65,8 @@ module {
 
     public type OrderInfo = {
         price: Nat;
+        index: Nat;
+        owner: Principal;
     };
 
     /// Update call operations
@@ -77,6 +79,7 @@ module {
         #approveAll;
         #revokeAll; // revoke approvals
         #setMetadata;
+        #createOrder
     };
     /// Update call operation record fields
     public type Record = {

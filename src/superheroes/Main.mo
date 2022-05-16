@@ -21,6 +21,8 @@ import Result "mo:base/Result";
 import Prelude "mo:base/Prelude";
 import Buffer "mo:base/Buffer";
 import Types "./types";
+import AID "./Utils/AccountId";
+import User "./User";
 
 shared(msg) actor class NFTSale(
     _logo: Text,
@@ -148,7 +150,7 @@ shared(msg) actor class NFTSale(
     private var orders = HashMap.HashMap<Nat, OrderInfo>(1, Nat.equal, Hash.hash);
     private stable var txs: [TxRecord] = [];
     private stable var txIndex: Nat = 0;
-    private stable var totalOrders: Nat = 0;
+    private stable var totalOrders_: Nat = 0;
 
     private func addTxRecord(
         caller: Principal, op: Operation, tokenIndex: ?Nat,
@@ -398,23 +400,30 @@ shared(msg) actor class NFTSale(
         }
     };
 
-    public shared(msg) func createOrder(Nat _tokenId) {
+    public shared(msg) func createOrder(_tokenId: Nat, _price: Nat) {
         var owner: Principal = switch (_ownerOf(tokenId)) {
             case (?own) {
                 own;
-            }
+            };
             case (_) {
                 return #Err(#TokenNotExist)
-            }
+            };
         };
         if(owner != msg.caller) {
             return #Err(#Unauthorized);
         };
 
-        let txid = addTxRecord(msg.caller, #transfer, ?tokenId, #user(msg.caller), #user(to), Time.now());
+        var order: OrderInfo = {
+            index = totalOrders_;
+            var owner = msg.caller;
+            var price = _price;
+        }
+        orders.put(totalOrders_, order);
+        totalOrders_ +=1;
+        let txid = addTxRecord(msg.caller, #transfer, ?tokenId, #user(msg.caller), #user(blackhole), Time.now());
         return #Ok(txid);
 
-    }
+    };
 
     public shared(msg) func buy(amount: Nat): async Result.Result<Nat, Text> {
         let info = switch(saleInfo) {
