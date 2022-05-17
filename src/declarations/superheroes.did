@@ -31,36 +31,6 @@ type TokenInfoExt =
    timestamp: Time;
  };
 type Time = int;
-type SaleInfoExt = 
- record {
-   amount: nat;
-   amountLeft: nat;
-   devAddr: principal;
-   devFee: nat;
-   endTime: int;
-   feeClaimed: bool;
-   fundClaimed: bool;
-   fundRaised: nat;
-   maxPerUser: nat;
-   minPerUser: nat;
-   paymentToken: principal;
-   price: nat;
-   startTime: int;
-   whitelist: opt principal;
- };
-type Result_1 = 
- variant {
-   err: text;
-   ok: nat;
- };
-type Result = 
- variant {
-   err: text;
-   ok: record {
-         bool;
-         bool;
-       };
- };
 type Record = 
  variant {
    metadata: opt TokenMetadata__1;
@@ -77,24 +47,17 @@ type Operation =
    transfer;
    transferFrom;
  };
-type NFTSale = 
+type NFToken = 
  service {
    approve: (nat, principal) -> (TxReceipt);
    balanceOf: (principal) -> (nat) query;
    batchMint: (principal, vec opt TokenMetadata) -> (MintResult);
-   batchSetTokenMetadata: (vec record {
-                                 nat;
-                                 TokenMetadata;
-                               }) -> (TxReceipt);
    batchTransferFrom: (principal, principal, vec nat) -> (TxReceipt);
    burn: (nat) -> (TxReceipt);
-   buy: (nat) -> (Result_1);
-   claimFunds: () -> (Result);
    desc: () -> (text) query;
    getAllTokens: () -> (vec TokenInfoExt) query;
    getMetadata: () -> (Metadata) query;
    getOperator: (nat) -> (principal) query;
-   getSaleInfo: () -> (opt SaleInfoExt) query;
    getTokenInfo: (nat) -> (TokenInfoExt) query;
    getTransaction: (nat) -> (TxRecord) query;
    getTransactions: (nat, nat) -> (vec TxRecord) query;
@@ -110,7 +73,6 @@ type NFTSale =
    ownerOf: (nat) -> (principal) query;
    setApprovalForAll: (principal, bool) -> (TxReceipt);
    setOwner: (principal) -> (principal);
-   setSaleInfo: (opt SaleInfoExt) -> (opt SaleInfoExt);
    setTokenMetadata: (nat, TokenMetadata) -> (TxReceipt);
    symbol: () -> (text) query;
    totalSupply: () -> (nat) query;
@@ -141,5 +103,4 @@ type Errors =
    TokenNotExist;
    Unauthorized;
  };
-service : (text, text, text, text, principal, int, int, nat, nat, nat, nat, principal, nat, principal, opt
-                                                                    principal) -> NFTSale
+service : (text, text, text, text, principal) -> NFToken
