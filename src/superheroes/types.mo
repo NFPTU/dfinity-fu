@@ -56,17 +56,18 @@ module {
         var tokens: TrieSet.Set<Nat>;              // user's tokens
     };
 
+     public type OrderInfo = {
+         index: Nat;
+         var price: Nat;
+         owner: Principal;
+         tokenId: Nat;
+    };
+
     public type UserInfoExt = {
         operators: [Principal];
         allowedBy: [Principal];
         allowedTokens: [Nat];
         tokens: [Nat];
-    };
-
-    public type OrderInfo = {
-        price: Nat;
-        index: Nat;
-        owner: Principal;
     };
 
     /// Update call operations

@@ -23,6 +23,10 @@ import Buffer "mo:base/Buffer";
 import Types "./types";
 import AID "./Utils/AccountId";
 import User "./User";
+import EXT "mo:ext/Ext";
+
+import Ext "Ext";
+import ExtTypes "Ext/types";
 
 shared(msg) actor class NFTSale(
     _logo: Text,
@@ -65,13 +69,7 @@ shared(msg) actor class NFTSale(
     };
 
     public type SaleInfo = {
-        var amountLeft: Nat;
-        var fundRaised: Nat;
-        devFee: Nat; // /1e6
-        devAddr: Principal;
-        paymentToken: Principal;
-        var fundClaimed: Bool;
-        var feeClaimed: Bool;
+        
     };
 
     public type SaleInfoExt = {
@@ -126,13 +124,12 @@ shared(msg) actor class NFTSale(
     };
 
     private stable var saleInfo: ?SaleInfo = ?{
-        var fundRaised = 0;
-        devFee = _devFee;
-        devAddr = _devAddr;
-        paymentToken = _paymentToken;
-        whitelist = _whitelist;
-        var fundClaimed = false;
-        var feeClaimed = false;
+        // var fundRaised = 0;
+        // devFee = _devFee;
+        // devAddr = _devAddr;
+        // paymentToken = _paymentToken;
+        // var fundClaimed = false;
+        // var feeClaimed = false;
     };
 
     private stable var logo_ : Text = _logo; // base64 encoded image
@@ -142,6 +139,7 @@ shared(msg) actor class NFTSale(
     private stable var owner_: Principal = _owner;
     private stable var totalSupply_: Nat = 0;
     private stable var blackhole: Principal = Principal.fromText("aaaaa-aa");
+    private stable var totalOrders_: Nat = 0;
 
     private stable var tokensEntries : [(Nat, TokenInfo)] = [];
     private stable var usersEntries : [(Principal, UserInfo)] = [];
@@ -150,7 +148,6 @@ shared(msg) actor class NFTSale(
     private var orders = HashMap.HashMap<Nat, OrderInfo>(1, Nat.equal, Hash.hash);
     private stable var txs: [TxRecord] = [];
     private stable var txIndex: Nat = 0;
-    private stable var totalOrders_: Nat = 0;
 
     private func addTxRecord(
         caller: Principal, op: Operation, tokenIndex: ?Nat,
@@ -378,127 +375,133 @@ shared(msg) actor class NFTSale(
         };
     };
 
-    public query func getSaleInfo(): async ?SaleInfoExt {
-        switch(saleInfo) {
-            case(?i) {
-                ?{
-                    amount = i.amount;
-                    amountLeft = i.amountLeft;
-                    fundRaised = i.fundRaised;
-                    devFee = i.devFee;
-                    devAddr = i.devAddr;
-                    price = i.price;
-                    paymentToken = i.paymentToken;
-                    whitelist = i.whitelist;
-                    fundClaimed = i.fundClaimed;
-                    feeClaimed = i.feeClaimed;
-                }
-            };
-            case(_) {
-                null
-            };
-        }
-    };
+    // public query func getSaleInfo(): async ?SaleInfoExt {
+    //     switch(saleInfo) {
+    //         case(?i) {
+    //             ?{
+    //                 amountLeft = i.amountLeft;
+    //                 fundRaised = i.fundRaised;
+    //                 devFee = i.devFee;
+    //                 devAddr = i.devAddr;
+    //                 price = i.price;
+    //                 paymentToken = i.paymentToken;
+    //                 whitelist = i.whitelist;
+    //                 fundClaimed = i.fundClaimed;
+    //                 feeClaimed = i.feeClaimed;
+    //             }
+    //         };
+    //         case(_) {
+    //             null
+    //         };
+    //     }
+    // };
 
-    public shared(msg) func createOrder(_tokenId: Nat, _price: Nat) {
-        var owner: Principal = switch (_ownerOf(tokenId)) {
-            case (?own) {
-                own;
-            };
-            case (_) {
-                return #Err(#TokenNotExist)
-            };
-        };
-        if(owner != msg.caller) {
-            return #Err(#Unauthorized);
-        };
+    // public shared(msg) func createOrder(_tokenId: Nat, _price: Nat) {
+    //     var owner: Principal = switch (_ownerOf(_tokenId)) {
+    //         case (?own) {
+    //             own;
+    //         };
+    //         case (_) {
+    //             return #Err(#TokenNotExist)
+    //         };
+    //     };
+    //     if(owner != msg.caller) {
+    //         // return #Err(#Unauthorized);
+    //     };
 
-        var order: OrderInfo = {
-            index = totalOrders_;
-            var owner = msg.caller;
-            var price = _price;
-        }
-        orders.put(totalOrders_, order);
-        totalOrders_ +=1;
-        let txid = addTxRecord(msg.caller, #transfer, ?tokenId, #user(msg.caller), #user(blackhole), Time.now());
-        return #Ok(txid);
+    //     // let order: OrderInfo = {
+    //     //     index = totalOrders_;
+    //     //     var owner = msg.caller;
+    //     //     var price: Nat = price;
+    //     //     tokenId = _tokenId;
+    //     // }
+    //     // totalOrders_+=1;
+    //     orders.put(totalOrders_, order);
+        
+    //     let txid = addTxRecord(msg.caller, #transfer, ?_tokenId, #user(msg.caller), #user(blachole), Time.now());
+    //     return #Ok(txid);
 
-    };
+    // };
 
-    public shared(msg) func buy(amount: Nat): async Result.Result<Nat, Text> {
-        let info = switch(saleInfo) {
-            case(?i) { i };
-            case(_) { return #err("not in sale"); };
-        };
-        let userBalance = _balanceOf(msg.caller);
-        // switch(info.whitelist){
-        //     case(?whitelist){
-        //         let whitelistActor: WhitelistActor = actor(Principal.toText(whitelist));
-        //         switch(await whitelistActor.check(msg.caller)){
-        //             case(false) {
-        //                 return #err("you are not in the whitelist");
-        //             };
-        //             case(true) { };
-        //         };
-        //     };
-        //     case(_) {};
-        // };
-        let tokenActor: TokenActor = actor(Principal.toText(info.paymentToken));
-        switch(await tokenActor.transferFrom(msg.caller, Principal.fromActor(this), amount * info.price)) {
-            case(#Ok(id)) {
-                ignore _batchMint(msg.caller, amount);
-                info.amountLeft -= amount;
-                info.fundRaised += amount * info.price;
-                saleInfo := ?info;
-                return #ok(amount);
-            };
-            case(#Err(e)) {
-                return #err("payment failed");
-            };
-        };
-    };
+    // public shared(msg) func buy( tokenId: Nat): async Result.Result<Nat, Text> {
+    //     switch(orders.get(tokenId)) {
+    //         case (?order) {
+    //             let userBalance = _balanceOf(msg.caller);
+    //                     // switch(info.whitelist){
+    //                     //     case(?whitelist){
+    //                     //         let whitelistActor: WhitelistActor = actor(Principal.toText(whitelist));
+    //                     //         switch(await whitelistActor.check(msg.caller)){
+    //                     //             case(false) {
+    //                     //                 return #err("you are not in the whitelist");
+    //                     //             };
+    //                     //             case(true) { };
+    //                     //         };
+    //                     //     };
+    //                     //     case(_) {};
+    //                     // };
+    //                     let tokenActor: TokenActor = actor(Principal.toText(info.paymentToken));
+    //                     switch(await tokenActor.transferFrom(msg.caller, order.owner, order.price)) {
+    //                         case(#Ok(id)) {
+    //                             ignore _batchMint(msg.caller, amount);
+    //                             _removeTokenFrom(order.owner, order.tokenId);
+    //                             _addTokenTo(msg.caller, order.tokenId);
+    //                             orders := TrieSet.delete(orders, tokenId, Hash.hash(tokenId), Nat.equal);
+    //                             info.fundRaised += amount * order.price;
+    //                             saleInfo := ?info;
+    //                             return #ok(amount);
+    //                         };
+    //                         case(#Err(e)) {
+    //                             return #err("payment failed");
+    //                         };
+    //                     };
+    //         };
+    //         case _ {
+    //             return #err("order not found");
+    //         }
+    //     }
+       
+    // };
 
-	public shared(msg) func setOwner(new: Principal): async Principal {
-		assert(msg.caller == owner_);
-		owner_ := new;
-		new
-	};
+	// public shared(msg) func setOwner(new: Principal): async Principal {
+	// 	assert(msg.caller == owner_);
+	// 	owner_ := new;
+	// 	new
+	// };
 
-    public shared(msg) func claimFunds(): async Result.Result<(Bool, Bool), Text> {
-        let info = switch(saleInfo) {
-            case(?i) { i };
-            case(_) { return #err("no sale"); };
-        };
-        assert(msg.caller == owner_ or msg.caller == info.devAddr);
+    // public shared(msg) func claimFunds(): async Result.Result<(Bool, Bool), Text> {
+    //     let info = switch(saleInfo) {
+    //         case(?i) { i };
+    //         case(_) { return #err("no sale"); };
+    //     };
+    //     assert(msg.caller == owner_ or msg.caller == info.devAddr);
 
-        let fee = info.fundRaised * info.devFee / 1_000_000;
 
-        let tokenActor: TokenActor = actor(Principal.toText(info.paymentToken));
-        let metadata = await tokenActor.getMetadata();
-        if(not info.fundClaimed) {
-            info.fundClaimed := true;
-            saleInfo := ?info;
-            switch(await tokenActor.transfer(owner_, info.fundRaised - fee - metadata.fee)) {
-                case(#Ok(id)) {};
-                case(#Err(e)) {
-                    info.fundClaimed := false;
-                    saleInfo := ?info;
-                };
-            };
-        };
-        if(not info.feeClaimed) {
-            info.feeClaimed := true;
-            saleInfo := ?info;
-            switch(await tokenActor.transfer(info.devAddr, fee - metadata.fee)) {
-                case(#Ok(id)) {};
-                case(#Err(e)) {
-                    info.feeClaimed := false;
-                    saleInfo := ?info;
-                };
-            };
-        };
-        #ok((info.fundClaimed, info.feeClaimed))
-    };
+    //     let tokenActor: TokenActor = actor(Principal.toText(info.paymentToken));
+    //     let metadata = await tokenActor.getMetadata();
+    //     if(not info.fundClaimed) {
+    //         info.fundClaimed := true;
+    //         saleInfo := ?info;
+    //         switch(await tokenActor.transfer(owner_, info.fundRaised - fee - metadata.fee)) {
+    //             case(#Ok(id)) {};
+    //             case(#Err(e)) {
+    //                 info.fundClaimed := false;
+    //                 saleInfo := ?info;
+    //             };
+    //         };
+    //     };
+    //     if(not info.feeClaimed) {
+    //         info.feeClaimed := true;
+    //         saleInfo := ?info;
+    //         switch(await tokenActor.transfer(info.devAddr, fee - metadata.fee)) {
+    //             case(#Ok(id)) {};
+    //             case(#Err(e)) {
+    //                 info.feeClaimed := false;
+    //                 saleInfo := ?info;
+    //             };
+    //         };
+    //     };
+    //     #ok((info.fundClaimed, info.feeClaimed))
+    // };
 
     // public update calls
     public shared(msg) func mint(to: Principal, metadata: ?TokenMetadata): async MintResult {
@@ -888,7 +891,6 @@ shared(msg) actor class NFTSale(
 
         users := HashMap.fromIter<Principal, UserInfo>(usersEntries.vals(), 1, Principal.equal, Principal.hash);
         tokens := HashMap.fromIter<Nat, TokenInfo>(tokensEntries.vals(), 1, Nat.equal, Hash.hash);
-        orders := HashMap.fromIter<Nat, OrderInfo>(ordersEntries.vals(), 1 , Nat.equal, Hash.hash);
         usersEntries := [];
         tokensEntries := [];
     };
