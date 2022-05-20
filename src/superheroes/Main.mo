@@ -9,45 +9,30 @@
 import Array "mo:base/Array";
 import Buffer "mo:base/Buffer";
 import Cycles "mo:base/ExperimentalCycles";
-import Cycles "mo:base/ExperimentalCycles";
 import Error "mo:base/Error";
 import Hash "mo:base/Hash";
-import Hash "mo:base/Hash";
-import HashMap "mo:base/HashMap";
 import HashMap "mo:base/HashMap";
 import Int "mo:base/Int";
-import Iter "mo:base/Iter";
 import Iter "mo:base/Iter";
 import Nat "mo:base/Nat";
 import Nat32 "mo:base/Nat32";
 import Prelude "mo:base/Prelude";
 import Principal "mo:base/Principal";
-import Principal "mo:base/Principal";
-import Result "mo:base/Result";
 import Result "mo:base/Result";
 import Text "mo:base/Text";
 import Time "mo:base/Time";
 import TrieSet "mo:base/TrieSet";
 
-import AID "./Utils/AccountId";
 import AID "/Lib/Ext/util/AccountIdentifier";
 import Ext "Ext";
 import ExtCommon "/Lib/Ext/ext/Common";
 import ExtCore "/Lib/Ext/ext/Core";
 import ExtTypes "Ext/types";
 import Types "./types";
-import Types "types";
 import User "./User";
 
-shared(msg) actor class NFTSale(
-    _logo: Text,
-    _name: Text, 
-    _symbol: Text,
-    _desc: Text,
-    _owner: Principal,
-    _devFee: Nat, // /1e6
-    _devAddr: Principal,
-    _paymentToken: Principal,
+shared(msg) actor class AntKingdoms(
+    init_admin: Principal
     ) = this {
 
     // type Metadata = Types.Metadata;
@@ -935,6 +920,11 @@ shared(msg) actor class NFTSale(
     owner : AccountIdentifier;
   };
 
+  type TokenMetadataRequest = {
+    token: Text;
+    metadata: Metadata;
+  };
+
   type TokenLedger = HashMap.HashMap<AccountIdentifier, Balance>;
   
   private let EXTENSIONS : [Extension] = ["@ext/common"];
@@ -955,7 +945,8 @@ shared(msg) actor class NFTSale(
   Iter.iterate<(TokenIndex, (Metadata, Balance))>(_metadataState.vals(), func(x, _index) {
     _metadata.put(x.0, x.1);
   });
-  
+
+  private var tokensMetadata = HashMap.HashMap<Text, Metadata>(1, Text.equal, Text.hash);
     
   //State functions
   system func preupgrade() {
@@ -973,8 +964,26 @@ shared(msg) actor class NFTSale(
     assert(msg.caller == _admin);
     _admin := newAdmin;
   };
+
+  public shared(msg) func setTokensMetadata(listMeta: [TokenMetadataRequest]): async Result.Result<Bool, Text> {
+    for(metadata in Iter.fromArray(listMeta)) {
+      tokensMetadata.put(metadata.token, metadata.metadata);
+    };
+    return #ok(true);
+  };
+
+   public shared(msg) func getTokensMetadata(): async [TokenMetadataRequest] {
+     Iter.toArray(Iter.map(tokensMetadata.entries(), func (i: (Text, Metadata)): TokenMetadataRequest {_tokenMetadata(i.1)}))
+   };
+
+   private func _tokenMetadata(info: TokenMetadataRequest) : TokenMetadataRequest {
+     return {
+       metadata: info.metadata;
+       token: info.token;
+     }
+   };
   
-  public shared(msg) func registerToken(request: RegisterTokenRequest) : async Result.Result<TokenIndex,Text> {
+  private func registerToken(request: RegisterTokenRequest) : Nat32 {
     /*if (msg.caller != _admin) {
       let available = Cycles.available();
       if (available < CREATE_TOKEN_FEE) {        
@@ -988,20 +997,25 @@ shared(msg) actor class NFTSale(
     _registry.put(tokenId, ledger);
     _metadata.put(tokenId, (request.metadata, request.supply));
     _nextTokenId := _nextTokenId + 1;
-    return #ok(tokenId);
+    return tokenId;
   };
 
-  public shared(msg) func mintNFT() : async Result.Result<Token, Text> {
-  };
-
-  public shared(msg) func claming() : async Result.Result<Token, Text> {
+  public shared(msg) func claming() : async Result.Result<TokenIndex, Text> {
       let request: RegisterTokenRequest = {
-           metadata : Metadata;
-            supply : Balance;
-            owner : AccountIdentifier;
-      }
-      registerToken()
+           metadata = _unwrap(tokensMetadata.get("ok"));
+            supply = 1;
+            owner = Principal.toText(msg.caller);
+      };
+      let tokenId = registerToken(request);
+      return #ok(tokenId);
   };
+
+   private func _unwrap<T>(x : ?T) : T =
+    switch x {
+      case null { Prelude.unreachable() };
+      case (?x_) { x_ };
+    };
+    
   
   public shared(msg) func transfer(request: TransferRequest) : async TransferResponse {
     if (ExtCore.TokenIdentifier.isPrincipal(request.token, Principal.fromActor(this)) == false) {
