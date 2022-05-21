@@ -14,10 +14,10 @@ export function Provider({ children }) {
 		setprinpId(value);
 	};
 
-  const logout = () => {
-    setprinpId()
-    localStorage.clear()
-  }
+	const logout = () => {
+		setprinpId();
+		localStorage.clear();
+	};
 
 	useEffect(() => {
 		return () => {};
@@ -26,7 +26,7 @@ export function Provider({ children }) {
 	const value = {
 		prinpId,
 		setPrinpId,
-    logout
+		logout,
 	};
 	return <Context.Provider value={value}>{children}</Context.Provider>;
 }

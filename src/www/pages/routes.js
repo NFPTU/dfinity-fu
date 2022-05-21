@@ -5,13 +5,14 @@ const DetailCollections = lazy(() => import("./detail-collections"))
 const DetailNft = lazy(() => import("./detail-nft"))
 const CreateNft = lazy(() => import("./create-nft"))
 const ListNft = lazy(() => import("./list-nft"))
+const LoginGame = lazy(() => import("./login-game"))
 
 const routes = [
     {
         path: "/",
         exact: true,
         public: true,
-        component: HomePage
+        component: LoginGame
     },
     {
         path: "/collection/detail",

@@ -22,7 +22,7 @@ import {
 	Balance,
 	BalanceNumber,
 	IcpLogo,
-	ConnectBtnSt
+	ConnectBtnSt,
 } from './navbar-elements';
 import { Link } from 'react-router-dom';
 import { withContext } from '../../hooks';
@@ -59,8 +59,8 @@ function Navbar(props) {
 	};
 
 	const onDisconnect = () => {
-		disconnect()
-		logout()
+		disconnect();
+		logout();
 		console.log('disconnect');
 	};
 
@@ -105,17 +105,19 @@ function Navbar(props) {
 							<AccountCircleOutlined fontSize='large' />
 						</OptionItem>
 						{!prinpId ? (
-							<><OptionItem>
-							<ConnectButton
-								onConnect={onConnectWallet}
-								onDisconnect={onDisconnect}
-								className={ConnectBtnSt}
-							/>
-						</OptionItem></>
+							<>
+								<OptionItem>
+									<ConnectButton
+										onConnect={onConnectWallet}
+										onDisconnect={onDisconnect}
+										className={ConnectBtnSt}
+									/>
+								</OptionItem>
+							</>
 						) : (
 							<>
 								<OptionItem onClick={onDisconnect}>
-									<WalletAddress >
+									<WalletAddress>
 										{walletAddress.slice(0, 3)} ...{' '}
 										{walletAddress.slice(60, 63)}
 									</WalletAddress>
