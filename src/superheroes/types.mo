@@ -10,13 +10,17 @@ import TrieSet "mo:base/TrieSet";
 
 module {
     public type Metadata = {
-        logo: Text;
         name: Text;
-        symbol: Text;
-        desc: Text;
-        totalSupply: Nat;
-        owner: Principal;
-        cycles: Nat;
+        description : ?Text;
+        image: Text;
+        attributes: ?[AttributeMeta]
+    };
+
+    public type AttributeMeta = {
+        trait_type: Text;
+        value: Text;
+        max: ?Text;
+        min: ?Text;
     };
 
     public type Location = {

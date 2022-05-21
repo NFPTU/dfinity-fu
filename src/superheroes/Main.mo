@@ -908,7 +908,7 @@ shared(msg) actor class AntKingdoms(
   type BalanceResponse = ExtCore.BalanceResponse;
   type TransferRequest = ExtCore.TransferRequest;
   type TransferResponse = ExtCore.TransferResponse;
-  type Metadata = ExtCommon.Metadata;
+  type Metadata = Types.Metadata;
 
   type RegisterTokenRequest = {
     metadata : Metadata;
@@ -972,16 +972,16 @@ shared(msg) actor class AntKingdoms(
     return #ok(true);
   };
 
-   public shared(msg) func getTokensMetadata(): async [TokenMetadataRequest] {
-     Iter.toArray(Iter.map(tokensMetadata.entries(), func (i: (Text, Metadata)): TokenMetadataRequest {_tokenMetadata(i.1)}))
-   };
+  //  public shared(msg) func getTokensMetadata(): async [TokenMetadataRequest] {
+  //    Iter.toArray(tokensMetadata.entries())
+  //  };
 
-   private func _tokenMetadata(info: TokenMetadataRequest) : TokenMetadataRequest {
-     return {
-       metadata: info.metadata;
-       token: info.token;
-     }
-   };
+  //  private func _tokenMetadata(info: TokenMetadataRequest) : TokenMetadataRequest {
+  //    return {
+  //      metadata: info.metadata;
+  //      token: info.token;
+  //    }
+  //  };
   
   private func registerToken(request: RegisterTokenRequest) : Nat32 {
     /*if (msg.caller != _admin) {
@@ -1015,7 +1015,6 @@ shared(msg) actor class AntKingdoms(
       case null { Prelude.unreachable() };
       case (?x_) { x_ };
     };
-    
   
   public shared(msg) func transfer(request: TransferRequest) : async TransferResponse {
     if (ExtCore.TokenIdentifier.isPrincipal(request.token, Principal.fromActor(this)) == false) {

@@ -1,131 +1,119 @@
 export const idlFactory = ({ IDL }) => {
-  const Errors = IDL.Variant({
-    'Unauthorized' : IDL.Null,
-    'TokenNotExist' : IDL.Null,
-    'InvalidOperator' : IDL.Null,
-  });
-  const TxReceipt = IDL.Variant({ 'Ok' : IDL.Nat, 'Err' : Errors });
-  const TokenMetadata = IDL.Record({ 'tokenUri' : IDL.Text });
-  const MintResult = IDL.Variant({
-    'Ok' : IDL.Tuple(IDL.Nat, IDL.Nat),
-    'Err' : Errors,
-  });
-  const TokenMetadata__1 = IDL.Record({ 'tokenUri' : IDL.Text });
-  const Time = IDL.Int;
-  const TokenInfoExt = IDL.Record({
-    'owner' : IDL.Principal,
-    'metadata' : IDL.Opt(TokenMetadata__1),
-    'operator' : IDL.Opt(IDL.Principal),
-    'timestamp' : Time,
-    'index' : IDL.Nat,
+  const TokenIndex = IDL.Nat32;
+  const AttributeMeta = IDL.Record({
+    'max' : IDL.Opt(IDL.Text),
+    'min' : IDL.Opt(IDL.Text),
+    'trait_type' : IDL.Text,
+    'value' : IDL.Text,
   });
   const Metadata = IDL.Record({
-    'owner' : IDL.Principal,
-    'desc' : IDL.Text,
-    'logo' : IDL.Text,
     'name' : IDL.Text,
-    'totalSupply' : IDL.Nat,
-    'cycles' : IDL.Nat,
-    'symbol' : IDL.Text,
+    'description' : IDL.Opt(IDL.Text),
+    'attributes' : IDL.Vec(AttributeMeta),
+    'image' : IDL.Text,
   });
-  const Operation = IDL.Variant({
-    'transferFrom' : IDL.Null,
-    'burn' : IDL.Null,
-    'approveAll' : IDL.Null,
-    'mint' : IDL.Opt(TokenMetadata__1),
-    'approve' : IDL.Null,
-    'setMetadata' : IDL.Null,
-    'transfer' : IDL.Null,
-    'revokeAll' : IDL.Null,
+  const Balance__1 = IDL.Nat;
+  const AccountIdentifier__1 = IDL.Text;
+  const TokenIdentifier = IDL.Text;
+  const AccountIdentifier = IDL.Text;
+  const User = IDL.Variant({
+    'principal' : IDL.Principal,
+    'address' : AccountIdentifier,
   });
-  const Record = IDL.Variant({
-    'metadata' : IDL.Opt(TokenMetadata__1),
-    'user' : IDL.Principal,
+  const BalanceRequest = IDL.Record({
+    'token' : TokenIdentifier,
+    'user' : User,
   });
-  const TxRecord = IDL.Record({
-    'op' : Operation,
-    'to' : Record,
-    'tokenIndex' : IDL.Opt(IDL.Nat),
-    'from' : Record,
-    'timestamp' : Time,
-    'caller' : IDL.Principal,
-    'index' : IDL.Nat,
+  const Balance = IDL.Nat;
+  const CommonError__1 = IDL.Variant({
+    'InvalidToken' : TokenIdentifier,
+    'Other' : IDL.Text,
   });
-  const UserInfoExt = IDL.Record({
-    'allowedTokens' : IDL.Vec(IDL.Nat),
-    'tokens' : IDL.Vec(IDL.Nat),
-    'operators' : IDL.Vec(IDL.Principal),
-    'allowedBy' : IDL.Vec(IDL.Principal),
+  const BalanceResponse = IDL.Variant({
+    'ok' : Balance,
+    'err' : CommonError__1,
   });
-  const NFToken = IDL.Service({
-    'approve' : IDL.Func([IDL.Nat, IDL.Principal], [TxReceipt], []),
-    'balanceOf' : IDL.Func([IDL.Principal], [IDL.Nat], ['query']),
-    'batchMint' : IDL.Func(
-        [IDL.Principal, IDL.Vec(IDL.Opt(TokenMetadata))],
-        [MintResult],
+  const Result_5 = IDL.Variant({ 'ok' : TokenIndex, 'err' : IDL.Text });
+  const Extension = IDL.Text;
+  const TokenIdentifier__1 = IDL.Text;
+  const CommonError = IDL.Variant({
+    'InvalidToken' : TokenIdentifier,
+    'Other' : IDL.Text,
+  });
+  const Result_4 = IDL.Variant({ 'ok' : Metadata, 'err' : CommonError });
+  const Result_3 = IDL.Variant({ 'ok' : IDL.Nat, 'err' : CommonError });
+  const Result_2 = IDL.Variant({
+    'ok' : IDL.Vec(IDL.Tuple(AccountIdentifier__1, Balance__1)),
+    'err' : CommonError,
+  });
+  const TokenMetadataRequest = IDL.Record({
+    'token' : IDL.Text,
+    'metadata' : Metadata,
+  });
+  const Result_1 = IDL.Variant({ 'ok' : IDL.Bool, 'err' : IDL.Text });
+  const Result = IDL.Variant({ 'ok' : Balance__1, 'err' : CommonError });
+  const Memo = IDL.Vec(IDL.Nat8);
+  const SubAccount = IDL.Vec(IDL.Nat8);
+  const TransferRequest = IDL.Record({
+    'to' : User,
+    'token' : TokenIdentifier,
+    'notify' : IDL.Bool,
+    'from' : User,
+    'memo' : Memo,
+    'subaccount' : IDL.Opt(SubAccount),
+    'amount' : Balance,
+  });
+  const TransferResponse = IDL.Variant({
+    'ok' : Balance,
+    'err' : IDL.Variant({
+      'CannotNotify' : AccountIdentifier,
+      'InsufficientBalance' : IDL.Null,
+      'InvalidToken' : TokenIdentifier,
+      'Rejected' : IDL.Null,
+      'Unauthorized' : AccountIdentifier,
+      'Other' : IDL.Text,
+    }),
+  });
+  const AntKingdoms = IDL.Service({
+    'acceptCycles' : IDL.Func([], [], []),
+    'allMetadata' : IDL.Func(
+        [],
+        [IDL.Vec(IDL.Tuple(TokenIndex, IDL.Tuple(Metadata, Balance__1)))],
+        ['query'],
+      ),
+    'allRegistry' : IDL.Func(
+        [],
+        [
+          IDL.Vec(
+            IDL.Tuple(
+              TokenIndex,
+              IDL.Vec(IDL.Tuple(AccountIdentifier__1, Balance__1)),
+            )
+          ),
+        ],
+        ['query'],
+      ),
+    'availableCycles' : IDL.Func([], [IDL.Nat], ['query']),
+    'balance' : IDL.Func([BalanceRequest], [BalanceResponse], ['query']),
+    'changeAdmin' : IDL.Func([IDL.Principal], [], []),
+    'claming' : IDL.Func([], [Result_5], []),
+    'extensions' : IDL.Func([], [IDL.Vec(Extension)], ['query']),
+    'metadata' : IDL.Func([TokenIdentifier__1], [Result_4], ['query']),
+    'numberOfTokenHolders' : IDL.Func(
+        [TokenIdentifier__1],
+        [Result_3],
+        ['query'],
+      ),
+    'numberOfTokens' : IDL.Func([], [IDL.Nat], ['query']),
+    'registry' : IDL.Func([TokenIdentifier__1], [Result_2], ['query']),
+    'setTokensMetadata' : IDL.Func(
+        [IDL.Vec(TokenMetadataRequest)],
+        [Result_1],
         [],
       ),
-    'batchTransferFrom' : IDL.Func(
-        [IDL.Principal, IDL.Principal, IDL.Vec(IDL.Nat)],
-        [TxReceipt],
-        [],
-      ),
-    'burn' : IDL.Func([IDL.Nat], [TxReceipt], []),
-    'desc' : IDL.Func([], [IDL.Text], ['query']),
-    'getAllTokens' : IDL.Func([], [IDL.Vec(TokenInfoExt)], ['query']),
-    'getMetadata' : IDL.Func([], [Metadata], ['query']),
-    'getOperator' : IDL.Func([IDL.Nat], [IDL.Principal], ['query']),
-    'getTokenInfo' : IDL.Func([IDL.Nat], [TokenInfoExt], ['query']),
-    'getTransaction' : IDL.Func([IDL.Nat], [TxRecord], ['query']),
-    'getTransactions' : IDL.Func(
-        [IDL.Nat, IDL.Nat],
-        [IDL.Vec(TxRecord)],
-        ['query'],
-      ),
-    'getUserInfo' : IDL.Func([IDL.Principal], [UserInfoExt], ['query']),
-    'getUserTokens' : IDL.Func(
-        [IDL.Principal],
-        [IDL.Vec(TokenInfoExt)],
-        ['query'],
-      ),
-    'getUserTransactionAmount' : IDL.Func(
-        [IDL.Principal],
-        [IDL.Nat],
-        ['query'],
-      ),
-    'getUserTransactions' : IDL.Func(
-        [IDL.Principal, IDL.Nat, IDL.Nat],
-        [IDL.Vec(TxRecord)],
-        ['query'],
-      ),
-    'historySize' : IDL.Func([], [IDL.Nat], ['query']),
-    'isApprovedForAll' : IDL.Func(
-        [IDL.Principal, IDL.Principal],
-        [IDL.Bool],
-        ['query'],
-      ),
-    'logo' : IDL.Func([], [IDL.Text], ['query']),
-    'mint' : IDL.Func(
-        [IDL.Principal, IDL.Opt(TokenMetadata)],
-        [MintResult],
-        [],
-      ),
-    'name' : IDL.Func([], [IDL.Text], ['query']),
-    'ownerOf' : IDL.Func([IDL.Nat], [IDL.Principal], ['query']),
-    'setApprovalForAll' : IDL.Func([IDL.Principal, IDL.Bool], [TxReceipt], []),
-    'setOwner' : IDL.Func([IDL.Principal], [IDL.Principal], []),
-    'setTokenMetadata' : IDL.Func([IDL.Nat, TokenMetadata], [TxReceipt], []),
-    'symbol' : IDL.Func([], [IDL.Text], ['query']),
-    'totalSupply' : IDL.Func([], [IDL.Nat], ['query']),
-    'transfer' : IDL.Func([IDL.Principal, IDL.Nat], [TxReceipt], []),
-    'transferFrom' : IDL.Func(
-        [IDL.Principal, IDL.Principal, IDL.Nat],
-        [TxReceipt],
-        [],
-      ),
+    'supply' : IDL.Func([TokenIdentifier__1], [Result], ['query']),
+    'transfer' : IDL.Func([TransferRequest], [TransferResponse], []),
   });
-  return NFToken;
+  return AntKingdoms;
 };
-export const init = ({ IDL }) => {
-  return [IDL.Text, IDL.Text, IDL.Text, IDL.Text, IDL.Principal];
-};
+export const init = ({ IDL }) => { return [IDL.Principal]; };

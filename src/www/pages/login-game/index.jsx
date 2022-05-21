@@ -1,18 +1,14 @@
 import React from "react";
 import { Container, PlayBtn, Title, Wrapper, ImgBtn } from "./login-game.elements";
-import images from "../../assets/images";
 
 function LoginGame() {
 
-    const { background, playBtn } = images
-
-    console.log(background)
 
     return (
-    <Container style={{backgroundImage: `url(${background})`}}>
+    <Container style={{backgroundImage: `url(/images/background.png)`}}>
       <Wrapper>
       <Title>Ants Kingdoms</Title>
-      <PlayBtn><ImgBtn src={playBtn} alt=""/></PlayBtn>
+      <PlayBtn><ImgBtn src={"/images/playBtn.png"} alt=""/></PlayBtn>
       </Wrapper>
     </Container>
   );

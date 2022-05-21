@@ -42,6 +42,7 @@ function initCanisterIds() {
 initCanisterIds();
 
 const isDevelopment = process.env.NODE_ENV !== "production";
+const frontendDirectory = "www";
 const asset_entry = path.join("src", "www", "index.html");
 
 module.exports = env => ({
@@ -89,6 +90,14 @@ module.exports = env => ({
             template: path.join(__dirname, asset_entry),
             cache: false,
         }),
+        new CopyPlugin({
+            patterns: [
+              {
+                from: path.join(__dirname, "src", frontendDirectory, "assets"),
+                to: path.join(__dirname, "dist", frontendDirectory),
+              },
+            ],
+          }),
         new webpack.EnvironmentPlugin(env.devM == "mo" ?{
             NODE_ENV: "development",
         } : {

@@ -1,107 +1,88 @@
 import type { Principal } from '@dfinity/principal';
-export type Errors = { 'Unauthorized' : null } |
-  { 'TokenNotExist' : null } |
-  { 'InvalidOperator' : null };
+export type AccountIdentifier = string;
+export type AccountIdentifier__1 = string;
+export interface AntKingdoms {
+  'acceptCycles' : () => Promise<undefined>,
+  'allMetadata' : () => Promise<Array<[TokenIndex, [Metadata, Balance__1]]>>,
+  'allRegistry' : () => Promise<
+      Array<[TokenIndex, Array<[AccountIdentifier__1, Balance__1]>]>
+    >,
+  'availableCycles' : () => Promise<bigint>,
+  'balance' : (arg_0: BalanceRequest) => Promise<BalanceResponse>,
+  'changeAdmin' : (arg_0: Principal) => Promise<undefined>,
+  'claming' : () => Promise<Result_5>,
+  'extensions' : () => Promise<Array<Extension>>,
+  'metadata' : (arg_0: TokenIdentifier__1) => Promise<Result_4>,
+  'numberOfTokenHolders' : (arg_0: TokenIdentifier__1) => Promise<Result_3>,
+  'numberOfTokens' : () => Promise<bigint>,
+  'registry' : (arg_0: TokenIdentifier__1) => Promise<Result_2>,
+  'setTokensMetadata' : (arg_0: Array<TokenMetadataRequest>) => Promise<
+      Result_1
+    >,
+  'supply' : (arg_0: TokenIdentifier__1) => Promise<Result>,
+  'transfer' : (arg_0: TransferRequest) => Promise<TransferResponse>,
+}
+export interface AttributeMeta {
+  'max' : [] | [string],
+  'min' : [] | [string],
+  'trait_type' : string,
+  'value' : string,
+}
+export type Balance = bigint;
+export interface BalanceRequest { 'token' : TokenIdentifier, 'user' : User }
+export type BalanceResponse = { 'ok' : Balance } |
+  { 'err' : CommonError__1 };
+export type Balance__1 = bigint;
+export type CommonError = { 'InvalidToken' : TokenIdentifier } |
+  { 'Other' : string };
+export type CommonError__1 = { 'InvalidToken' : TokenIdentifier } |
+  { 'Other' : string };
+export type Extension = string;
+export type Memo = Array<number>;
 export interface Metadata {
-  'owner' : Principal,
-  'desc' : string,
-  'logo' : string,
   'name' : string,
-  'totalSupply' : bigint,
-  'cycles' : bigint,
-  'symbol' : string,
+  'description' : [] | [string],
+  'attributes' : Array<AttributeMeta>,
+  'image' : string,
 }
-export type MintResult = { 'Ok' : [bigint, bigint] } |
-  { 'Err' : Errors };
-export interface NFToken {
-  'approve' : (arg_0: bigint, arg_1: Principal) => Promise<TxReceipt>,
-  'balanceOf' : (arg_0: Principal) => Promise<bigint>,
-  'batchMint' : (
-      arg_0: Principal,
-      arg_1: Array<[] | [TokenMetadata]>,
-    ) => Promise<MintResult>,
-  'batchTransferFrom' : (
-      arg_0: Principal,
-      arg_1: Principal,
-      arg_2: Array<bigint>,
-    ) => Promise<TxReceipt>,
-  'burn' : (arg_0: bigint) => Promise<TxReceipt>,
-  'desc' : () => Promise<string>,
-  'getAllTokens' : () => Promise<Array<TokenInfoExt>>,
-  'getMetadata' : () => Promise<Metadata>,
-  'getOperator' : (arg_0: bigint) => Promise<Principal>,
-  'getTokenInfo' : (arg_0: bigint) => Promise<TokenInfoExt>,
-  'getTransaction' : (arg_0: bigint) => Promise<TxRecord>,
-  'getTransactions' : (arg_0: bigint, arg_1: bigint) => Promise<
-      Array<TxRecord>
-    >,
-  'getUserInfo' : (arg_0: Principal) => Promise<UserInfoExt>,
-  'getUserTokens' : (arg_0: Principal) => Promise<Array<TokenInfoExt>>,
-  'getUserTransactionAmount' : (arg_0: Principal) => Promise<bigint>,
-  'getUserTransactions' : (
-      arg_0: Principal,
-      arg_1: bigint,
-      arg_2: bigint,
-    ) => Promise<Array<TxRecord>>,
-  'historySize' : () => Promise<bigint>,
-  'isApprovedForAll' : (arg_0: Principal, arg_1: Principal) => Promise<boolean>,
-  'logo' : () => Promise<string>,
-  'mint' : (arg_0: Principal, arg_1: [] | [TokenMetadata]) => Promise<
-      MintResult
-    >,
-  'name' : () => Promise<string>,
-  'ownerOf' : (arg_0: bigint) => Promise<Principal>,
-  'setApprovalForAll' : (arg_0: Principal, arg_1: boolean) => Promise<
-      TxReceipt
-    >,
-  'setOwner' : (arg_0: Principal) => Promise<Principal>,
-  'setTokenMetadata' : (arg_0: bigint, arg_1: TokenMetadata) => Promise<
-      TxReceipt
-    >,
-  'symbol' : () => Promise<string>,
-  'totalSupply' : () => Promise<bigint>,
-  'transfer' : (arg_0: Principal, arg_1: bigint) => Promise<TxReceipt>,
-  'transferFrom' : (
-      arg_0: Principal,
-      arg_1: Principal,
-      arg_2: bigint,
-    ) => Promise<TxReceipt>,
+export type Result = { 'ok' : Balance__1 } |
+  { 'err' : CommonError };
+export type Result_1 = { 'ok' : boolean } |
+  { 'err' : string };
+export type Result_2 = { 'ok' : Array<[AccountIdentifier__1, Balance__1]> } |
+  { 'err' : CommonError };
+export type Result_3 = { 'ok' : bigint } |
+  { 'err' : CommonError };
+export type Result_4 = { 'ok' : Metadata } |
+  { 'err' : CommonError };
+export type Result_5 = { 'ok' : TokenIndex } |
+  { 'err' : string };
+export type SubAccount = Array<number>;
+export type TokenIdentifier = string;
+export type TokenIdentifier__1 = string;
+export type TokenIndex = number;
+export interface TokenMetadataRequest {
+  'token' : string,
+  'metadata' : Metadata,
 }
-export type Operation = { 'transferFrom' : null } |
-  { 'burn' : null } |
-  { 'approveAll' : null } |
-  { 'mint' : [] | [TokenMetadata__1] } |
-  { 'approve' : null } |
-  { 'setMetadata' : null } |
-  { 'transfer' : null } |
-  { 'revokeAll' : null };
-export type Record = { 'metadata' : [] | [TokenMetadata__1] } |
-  { 'user' : Principal };
-export type Time = bigint;
-export interface TokenInfoExt {
-  'owner' : Principal,
-  'metadata' : [] | [TokenMetadata__1],
-  'operator' : [] | [Principal],
-  'timestamp' : Time,
-  'index' : bigint,
+export interface TransferRequest {
+  'to' : User,
+  'token' : TokenIdentifier,
+  'notify' : boolean,
+  'from' : User,
+  'memo' : Memo,
+  'subaccount' : [] | [SubAccount],
+  'amount' : Balance,
 }
-export interface TokenMetadata { 'tokenUri' : string }
-export interface TokenMetadata__1 { 'tokenUri' : string }
-export type TxReceipt = { 'Ok' : bigint } |
-  { 'Err' : Errors };
-export interface TxRecord {
-  'op' : Operation,
-  'to' : Record,
-  'tokenIndex' : [] | [bigint],
-  'from' : Record,
-  'timestamp' : Time,
-  'caller' : Principal,
-  'index' : bigint,
-}
-export interface UserInfoExt {
-  'allowedTokens' : Array<bigint>,
-  'tokens' : Array<bigint>,
-  'operators' : Array<Principal>,
-  'allowedBy' : Array<Principal>,
-}
-export interface _SERVICE extends NFToken {}
+export type TransferResponse = { 'ok' : Balance } |
+  {
+    'err' : { 'CannotNotify' : AccountIdentifier } |
+      { 'InsufficientBalance' : null } |
+      { 'InvalidToken' : TokenIdentifier } |
+      { 'Rejected' : null } |
+      { 'Unauthorized' : AccountIdentifier } |
+      { 'Other' : string }
+  };
+export type User = { 'principal' : Principal } |
+  { 'address' : AccountIdentifier };
+export interface _SERVICE extends AntKingdoms {}

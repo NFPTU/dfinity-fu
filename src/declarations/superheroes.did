@@ -1,106 +1,143 @@
-type UserInfoExt = 
+type User = 
+ variant {
+   address: AccountIdentifier;
+   "principal": principal;
+ };
+type TransferResponse = 
+ variant {
+   err:
+    variant {
+      CannotNotify: AccountIdentifier;
+      InsufficientBalance;
+      InvalidToken: TokenIdentifier;
+      Other: text;
+      Rejected;
+      Unauthorized: AccountIdentifier;
+    };
+   ok: Balance;
+ };
+type TransferRequest = 
  record {
-   allowedBy: vec principal;
-   allowedTokens: vec nat;
-   operators: vec principal;
-   tokens: vec nat;
+   amount: Balance;
+   from: User;
+   memo: Memo;
+   notify: bool;
+   subaccount: opt SubAccount;
+   to: User;
+   token: TokenIdentifier;
  };
-type TxRecord = 
+type TokenMetadataRequest = 
  record {
-   caller: principal;
-   from: Record;
-   index: nat;
-   op: Operation;
-   timestamp: Time;
-   to: Record;
-   tokenIndex: opt nat;
+   metadata: Metadata;
+   token: text;
  };
-type TxReceipt = 
+type TokenIndex = nat32;
+type TokenIdentifier__1 = text;
+type TokenIdentifier = text;
+type SubAccount = vec nat8;
+type Result_5 = 
  variant {
-   Err: Errors;
-   Ok: nat;
+   err: text;
+   ok: TokenIndex;
  };
-type TokenMetadata__1 = record {tokenUri: text;};
-type TokenMetadata = record {tokenUri: text;};
-type TokenInfoExt = 
- record {
-   index: nat;
-   metadata: opt TokenMetadata__1;
-   operator: opt principal;
-   owner: principal;
-   timestamp: Time;
- };
-type Time = int;
-type Record = 
+type Result_4 = 
  variant {
-   metadata: opt TokenMetadata__1;
-   user: principal;
+   err: CommonError;
+   ok: Metadata;
  };
-type Operation = 
+type Result_3 = 
  variant {
-   approve;
-   approveAll;
-   burn;
-   mint: opt TokenMetadata__1;
-   revokeAll;
-   setMetadata;
-   transfer;
-   transferFrom;
+   err: CommonError;
+   ok: nat;
  };
-type NFToken = 
- service {
-   approve: (nat, principal) -> (TxReceipt);
-   balanceOf: (principal) -> (nat) query;
-   batchMint: (principal, vec opt TokenMetadata) -> (MintResult);
-   batchTransferFrom: (principal, principal, vec nat) -> (TxReceipt);
-   burn: (nat) -> (TxReceipt);
-   desc: () -> (text) query;
-   getAllTokens: () -> (vec TokenInfoExt) query;
-   getMetadata: () -> (Metadata) query;
-   getOperator: (nat) -> (principal) query;
-   getTokenInfo: (nat) -> (TokenInfoExt) query;
-   getTransaction: (nat) -> (TxRecord) query;
-   getTransactions: (nat, nat) -> (vec TxRecord) query;
-   getUserInfo: (principal) -> (UserInfoExt) query;
-   getUserTokens: (principal) -> (vec TokenInfoExt) query;
-   getUserTransactionAmount: (principal) -> (nat) query;
-   getUserTransactions: (principal, nat, nat) -> (vec TxRecord) query;
-   historySize: () -> (nat) query;
-   isApprovedForAll: (principal, principal) -> (bool) query;
-   logo: () -> (text) query;
-   mint: (principal, opt TokenMetadata) -> (MintResult);
-   name: () -> (text) query;
-   ownerOf: (nat) -> (principal) query;
-   setApprovalForAll: (principal, bool) -> (TxReceipt);
-   setOwner: (principal) -> (principal);
-   setTokenMetadata: (nat, TokenMetadata) -> (TxReceipt);
-   symbol: () -> (text) query;
-   totalSupply: () -> (nat) query;
-   transfer: (principal, nat) -> (TxReceipt);
-   transferFrom: (principal, principal, nat) -> (TxReceipt);
- };
-type MintResult = 
+type Result_2 = 
  variant {
-   Err: Errors;
-   Ok: record {
-         nat;
-         nat;
-       };
+   err: CommonError;
+   ok: vec record {
+             AccountIdentifier__1;
+             Balance__1;
+           };
+ };
+type Result_1 = 
+ variant {
+   err: text;
+   ok: bool;
+ };
+type Result = 
+ variant {
+   err: CommonError;
+   ok: Balance__1;
  };
 type Metadata = 
  record {
-   cycles: nat;
-   desc: text;
-   logo: text;
+   attributes: vec AttributeMeta;
+   description: opt text;
+   image: text;
    name: text;
-   owner: principal;
-   symbol: text;
-   totalSupply: nat;
  };
-type Errors = 
+type Memo = blob;
+type Extension = text;
+type CommonError__1 = 
  variant {
-   InvalidOperator;
-   TokenNotExist;
-   Unauthorized;
+   InvalidToken: TokenIdentifier;
+   Other: text;
  };
-service : (text, text, text, text, principal) -> NFToken
+type CommonError = 
+ variant {
+   InvalidToken: TokenIdentifier;
+   Other: text;
+ };
+type Balance__1 = nat;
+type BalanceResponse = 
+ variant {
+   err: CommonError__1;
+   ok: Balance;
+ };
+type BalanceRequest = 
+ record {
+   token: TokenIdentifier;
+   user: User;
+ };
+type Balance = nat;
+type AttributeMeta = 
+ record {
+   max: opt text;
+   min: opt text;
+   trait_type: text;
+   value: text;
+ };
+type AntKingdoms = 
+ service {
+   acceptCycles: () -> ();
+   allMetadata: () ->
+    (vec record {
+           TokenIndex;
+           record {
+             Metadata;
+             Balance__1;
+           };
+         }) query;
+   allRegistry: () ->
+    (vec record {
+           TokenIndex;
+           vec record {
+                 AccountIdentifier__1;
+                 Balance__1;
+               };
+         }) query;
+   availableCycles: () -> (nat) query;
+   balance: (BalanceRequest) -> (BalanceResponse) query;
+   changeAdmin: (principal) -> ();
+   claming: () -> (Result_5);
+   extensions: () -> (vec Extension) query;
+   metadata: (TokenIdentifier__1) -> (Result_4) query;
+   numberOfTokenHolders: (TokenIdentifier__1) -> (Result_3) query;
+   numberOfTokens: () -> (nat) query;
+   registry: (TokenIdentifier__1) -> (Result_2) query;
+   setTokensMetadata: (vec TokenMetadataRequest) -> (Result_1);
+   supply: (TokenIdentifier__1) -> (Result) query;
+   transfer: (TransferRequest) -> (TransferResponse);
+ };
+type AccountIdentifier__1 = text;
+type AccountIdentifier = text;
+service : (principal) -> AntKingdoms
