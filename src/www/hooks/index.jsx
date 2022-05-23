@@ -20,8 +20,11 @@ export function Provider({ children }) {
 	};
 
 	useEffect(() => {
-		return () => {};
-	}, []);
+		console.log(isConnected, principal);
+		if(isConnected == false) {
+			logout()
+		}
+	}, [isConnected, principal]);
 
 	const value = {
 		prinpId,

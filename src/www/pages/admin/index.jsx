@@ -1,31 +1,47 @@
-import React from 'react'
+import React, {useEffect} from 'react'
+import { metadata } from './nft'
+import { useCanister, useConnect } from "@connect2ic/react"
+
 
 function Admin() {
+  const [superheroes, { loading, error }] = useCanister("superheroes")
+  const { principal, isConnected, disconnect } = useConnect();
 
-    const metadata = [{ 
-        token: "ant-queen",
-        metadata: {
-            name : "Ant Queen",
-            description : "Ant Queen",
-            image : "https://storageapi.fleek.co/c86ea07c-070d-40b0-bb7a-12a2d3c468f4-bucket/nft/ant-queen.png"
+    const onSubmit = async() => {
+        try {
+        console.log(process.env.SUPERHEROES_CANISTER_ID);
+        const newArr = metadata.map(el => ({nonfungible: el}))
+        console.log(metadata);
+        const res = await superheroes.setTokensMetadata(metadata)
+        console.log(res);
+        const response = await superheroes.getTokensMetadata();
+        console.log(response);
+        } catch(er) {
+            console.log(er);
         }
-    },{ 
-        token: "ant-worker",
-        metadata: {
-            name : "Ant Worker",
-            description : "Ant Worker",
-            image : "https://storageapi.fleek.co/c86ea07c-070d-40b0-bb7a-12a2d3c468f4-bucket/nft/ant.png",
+    }
+
+    const onClaim= async () => {
+      try {
+        const res = await superheroes.claiming()
+        console.log(res,);
+        } catch(er) {
+            console.log(er);
         }
-    },
-]
+    }
 
-    const onSubmit = () => {
-
+    const onGetData = async () => {
+      console.log(superheroes, principal.toString());
+      const response = await superheroes.getTokensMetadata();
+      const resp = await superheroes.getUserTokens(principal.toString())
+        console.log(response, resp);
     }
 
   return (
     <>
-      
+    <div onClick={onGetData}> get Data</div>
+      <div onClick={onSubmit}> Submit</div>
+      <div onClick={onClaim}> Claiming NFT</div>
     </>
   )
 }

@@ -22,6 +22,7 @@ import Result "mo:base/Result";
 import Text "mo:base/Text";
 import Time "mo:base/Time";
 import TrieSet "mo:base/TrieSet";
+import D "mo:base/Debug";
 
 import AID "/Lib/Ext/util/AccountIdentifier";
 import Ext "Ext";
@@ -909,6 +910,8 @@ shared(msg) actor class AntKingdoms(
   type TransferRequest = ExtCore.TransferRequest;
   type TransferResponse = ExtCore.TransferResponse;
   type Metadata = Types.Metadata;
+    type UserInfo = Types.UserInfo;
+    type UserInfoExt = Types.UserInfoExt;
 
   type RegisterTokenRequest = {
     metadata : Metadata;
@@ -918,11 +921,6 @@ shared(msg) actor class AntKingdoms(
 
   type ClaimRequest = {
     owner : AccountIdentifier;
-  };
-
-  type TokenMetadataRequest = {
-    token: Text;
-    metadata: Metadata;
   };
 
   type TokenLedger = HashMap.HashMap<AccountIdentifier, Balance>;
@@ -935,6 +933,8 @@ shared(msg) actor class AntKingdoms(
   private stable var _registryState : [(TokenIndex, [(AccountIdentifier, Balance)])] = [];
   private stable var _metadataState : [(TokenIndex, (Metadata, Balance))] = [];
   private stable var _admin : Principal = init_admin;
+    private stable var usersEntries : [(AccountIdentifier, UserInfo)] = [];
+    private var users = HashMap.HashMap<AccountIdentifier, UserInfo>(1, Text.equal, Text.hash);
   
   private var _registry = HashMap.HashMap<TokenIndex, TokenLedger>(1, Nat32.equal, func(x : Nat32) : Hash.Hash {x});
   Iter.iterate<(TokenIndex, [(AccountIdentifier, Balance)])>(_registryState.vals(), func(x, _index) {
@@ -946,7 +946,7 @@ shared(msg) actor class AntKingdoms(
     _metadata.put(x.0, x.1);
   });
 
-  private var tokensMetadata = HashMap.HashMap<Text, Metadata>(1, Text.equal, Text.hash);
+  private var tokensMetadata = HashMap.HashMap<Nat, Metadata>(1, Nat.equal, Hash.hash);
     
   //State functions
   system func preupgrade() {
@@ -954,10 +954,13 @@ shared(msg) actor class AntKingdoms(
       _registryState := Array.append(_registryState, [(x.0, Iter.toArray(x.1.entries()))]);
     });
     _metadataState := Iter.toArray(_metadata.entries());
+    usersEntries := Iter.toArray(users.entries());
   };
   system func postupgrade() {
     _registryState := [];
     _metadataState := [];
+    users := HashMap.fromIter<AccountIdentifier, UserInfo>(usersEntries.vals(), 1, Text.equal, Text.hash);
+    usersEntries := [];
   };
   
   public shared(msg) func changeAdmin(newAdmin : Principal) : async () {
@@ -965,21 +968,22 @@ shared(msg) actor class AntKingdoms(
     _admin := newAdmin;
   };
 
-  public shared(msg) func setTokensMetadata(listMeta: [TokenMetadataRequest]): async Result.Result<Bool, Text> {
+  public shared(msg) func setTokensMetadata(listMeta: [Metadata]): async Result.Result<Bool, Text> {
+     var i = 0;
     for(metadata in Iter.fromArray(listMeta)) {
-      tokensMetadata.put(metadata.token, metadata.metadata);
+      tokensMetadata.put(i, metadata);
+      i +=1;
     };
     return #ok(true);
   };
 
-  //  public shared(msg) func getTokensMetadata(): async [TokenMetadataRequest] {
-  //    Iter.toArray(tokensMetadata.entries())
-  //  };
+   public shared(msg) func getTokensMetadata(): async [Metadata] {
+     Iter.toArray(Iter.map(tokensMetadata.entries(), func (i: (Nat, Metadata)): Metadata {i.1}))
+   };
 
-  //  private func _tokenMetadata(info: TokenMetadataRequest) : TokenMetadataRequest {
+  //  private func _tokenMetadata(info: Metadata) : Metadata {
   //    return {
-  //      metadata: info.metadata;
-  //      token: info.token;
+  //      metadata: info;
   //    }
   //  };
   
@@ -991,18 +995,84 @@ shared(msg) actor class AntKingdoms(
       };
       ignore(Cycles.accept(available));
     };*/
+   
     let tokenId : TokenIndex = _nextTokenId;
+    let dataNft : Metadata = {
+      name =  request.metadata.name # " #" # Nat32.toText(tokenId);
+      description = request.metadata.description # " #" # Nat32.toText(tokenId);
+      image = request.metadata.image;
+    //  attributes = [];
+    //  detail= [];
+    };
     let ledger = HashMap.HashMap<AccountIdentifier, Balance>(1, AID.equal, AID.hash);
     ledger.put(request.owner, request.supply);
     _registry.put(tokenId, ledger);
-    _metadata.put(tokenId, (request.metadata, request.supply));
+    _addTokenTo(request.owner, tokenId);
+    _metadata.put(tokenId, (dataNft, request.supply));
     _nextTokenId := _nextTokenId + 1;
     return tokenId;
   };
 
-  public shared(msg) func claming() : async Result.Result<TokenIndex, Text> {
+  private func _addTokenTo(to: Text, tokenId: TokenIndex) {
+        switch(users.get(to)) {
+            case (?user) {
+                user.tokens := TrieSet.put(user.tokens, tokenId, Hash.hash(Nat32.toNat(tokenId)), Nat32.equal);
+                users.put(to, user);
+            };
+            case _ {
+                let user = _newUser();
+                user.tokens := TrieSet.put(user.tokens, tokenId, Hash.hash(Nat32.toNat(tokenId)), Nat32.equal);
+                users.put(to, user);
+            };
+        }
+    }; 
+
+     public query func getUserTokens(owner: AccountIdentifier) : async Result.Result<[Metadata] , CommonError>{
+        let tokenIds = switch (users.get(owner)) {
+            case (?user) {
+                TrieSet.toArray(user.tokens)
+            };
+            case _ {
+                []
+            };
+        };
+        let ret = Buffer.Buffer<Metadata>(tokenIds.size());
+        for(id in Iter.fromArray(tokenIds)) {
+          var tokenData = switch(_metadata.get(id)) {
+      case (?metadata) metadata;
+      case (_) return #err(#InvalidToken(Nat32.toText(id)));
+    };
+            ret.add(tokenData.0);
+        };
+        return  #ok(ret.toArray());
+    };
+
+     private func _newUser() : UserInfo {
+        {
+            var id = "";
+            var name = "";
+            var tokens = TrieSet.empty<TokenIndex>();
+        }
+    };
+
+  //   private func _removeTokenFrom(owner: Principal, tokenId: Nat) {
+  //       assert(_exists(tokenId) and _isOwner(owner, tokenId));
+  //       switch(users.get(owner)) {
+  //           case (?user) {
+  //               user.tokens := TrieSet.delete(user.tokens, tokenId, Hash.hash(tokenId), Nat.equal);
+  //               users.put(owner, user);
+  //           };
+  //           case _ {
+  //               assert(false);
+  //           };
+  //       }
+  //   };
+   
+
+  public shared(msg) func claiming() : async Result.Result<TokenIndex, Text> {
+      D.print(Principal.toText(msg.caller));
       let request: RegisterTokenRequest = {
-           metadata = _unwrap(tokensMetadata.get("ok"));
+           metadata = _unwrap(tokensMetadata.get(1));
             supply = 1;
             owner = Principal.toText(msg.caller);
       };
@@ -1015,6 +1085,7 @@ shared(msg) actor class AntKingdoms(
       case null { Prelude.unreachable() };
       case (?x_) { x_ };
     };
+    
   
   public shared(msg) func transfer(request: TransferRequest) : async TransferResponse {
     if (ExtCore.TokenIdentifier.isPrincipal(request.token, Principal.fromActor(this)) == false) {

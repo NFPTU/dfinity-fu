@@ -7,11 +7,28 @@
 
 import Time "mo:base/Time";
 import TrieSet "mo:base/TrieSet";
+import ExtCore "/Lib/Ext/ext/Core";
 
 module {
+
+    type AccountIdentifier = ExtCore.AccountIdentifier;
+     type TokenIndex = ExtCore.TokenIndex;
+
     public type Metadata = {
         name: Text;
-        description : ?Text;
+        description : Text;
+        image: Text;
+        // attributes: ?[AttributeMeta];
+        // detail: ?[DetailNFT];
+    };
+
+    public type DetailNFT = {
+
+    };
+
+    public type MetadataExt = {
+         name: Text;
+        description : Text;
         image: Text;
         attributes: ?[AttributeMeta]
     };
@@ -21,6 +38,19 @@ module {
         value: Text;
         max: ?Text;
         min: ?Text;
+    };
+
+     public type UserInfo = {
+        var name: Text;
+        var id: AccountIdentifier;
+        var tokens: TrieSet.Set<TokenIndex>;              // user's tokens
+    };
+
+    
+    public type UserInfoExt = {
+        name: Text;
+        id: Text;
+        tokens: [Nat];
     };
 
     public type Location = {
@@ -53,13 +83,6 @@ module {
         timestamp: Time.Time;
     };
 
-    public type UserInfo = {
-        var operators: TrieSet.Set<Principal>;     // principals allowed to operate on the user's behalf
-        var allowedBy: TrieSet.Set<Principal>;     // principals approved user to operate their's tokens
-        var allowedTokens: TrieSet.Set<Nat>;       // tokens the user can operate
-        var tokens: TrieSet.Set<Nat>;              // user's tokens
-    };
-
      public type OrderInfo = {
          index: Nat;
          var price: Nat;
@@ -67,12 +90,6 @@ module {
          tokenId: Nat;
     };
 
-    public type UserInfoExt = {
-        operators: [Principal];
-        allowedBy: [Principal];
-        allowedTokens: [Nat];
-        tokens: [Nat];
-    };
 
     /// Update call operations
     public type Operation = {

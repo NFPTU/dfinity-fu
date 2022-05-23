@@ -1,16 +1,13 @@
-type TokenInfo/1 = TokenInfo;
-type TxRecord/1 = TxRecord;
-type UserInfo/1 = UserInfo;
+type AccountIdentifier/3 = AccountIdentifier/1;
+type Balance/1 = Balance;
+type Metadata/2 = Metadata/1;
+type TokenIndex/2 = TokenIndex;
+type UserInfo/2 = UserInfo/1;
 actor {
-  stable var blackhole : Principal;
-  stable var desc_ : Text;
-  stable var logo_ : Text;
-  stable var name_ : Text;
-  stable var owner_ : Principal;
-  stable var symbol_ : Text;
-  stable var tokensEntries : [(Nat, TokenInfo/1)];
-  stable var totalSupply_ : Nat;
-  stable var txIndex : Nat;
-  stable var txs : [TxRecord/1];
-  stable var usersEntries : [(Principal, UserInfo/1)]
+  stable var _admin : Principal;
+  stable var _metadataState : [(TokenIndex/2, (Metadata/2, Balance/1))];
+  stable var _nextTokenId : Nat32;
+  stable var _registryState :
+    [(TokenIndex/2, [(AccountIdentifier/3, Balance/1)])];
+  stable var usersEntries : [(AccountIdentifier/3, UserInfo/2)]
 };
