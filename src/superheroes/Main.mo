@@ -920,11 +920,6 @@ shared(msg) actor class AntKingdoms(
     owner : AccountIdentifier;
   };
 
-  type TokenMetadataRequest = {
-    token: Text;
-    metadata: Metadata;
-  };
-
   type TokenLedger = HashMap.HashMap<AccountIdentifier, Balance>;
   
   private let EXTENSIONS : [Extension] = ["@ext/common"];
@@ -946,7 +941,7 @@ shared(msg) actor class AntKingdoms(
     _metadata.put(x.0, x.1);
   });
 
-  private var tokensMetadata = HashMap.HashMap<Text, Metadata>(1, Text.equal, Text.hash);
+  private var tokensMetadata = HashMap.HashMap<Nat, Metadata>(1, Nat.equal, Hash.hash);
     
   //State functions
   system func preupgrade() {
@@ -965,21 +960,22 @@ shared(msg) actor class AntKingdoms(
     _admin := newAdmin;
   };
 
-  public shared(msg) func setTokensMetadata(listMeta: [TokenMetadataRequest]): async Result.Result<Bool, Text> {
+  public shared(msg) func setTokensMetadata(listMeta: [Metadata]): async Result.Result<Bool, Text> {
+     var i = 0;
     for(metadata in Iter.fromArray(listMeta)) {
-      tokensMetadata.put(metadata.token, metadata.metadata);
+      tokensMetadata.put(i, metadata);
+      i +=1;
     };
     return #ok(true);
   };
 
-  //  public shared(msg) func getTokensMetadata(): async [TokenMetadataRequest] {
-  //    Iter.toArray(tokensMetadata.entries())
-  //  };
+   public shared(msg) func getTokensMetadata(): async [Metadata] {
+     Iter.toArray(Iter.map(tokensMetadata.entries(), func (i: (Nat, Metadata)): Metadata {i.1}))
+   };
 
-  //  private func _tokenMetadata(info: TokenMetadataRequest) : TokenMetadataRequest {
+  //  private func _tokenMetadata(info: Metadata) : Metadata {
   //    return {
-  //      metadata: info.metadata;
-  //      token: info.token;
+  //      metadata: info;
   //    }
   //  };
   
@@ -1002,7 +998,7 @@ shared(msg) actor class AntKingdoms(
 
   public shared(msg) func claming() : async Result.Result<TokenIndex, Text> {
       let request: RegisterTokenRequest = {
-           metadata = _unwrap(tokensMetadata.get("ok"));
+           metadata = _unwrap(tokensMetadata.get(1));
             supply = 1;
             owner = Principal.toText(msg.caller);
       };
@@ -1015,6 +1011,7 @@ shared(msg) actor class AntKingdoms(
       case null { Prelude.unreachable() };
       case (?x_) { x_ };
     };
+    
   
   public shared(msg) func transfer(request: TransferRequest) : async TransferResponse {
     if (ExtCore.TokenIdentifier.isPrincipal(request.token, Principal.fromActor(this)) == false) {

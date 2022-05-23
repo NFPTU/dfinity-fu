@@ -12,13 +12,12 @@ export interface AntKingdoms {
   'changeAdmin' : (arg_0: Principal) => Promise<undefined>,
   'claming' : () => Promise<Result_5>,
   'extensions' : () => Promise<Array<Extension>>,
+  'getTokensMetadata' : () => Promise<Array<Metadata>>,
   'metadata' : (arg_0: TokenIdentifier__1) => Promise<Result_4>,
   'numberOfTokenHolders' : (arg_0: TokenIdentifier__1) => Promise<Result_3>,
   'numberOfTokens' : () => Promise<bigint>,
   'registry' : (arg_0: TokenIdentifier__1) => Promise<Result_2>,
-  'setTokensMetadata' : (arg_0: Array<TokenMetadataRequest>) => Promise<
-      Result_1
-    >,
+  'setTokensMetadata' : (arg_0: Array<Metadata>) => Promise<Result_1>,
   'supply' : (arg_0: TokenIdentifier__1) => Promise<Result>,
   'transfer' : (arg_0: TransferRequest) => Promise<TransferResponse>,
 }
@@ -42,7 +41,7 @@ export type Memo = Array<number>;
 export interface Metadata {
   'name' : string,
   'description' : [] | [string],
-  'attributes' : Array<AttributeMeta>,
+  'attributes' : [] | [Array<AttributeMeta>],
   'image' : string,
 }
 export type Result = { 'ok' : Balance__1 } |
@@ -61,10 +60,6 @@ export type SubAccount = Array<number>;
 export type TokenIdentifier = string;
 export type TokenIdentifier__1 = string;
 export type TokenIndex = number;
-export interface TokenMetadataRequest {
-  'token' : string,
-  'metadata' : Metadata,
-}
 export interface TransferRequest {
   'to' : User,
   'token' : TokenIdentifier,

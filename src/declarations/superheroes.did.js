@@ -9,7 +9,7 @@ export const idlFactory = ({ IDL }) => {
   const Metadata = IDL.Record({
     'name' : IDL.Text,
     'description' : IDL.Opt(IDL.Text),
-    'attributes' : IDL.Vec(AttributeMeta),
+    'attributes' : IDL.Opt(IDL.Vec(AttributeMeta)),
     'image' : IDL.Text,
   });
   const Balance__1 = IDL.Nat;
@@ -45,10 +45,6 @@ export const idlFactory = ({ IDL }) => {
   const Result_2 = IDL.Variant({
     'ok' : IDL.Vec(IDL.Tuple(AccountIdentifier__1, Balance__1)),
     'err' : CommonError,
-  });
-  const TokenMetadataRequest = IDL.Record({
-    'token' : IDL.Text,
-    'metadata' : Metadata,
   });
   const Result_1 = IDL.Variant({ 'ok' : IDL.Bool, 'err' : IDL.Text });
   const Result = IDL.Variant({ 'ok' : Balance__1, 'err' : CommonError });
@@ -98,6 +94,7 @@ export const idlFactory = ({ IDL }) => {
     'changeAdmin' : IDL.Func([IDL.Principal], [], []),
     'claming' : IDL.Func([], [Result_5], []),
     'extensions' : IDL.Func([], [IDL.Vec(Extension)], ['query']),
+    'getTokensMetadata' : IDL.Func([], [IDL.Vec(Metadata)], []),
     'metadata' : IDL.Func([TokenIdentifier__1], [Result_4], ['query']),
     'numberOfTokenHolders' : IDL.Func(
         [TokenIdentifier__1],
@@ -106,11 +103,7 @@ export const idlFactory = ({ IDL }) => {
       ),
     'numberOfTokens' : IDL.Func([], [IDL.Nat], ['query']),
     'registry' : IDL.Func([TokenIdentifier__1], [Result_2], ['query']),
-    'setTokensMetadata' : IDL.Func(
-        [IDL.Vec(TokenMetadataRequest)],
-        [Result_1],
-        [],
-      ),
+    'setTokensMetadata' : IDL.Func([IDL.Vec(Metadata)], [Result_1], []),
     'supply' : IDL.Func([TokenIdentifier__1], [Result], ['query']),
     'transfer' : IDL.Func([TransferRequest], [TransferResponse], []),
   });

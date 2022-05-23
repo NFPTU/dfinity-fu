@@ -26,11 +26,6 @@ type TransferRequest =
    to: User;
    token: TokenIdentifier;
  };
-type TokenMetadataRequest = 
- record {
-   metadata: Metadata;
-   token: text;
- };
 type TokenIndex = nat32;
 type TokenIdentifier__1 = text;
 type TokenIdentifier = text;
@@ -70,7 +65,7 @@ type Result =
  };
 type Metadata = 
  record {
-   attributes: vec AttributeMeta;
+   attributes: opt vec AttributeMeta;
    description: opt text;
    image: text;
    name: text;
@@ -130,11 +125,12 @@ type AntKingdoms =
    changeAdmin: (principal) -> ();
    claming: () -> (Result_5);
    extensions: () -> (vec Extension) query;
+   getTokensMetadata: () -> (vec Metadata);
    metadata: (TokenIdentifier__1) -> (Result_4) query;
    numberOfTokenHolders: (TokenIdentifier__1) -> (Result_3) query;
    numberOfTokens: () -> (nat) query;
    registry: (TokenIdentifier__1) -> (Result_2) query;
-   setTokensMetadata: (vec TokenMetadataRequest) -> (Result_1);
+   setTokensMetadata: (vec Metadata) -> (Result_1);
    supply: (TokenIdentifier__1) -> (Result) query;
    transfer: (TransferRequest) -> (TransferResponse);
  };
