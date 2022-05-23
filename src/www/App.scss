@@ -1,10 +1,31 @@
-@import "antd/dist/antd.css";
+@import 'antd/dist/antd.css';
 @import '@connect2ic/core/style.css';
 * {
-    margin: 0;
-    padding: 0;
-    border: none;
-    box-sizing: border-box;
-    font-size: 100%; 
+	margin: 0;
+	padding: 0;
+	border: none;
+	box-sizing: border-box;
+	font-size: 100%;
 }
 
+body {
+	font-family: 'CookieRun-Black';
+}
+
+@font-face {
+	font-family: 'CookieRun-Black';
+	src: local('CookieRun'),
+		url(./assets/fonts/CookieRun_Black.otf) format('opentype');
+}
+
+@font-face {
+	font-family: 'CookieRun-Bold';
+	src: local('CookieRun'),
+		url(./assets/fonts/CookieRun_Bold.otf) format('opentype');
+}
+
+@font-face {
+	font-family: 'CookieRun-Regular';
+	src: local('CookieRun'),
+		url(./assets/fonts/CookieRun_Regular.otf) format('opentype');
+}

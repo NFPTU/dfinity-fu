@@ -1,11 +1,17 @@
 import { lazy } from 'react'
 
+//Layouts:
+import MarketLayout from '../components/layout/market-layout'
+import GameLayout from '../components/layout/game-layout'
+
+//Pages
 const HomePage = lazy(() => import("./home"))
 const DetailCollections = lazy(() => import("./detail-collections"))
 const DetailNft = lazy(() => import("./detail-nft"))
 const CreateNft = lazy(() => import("./create-nft"))
 const ListNft = lazy(() => import("./list-nft"))
 const LoginGame = lazy(() => import("./login-game"))
+const Inventory = lazy(() => import("./game/inventory"))
 const Admin = lazy(() => import("./admin"))
 
 const routes = [
@@ -13,25 +19,29 @@ const routes = [
         path: "/",
         exact: true,
         public: true,
-        component: LoginGame
+        component: Inventory,
+        layout: GameLayout
     },
     {
         path: "/collection/detail",
         exact: true,
         public: true,
-        component: DetailCollections
+        component: DetailCollections,
+        layout: MarketLayout
     },
     {
         path: "/nft/:id",
         exact: true,
         public: true,
-        component: DetailNft
+        component: DetailNft,
+        layout: MarketLayout
     },
     {
         path: "nft/create",
         exact: true,
         public: true,
-        component: CreateNft
+        component: CreateNft,
+        layout: MarketLayout
     },
     {
         path: "nft/list",
