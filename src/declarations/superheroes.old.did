@@ -30,10 +30,15 @@ type TokenIndex = nat32;
 type TokenIdentifier__1 = text;
 type TokenIdentifier = text;
 type SubAccount = vec nat8;
-type Result_5 = 
+type Result_6 = 
  variant {
    err: text;
    ok: TokenIndex;
+ };
+type Result_5 = 
+ variant {
+   err: CommonError;
+   ok: vec Metadata;
  };
 type Result_4 = 
  variant {
@@ -65,8 +70,7 @@ type Result =
  };
 type Metadata = 
  record {
-   attributes: opt vec AttributeMeta;
-   description: opt text;
+   description: text;
    image: text;
    name: text;
  };
@@ -94,13 +98,6 @@ type BalanceRequest =
    user: User;
  };
 type Balance = nat;
-type AttributeMeta = 
- record {
-   max: opt text;
-   min: opt text;
-   trait_type: text;
-   value: text;
- };
 type AccountIdentifier__1 = text;
 type AccountIdentifier = text;
 service : {
@@ -124,9 +121,10 @@ service : {
   availableCycles: () -> (nat) query;
   balance: (BalanceRequest) -> (BalanceResponse) query;
   changeAdmin: (principal) -> ();
-  claming: () -> (Result_5);
+  claming: () -> (Result_6);
   extensions: () -> (vec Extension) query;
   getTokensMetadata: () -> (vec Metadata);
+  getUserTokens: (AccountIdentifier__1) -> (Result_5) query;
   metadata: (TokenIdentifier__1) -> (Result_4) query;
   numberOfTokenHolders: (TokenIdentifier__1) -> (Result_3) query;
   numberOfTokens: () -> (nat) query;

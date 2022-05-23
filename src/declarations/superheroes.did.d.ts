@@ -10,9 +10,10 @@ export interface AntKingdoms {
   'availableCycles' : () => Promise<bigint>,
   'balance' : (arg_0: BalanceRequest) => Promise<BalanceResponse>,
   'changeAdmin' : (arg_0: Principal) => Promise<undefined>,
-  'claming' : () => Promise<Result_5>,
+  'claiming' : () => Promise<Result_6>,
   'extensions' : () => Promise<Array<Extension>>,
   'getTokensMetadata' : () => Promise<Array<Metadata>>,
+  'getUserTokens' : (arg_0: AccountIdentifier__1) => Promise<Result_5>,
   'metadata' : (arg_0: TokenIdentifier__1) => Promise<Result_4>,
   'numberOfTokenHolders' : (arg_0: TokenIdentifier__1) => Promise<Result_3>,
   'numberOfTokens' : () => Promise<bigint>,
@@ -20,12 +21,6 @@ export interface AntKingdoms {
   'setTokensMetadata' : (arg_0: Array<Metadata>) => Promise<Result_1>,
   'supply' : (arg_0: TokenIdentifier__1) => Promise<Result>,
   'transfer' : (arg_0: TransferRequest) => Promise<TransferResponse>,
-}
-export interface AttributeMeta {
-  'max' : [] | [string],
-  'min' : [] | [string],
-  'trait_type' : string,
-  'value' : string,
 }
 export type Balance = bigint;
 export interface BalanceRequest { 'token' : TokenIdentifier, 'user' : User }
@@ -40,8 +35,7 @@ export type Extension = string;
 export type Memo = Array<number>;
 export interface Metadata {
   'name' : string,
-  'description' : [] | [string],
-  'attributes' : [] | [Array<AttributeMeta>],
+  'description' : string,
   'image' : string,
 }
 export type Result = { 'ok' : Balance__1 } |
@@ -54,7 +48,9 @@ export type Result_3 = { 'ok' : bigint } |
   { 'err' : CommonError };
 export type Result_4 = { 'ok' : Metadata } |
   { 'err' : CommonError };
-export type Result_5 = { 'ok' : TokenIndex } |
+export type Result_5 = { 'ok' : Array<Metadata> } |
+  { 'err' : CommonError };
+export type Result_6 = { 'ok' : TokenIndex } |
   { 'err' : string };
 export type SubAccount = Array<number>;
 export type TokenIdentifier = string;
