@@ -912,6 +912,7 @@ shared(msg) actor class AntKingdoms(
   type Metadata = Types.Metadata;
     type UserInfo = Types.UserInfo;
     type UserInfoExt = Types.UserInfoExt;
+    type AttributeMeta = Types.AttributeMeta;
 
   type RegisterTokenRequest = {
     metadata : Metadata;
@@ -933,8 +934,8 @@ shared(msg) actor class AntKingdoms(
   private stable var _registryState : [(TokenIndex, [(AccountIdentifier, Balance)])] = [];
   private stable var _metadataState : [(TokenIndex, (Metadata, Balance))] = [];
   private stable var _admin : Principal = init_admin;
-    private stable var usersEntries : [(AccountIdentifier, UserInfo)] = [];
-    private var users = HashMap.HashMap<AccountIdentifier, UserInfo>(1, Text.equal, Text.hash);
+  private stable var usersEntries : [(AccountIdentifier, UserInfo)] = [];
+  private var users = HashMap.HashMap<AccountIdentifier, UserInfo>(1, Text.equal, Text.hash);
   
   private var _registry = HashMap.HashMap<TokenIndex, TokenLedger>(1, Nat32.equal, func(x : Nat32) : Hash.Hash {x});
   Iter.iterate<(TokenIndex, [(AccountIdentifier, Balance)])>(_registryState.vals(), func(x, _index) {
@@ -968,7 +969,7 @@ shared(msg) actor class AntKingdoms(
     _admin := newAdmin;
   };
 
-  public shared(msg) func setTokensMetadata(listMeta: [Metadata]): async Result.Result<Bool, Text> {
+  public shared(msg) func setTokensMetadata(listMeta: [MetadataExt]): async Result.Result<Bool, Text> {
      var i = 0;
     for(metadata in Iter.fromArray(listMeta)) {
       tokensMetadata.put(i, metadata);
@@ -977,7 +978,7 @@ shared(msg) actor class AntKingdoms(
     return #ok(true);
   };
 
-   public shared(msg) func getTokensMetadata(): async [Metadata] {
+   public shared(msg) func getTokensMetadata(): async [MetadataExt] {
      Iter.toArray(Iter.map(tokensMetadata.entries(), func (i: (Nat, Metadata)): Metadata {i.1}))
    };
 
@@ -1001,7 +1002,7 @@ shared(msg) actor class AntKingdoms(
       name =  request.metadata.name # " #" # Nat32.toText(tokenId);
       description = request.metadata.description # " #" # Nat32.toText(tokenId);
       image = request.metadata.image;
-    //  attributes = [];
+     var attributes: [AttributeMeta] = [];
     //  detail= [];
     };
     let ledger = HashMap.HashMap<AccountIdentifier, Balance>(1, AID.equal, AID.hash);
@@ -1027,7 +1028,7 @@ shared(msg) actor class AntKingdoms(
         }
     }; 
 
-     public query func getUserTokens(owner: AccountIdentifier) : async Result.Result<[Metadata] , CommonError>{
+     public query func getUserTokens(owner: AccountIdentifier) : async Result.Result<[MetadataExt] , CommonError>{
         let tokenIds = switch (users.get(owner)) {
             case (?user) {
                 TrieSet.toArray(user.tokens)

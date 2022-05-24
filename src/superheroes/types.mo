@@ -18,13 +18,16 @@ module {
         name: Text;
         description : Text;
         image: Text;
-        // attributes: ?[AttributeMeta];
+        var attributes: ?[AttributeMeta];
         // detail: ?[DetailNFT];
     };
 
-    public type DetailNFT = {
-
-    };
+    // public type DetailNFT = {
+    //     #nest : {
+    //         rarity: Text;
+    //         level: 
+    //     }
+    // };
 
     public type MetadataExt = {
          name: Text;
