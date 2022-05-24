@@ -9,6 +9,7 @@
 import Array "mo:base/Array";
 import Buffer "mo:base/Buffer";
 import Cycles "mo:base/ExperimentalCycles";
+import D "mo:base/Debug";
 import Error "mo:base/Error";
 import Hash "mo:base/Hash";
 import HashMap "mo:base/HashMap";
@@ -22,7 +23,6 @@ import Result "mo:base/Result";
 import Text "mo:base/Text";
 import Time "mo:base/Time";
 import TrieSet "mo:base/TrieSet";
-import D "mo:base/Debug";
 
 import AID "/Lib/Ext/util/AccountIdentifier";
 import Ext "Ext";
@@ -912,9 +912,12 @@ shared(msg) actor class AntKingdoms(
   type Metadata = Types.Metadata;
     type UserInfo = Types.UserInfo;
     type UserInfoExt = Types.UserInfoExt;
+    type AttributeMeta= Types.AttributeMeta;
+    type MetadataExt = Types.MetadataExt;
+    type DetailNFT = Types.DetailNFT;
 
   type RegisterTokenRequest = {
-    metadata : Metadata;
+    metadata : MetadataExt;
     supply : Balance;
     owner : AccountIdentifier;
   };
@@ -946,7 +949,7 @@ shared(msg) actor class AntKingdoms(
     _metadata.put(x.0, x.1);
   });
 
-  private var tokensMetadata = HashMap.HashMap<Nat, Metadata>(1, Nat.equal, Hash.hash);
+  private var tokensMetadata = HashMap.HashMap<Nat, MetadataExt>(1, Nat.equal, Hash.hash);
     
   //State functions
   system func preupgrade() {
@@ -968,7 +971,7 @@ shared(msg) actor class AntKingdoms(
     _admin := newAdmin;
   };
 
-  public shared(msg) func setTokensMetadata(listMeta: [Metadata]): async Result.Result<Bool, Text> {
+  public shared(msg) func setTokensMetadata(listMeta: [MetadataExt]): async Result.Result<Bool, Text> {
      var i = 0;
     for(metadata in Iter.fromArray(listMeta)) {
       tokensMetadata.put(i, metadata);
@@ -977,8 +980,8 @@ shared(msg) actor class AntKingdoms(
     return #ok(true);
   };
 
-   public shared(msg) func getTokensMetadata(): async [Metadata] {
-     Iter.toArray(Iter.map(tokensMetadata.entries(), func (i: (Nat, Metadata)): Metadata {i.1}))
+   public shared(msg) func getTokensMetadata(): async [MetadataExt] {
+     Iter.toArray(Iter.map(tokensMetadata.entries(), func (i: (Nat, MetadataExt)): MetadataExt {i.1}))
    };
 
   //  private func _tokenMetadata(info: Metadata) : Metadata {
@@ -1001,8 +1004,7 @@ shared(msg) actor class AntKingdoms(
       name =  request.metadata.name # " #" # Nat32.toText(tokenId);
       description = request.metadata.description # " #" # Nat32.toText(tokenId);
       image = request.metadata.image;
-    //  attributes = [];
-    //  detail= [];
+     attributes: [AttributeMeta] = request.metadata.attributes;
     };
     let ledger = HashMap.HashMap<AccountIdentifier, Balance>(1, AID.equal, AID.hash);
     ledger.put(request.owner, request.supply);
@@ -1071,14 +1073,42 @@ shared(msg) actor class AntKingdoms(
 
   public shared(msg) func claiming() : async Result.Result<TokenIndex, Text> {
       D.print(Principal.toText(msg.caller));
-      let request: RegisterTokenRequest = {
-           metadata = _unwrap(tokensMetadata.get(1));
-            supply = 1;
-            owner = Principal.toText(msg.caller);
-      };
-      let tokenId = registerToken(request);
-      return #ok(tokenId);
+       switch (users.get(Principal.toText(msg.caller))) {
+            case (?user) {
+               throw Error.reject("userClaimed");
+            };
+            case _ {
+                
+                 let request: RegisterTokenRequest = {
+                  metadata = _unwrap(tokensMetadata.get(1));
+                    supply = 1;
+                    owner = Principal.toText(msg.caller);
+              };
+              let tokenId = registerToken(request);
+              return #ok(tokenId);
+            };
+        };        
+     
   };
+
+     public query func getUserInfo(who: AccountIdentifier) : async UserInfoExt {
+        switch (users.get(who)) {
+            case (?user) {
+                return _userInfotoExt(user)
+            };
+            case _ {
+                throw Error.reject("userNotExist");
+            };
+        };        
+    };
+
+     private func _userInfotoExt(info: UserInfo) : UserInfoExt {
+        return {
+            name = info.name;
+            id = info.id;
+            tokens = TrieSet.toArray(info.tokens);
+        };
+    };
 
    private func _unwrap<T>(x : ?T) : T =
     switch x {
