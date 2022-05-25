@@ -8,7 +8,7 @@ export const metadata = [
 		attributes: [
 			{
 				trait_type: 'Type',
-				value: 'Ant Worker',
+				value: 'Ant Queen',
 				max: [],
 				min: []
 			},

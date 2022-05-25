@@ -989,6 +989,27 @@ shared(msg) actor class AntKingdoms(
   //      metadata: info;
   //    }
   //  };
+
+  private func checkTypeToken(tokenId: TokenIndex, tokenType: Text) : Bool {
+    var tokenData = switch(_metadata.get(tokenId)) {
+      case (?metadata) metadata.0.attributes[0].value == tokenType;
+      case (_) return false;
+  };
+
+  return tokenData;
+  };
+
+  public shared(msg) func stakeNestInLand(nestTokenId: TokenIndex, landTokenId: TokenIndex ) : async Result.Result<Bool, Text> {
+    if(checkTypeToken(nestTokenId, "Nest") == true and checkTypeToken(landTokenId, "Land") == true) {
+      if(msg.caller != owner_) {
+                return #err(#Unauthorized);
+            };
+    } else {
+      return #err("Token not valid!");
+    };
+    
+    
+  };
   
   private func registerToken(request: RegisterTokenRequest) : Nat32 {
     /*if (msg.caller != _admin) {
@@ -1047,6 +1068,22 @@ shared(msg) actor class AntKingdoms(
             ret.add(tokenData.0);
         };
         return  #ok(ret.toArray());
+    };
+
+    private func _ownerOf(tokenId: TokenIndex, who: AccountIdentifier) : Bool {
+        var tBalances = switch (_registry.get(tokenId)) {
+            case (?balances) { 
+                return balances;
+              };
+            case (_) { return false; };
+        };
+         var rs = switch (tBalances.get(who)) {
+              case (newRs) { 
+                return true;
+              };
+              case (_) {return false}
+         };
+        return rs;
     };
 
      private func _newUser() : UserInfo {

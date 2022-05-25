@@ -34,7 +34,9 @@ module {
             level: Nat;
         };
         #land:{
-            
+            wood: Float;
+            leaf: Float;
+            gold: Float;
         }
     };
 
