@@ -7,14 +7,15 @@ import {
 	ImgBtn,
 	ConnectBtnSt,
 } from './login-game.elements';
-import SoundBtn from '../../components/sound-button';
+import SoundBtn from '../../../components/sound-button';
 import {
 	ConnectButton,
 	ConnectDialog,
 	Connect2ICProvider,
 	useConnect,
 } from '@connect2ic/react';
-import { withContext } from '../../hooks';
+import { withContext } from '../../../hooks';
+import { useNavigate } from "react-router-dom";
 import './style.css'
 
 function LoginGame(props) {
@@ -22,10 +23,15 @@ function LoginGame(props) {
 
 	const { prinpId, setPrinpId, logout } = props;
 
+	const navigate = useNavigate()
+
 	const onConnectWallet = async () => {
 		try {
       console.log(principal);
-			setPrinpId(principal);
+			if(principal){
+				setPrinpId(principal);
+				// navigate('/admin');
+			}
 		} catch (e) {
 			console.log(e);
 		}
@@ -49,7 +55,7 @@ function LoginGame(props) {
 					<ConnectButton
 						onConnect={onConnectWallet}
 						onDisconnect={onDisconnect}
-						className={ConnectBtnSt}
+						// className={ConnectBtnSt}
 					/>
 				</PlayBtn>
 			</Wrapper>

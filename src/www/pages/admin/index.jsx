@@ -12,9 +12,9 @@ function Admin() {
         console.log(process.env.SUPERHEROES_CANISTER_ID);
         const newArr = metadata.map(el => ({nonfungible: el}))
         console.log(metadata);
-        const res = await superheroes.setTokensMetadata(metadata)
+        const res = await superheroes?.setTokensMetadata(metadata)
         console.log(res);
-        const response = await superheroes.getTokensMetadata();
+        const response = await superheroes?.getTokensMetadata();
         console.log(response);
         } catch(er) {
             console.log(er);
@@ -23,25 +23,25 @@ function Admin() {
 
     const onClaim= async () => {
       try {
-        const res = await superheroes.claiming()
-        console.log(res,);
+        const res = await superheroes?.claiming()
+        console.log(res);
         } catch(er) {
             console.log(er);
         }
     }
 
     const onGetData = async () => {
-      console.log(superheroes, principal.toString());
-      const response = await superheroes.getTokensMetadata();
-      const resp = await superheroes.getUserTokens(principal.toString())
-        console.log(response, resp);
+      // console.log(superheroes, principal?.toString());
+      const response = await superheroes?.getTokensMetadata();
+      const resp = await superheroes?.getUserTokens(principal?.toString())
+      console.log(resp);
     }
 
   return (
     <>
-    <div onClick={onGetData}> get Data</div>
-      <div onClick={onSubmit}> Submit</div>
-      <div onClick={onClaim}> Claiming NFT</div>
+    <button onClick={onGetData}> get Data</button><br />
+      <button onClick={onSubmit}> Submit</button><br />
+      <button onClick={onClaim}> Claiming NFT</button><br />
     </>
   )
 }

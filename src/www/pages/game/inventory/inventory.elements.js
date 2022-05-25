@@ -87,12 +87,33 @@ export const BodyTopTitle = styled.div`
 `;
 
 export const BodyTopList = styled.div`
+    display: flex;
+    align-items: center;
 `;
+
+export const BodyTopItem = styled.div`
+    width: 122px;
+    height: 57px;
+    margin-top: 18px;
+    position: relative;
+`
+
+export const BodyTopName = styled.div`
+    position: absolute;
+    top: 37%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+`
+
+export const BodyTopImg = styled.img`
+    width: 100%;
+`
 
 export const BodyBorder = styled.div`
     border: 1px solid white;
     flex: 1;
     border-radius: 10px;
+    position: relative;
 `
 
 export const Body = styled.div`
@@ -101,3 +122,9 @@ export const Body = styled.div`
     height: 100%;
     border-radius: 10px;
 `;
+
+export const Cart = styled.div`
+    position: absolute;
+    top: 0;
+    color: white;
+`
