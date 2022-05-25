@@ -1,5 +1,5 @@
 export const idlFactory = ({ IDL }) => {
-  const TokenIndex = IDL.Nat32;
+  const TokenIndex__1 = IDL.Nat32;
   const AttributeMeta = IDL.Record({
     'max' : IDL.Opt(IDL.Text),
     'min' : IDL.Opt(IDL.Text),
@@ -33,7 +33,7 @@ export const idlFactory = ({ IDL }) => {
     'ok' : Balance,
     'err' : CommonError__1,
   });
-  const Result_6 = IDL.Variant({ 'ok' : TokenIndex, 'err' : IDL.Text });
+  const Result_6 = IDL.Variant({ 'ok' : TokenIndex__1, 'err' : IDL.Text });
   const Extension = IDL.Text;
   const MetadataExt = IDL.Record({
     'name' : IDL.Text,
@@ -41,12 +41,18 @@ export const idlFactory = ({ IDL }) => {
     'attributes' : IDL.Vec(AttributeMeta),
     'image' : IDL.Text,
   });
+  const TokenIndex = IDL.Nat32;
+  const UserInfoExt = IDL.Record({
+    'id' : IDL.Text,
+    'name' : IDL.Text,
+    'tokens' : IDL.Vec(TokenIndex),
+  });
   const CommonError = IDL.Variant({
     'InvalidToken' : TokenIdentifier,
     'Other' : IDL.Text,
   });
   const Result_5 = IDL.Variant({
-    'ok' : IDL.Vec(Metadata),
+    'ok' : IDL.Vec(MetadataExt),
     'err' : CommonError,
   });
   const TokenIdentifier__1 = IDL.Text;
@@ -84,7 +90,7 @@ export const idlFactory = ({ IDL }) => {
     'acceptCycles' : IDL.Func([], [], []),
     'allMetadata' : IDL.Func(
         [],
-        [IDL.Vec(IDL.Tuple(TokenIndex, IDL.Tuple(Metadata, Balance__1)))],
+        [IDL.Vec(IDL.Tuple(TokenIndex__1, IDL.Tuple(Metadata, Balance__1)))],
         ['query'],
       ),
     'allRegistry' : IDL.Func(
@@ -92,7 +98,7 @@ export const idlFactory = ({ IDL }) => {
         [
           IDL.Vec(
             IDL.Tuple(
-              TokenIndex,
+              TokenIndex__1,
               IDL.Vec(IDL.Tuple(AccountIdentifier__1, Balance__1)),
             )
           ),
@@ -105,6 +111,7 @@ export const idlFactory = ({ IDL }) => {
     'claiming' : IDL.Func([], [Result_6], []),
     'extensions' : IDL.Func([], [IDL.Vec(Extension)], ['query']),
     'getTokensMetadata' : IDL.Func([], [IDL.Vec(MetadataExt)], []),
+    'getUserInfo' : IDL.Func([AccountIdentifier__1], [UserInfoExt], ['query']),
     'getUserTokens' : IDL.Func([AccountIdentifier__1], [Result_5], ['query']),
     'metadata' : IDL.Func([TokenIdentifier__1], [Result_4], ['query']),
     'numberOfTokenHolders' : IDL.Func(

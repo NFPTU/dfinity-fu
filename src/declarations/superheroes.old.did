@@ -121,7 +121,7 @@ service : {
   availableCycles: () -> (nat) query;
   balance: (BalanceRequest) -> (BalanceResponse) query;
   changeAdmin: (principal) -> ();
-  claming: () -> (Result_6);
+  claiming: () -> (Result_6);
   extensions: () -> (vec Extension) query;
   getTokensMetadata: () -> (vec Metadata);
   getUserTokens: (AccountIdentifier__1) -> (Result_5) query;
