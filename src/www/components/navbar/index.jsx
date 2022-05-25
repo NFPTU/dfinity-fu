@@ -61,7 +61,6 @@ function Navbar(props) {
 	const onDisconnect = () => {
 		disconnect();
 		logout();
-		console.log('disconnect');
 	};
 
 	const scrollToTop = () => {

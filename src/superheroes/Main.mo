@@ -936,8 +936,8 @@ shared(msg) actor class AntKingdoms(
   private stable var _registryState : [(TokenIndex, [(AccountIdentifier, Balance)])] = [];
   private stable var _metadataState : [(TokenIndex, (Metadata, Balance))] = [];
   private stable var _admin : Principal = init_admin;
-    private stable var usersEntries : [(AccountIdentifier, UserInfo)] = [];
-    private var users = HashMap.HashMap<AccountIdentifier, UserInfo>(1, Text.equal, Text.hash);
+  private stable var usersEntries : [(AccountIdentifier, UserInfo)] = [];
+  private var users = HashMap.HashMap<AccountIdentifier, UserInfo>(1, Text.equal, Text.hash);
   
   private var _registry = HashMap.HashMap<TokenIndex, TokenLedger>(1, Nat32.equal, func(x : Nat32) : Hash.Hash {x});
   Iter.iterate<(TokenIndex, [(AccountIdentifier, Balance)])>(_registryState.vals(), func(x, _index) {
@@ -989,6 +989,25 @@ shared(msg) actor class AntKingdoms(
   //      metadata: info;
   //    }
   //  };
+
+  private func checkTypeToken(tokenId: TokenIndex, tokenType: Text) : Bool {
+    var tokenData = switch(_metadata.get(tokenId)) {
+      case (?metadata) metadata.0.attributes[0].value == tokenType;
+      case (_) return false;
+  };
+
+  return tokenData;
+  };
+
+  // public shared(msg) func stakeNestInLand(nestTokenId: TokenIndex, landTokenId: TokenIndex ) : async Result.Result<Bool, Text> {
+  //   if(checkTypeToken(nestTokenId, "Nest") == true and checkTypeToken(landTokenId, "Land") == true) {
+  //     // if(msg.caller != owner_) {
+  //     //           return #err(#Unauthorized);
+  //     //       };
+  //   } else {
+  //     return #err("Token not valid!");
+  //   };
+  // };
   
   private func registerToken(request: RegisterTokenRequest) : Nat32 {
     /*if (msg.caller != _admin) {
@@ -1029,7 +1048,7 @@ shared(msg) actor class AntKingdoms(
         }
     }; 
 
-     public query func getUserTokens(owner: AccountIdentifier) : async Result.Result<[Metadata] , CommonError>{
+     public query func getUserTokens(owner: AccountIdentifier) : async Result.Result<[MetadataExt] , CommonError>{
         let tokenIds = switch (users.get(owner)) {
             case (?user) {
                 TrieSet.toArray(user.tokens)
@@ -1048,6 +1067,22 @@ shared(msg) actor class AntKingdoms(
         };
         return  #ok(ret.toArray());
     };
+
+    // private func _ownerOf(tokenId: TokenIndex, who: AccountIdentifier) : Bool {
+    //     var tBalances = switch (_registry.get(tokenId)) {
+    //         case (?balances) { 
+    //             return balances;
+    //           };
+    //         case (_) { return false; };
+    //     };
+    //      var rs = switch (tBalances.get(who)) {
+    //           case (newRs) { 
+    //             return true;
+    //           };
+    //           case (_) {return false}
+    //      };
+    //     return rs;
+    // };
 
      private func _newUser() : UserInfo {
         {

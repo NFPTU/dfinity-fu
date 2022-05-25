@@ -36,7 +36,7 @@ Verify the following before running this demo:
    ```text
    dfx canister create --all
    ```
-dfx canister  install superheroes --argument="(\"Test logo\", \"Test NFT1\", \"NFT1\", \"This is a NFT demo test\", principal \"$(dfx identity get-principal)\")"
+dfx canister  install superheroes --argument="(principal \"$(dfx identity get-principal)\")"
 
 
 dfx canister --network ic  install superheroes --argument="(\"Test logo\", \"Test NFT1\", \"NFT1\", \"This is a NFT demo test\", principal \"$(dfx identity get-principal)\")"
@@ -58,7 +58,7 @@ dfx canister --network ic  install superheroes --argument="(\"Test logo\", \"Tes
    dfx canister install --all
    ```
 dfx canister install --all --mode upgrade
-dfx canister  install superheroes --argument="(\"Test logo\", \"Test NFT1\", \"NFT1\", \"This is a NFT demo test\", principal \"$(dfx identity get-principal)\")" --mode upgrade
+dfx canister  install superheroes --argument="( principal \"$(dfx identity get-principal)\")" --mode upgrade
 1. Take note of the URL at which the canister is accessible.
 
    ```text
