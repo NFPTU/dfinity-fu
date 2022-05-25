@@ -13,6 +13,7 @@ const ListNft = lazy(() => import("./list-nft"))
 const LoginGame = lazy(() => import("./game/login"))
 const Inventory = lazy(() => import("./game/inventory"))
 const Admin = lazy(() => import("./admin"))
+const HomeClaim = lazy(() => import("./game/home"))
 
 const routes = [
     {
