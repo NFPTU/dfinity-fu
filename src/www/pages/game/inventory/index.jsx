@@ -12,7 +12,11 @@ import {
   ListBtn,
   Btn,
   ImgBtn,
-  TextBtn
+  TextBtn,
+  BodyTopItem,
+  BodyTopName,
+  BodyTopImg,
+  Cart
 } from "./inventory.elements";
 
 function Inventory() {
@@ -42,16 +46,24 @@ function Inventory() {
           <BodyTop>
             <BodyTopTitle>Sort By</BodyTopTitle>
             <BodyTopList>
-              <button>ID</button>
-              <button>Name</button>
-              <button>Rarity</button>
+              <BodyTopItem>
+                <BodyTopImg src={'/images/navbar/NavbarMid.png'} alt=""/>
+                <BodyTopName>ID</BodyTopName>
+              </BodyTopItem>
+              <BodyTopItem>
+                <BodyTopImg src={'/images/navbar/NavbarMid.png'} alt="" />
+                <BodyTopName>Name</BodyTopName>
+              </BodyTopItem>
+              <BodyTopItem>
+                <BodyTopImg src={'/images/navbar/NavbarMid.png'} alt="" />
+                <BodyTopName>Rarity</BodyTopName>
+              </BodyTopItem>
             </BodyTopList>
           </BodyTop>
 
           <BodyBorder>
-            <Body>
-              <h3>Cart</h3>
-            </Body>
+            <Body></Body>
+            <Cart>Cart</Cart>
           </BodyBorder>
         </BodyWrapper>
       </Container>
