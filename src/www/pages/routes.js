@@ -17,6 +17,20 @@ const HomeClaim = lazy(() => import("./game/home"))
 
 const routes = [
     {
+        path: "/inventory",
+        exact: true,
+        public: true,
+        component: Inventory,
+        layout: MarketLayout
+    },
+    {
+        path: "/home-claim",
+        exact: true,
+        public: true,
+        component: HomeClaim,
+        layout: MarketLayout
+    },
+    {
         path: "/",
         exact: true,
         public: true,
