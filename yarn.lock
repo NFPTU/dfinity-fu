@@ -6111,7 +6111,7 @@ supports-preserve-symlinks-flag@^1.0.0:
 
 sweetalert2@^11.4.17:
   version "11.4.17"
-  resolved "https://registry.npmjs.org/sweetalert2/-/sweetalert2-11.4.17.tgz#d51a67d034c97b8a9854ce0c161ee21fdd681c4a"
+  resolved "https://registry.yarnpkg.com/sweetalert2/-/sweetalert2-11.4.17.tgz#d51a67d034c97b8a9854ce0c161ee21fdd681c4a"
   integrity sha512-z0iQW5fDdvtoDNle3iHTKunsuNWgPaMifVu0GPtdguR0uVPrvg9gg9bnSQeJ4tx3C7FwJOEnRshxrs6fFItRvw==
 
 tapable@^2.0.0, tapable@^2.1.1, tapable@^2.2.0:

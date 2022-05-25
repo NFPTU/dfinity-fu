@@ -21,6 +21,9 @@ export const BoxClaimBorder = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
+    background-color: blanchedalmond;
+    opacity: 0.8;
+    
 `;
 
 export const BoxClaim = styled.div`
@@ -33,13 +36,15 @@ export const BoxClaim = styled.div`
     opacity: 0.8;
     transition: all 0.5s ease;
     &:hover {
-        opacity: 1;
+        /* opacity: 1; */
         transform: scale(1.05);
     }
+    
 `;
 export const ImgBtn = styled.img`
     /* width: 100%; */
     width: 50%;
+    cursor: pointer;
 `
 
 export const TextBtn = styled.div`

@@ -3,9 +3,9 @@ export type AccountIdentifier = string;
 export type AccountIdentifier__1 = string;
 export interface AntKingdoms {
   'acceptCycles' : () => Promise<undefined>,
-  'allMetadata' : () => Promise<Array<[TokenIndex, [Metadata, Balance__1]]>>,
+  'allMetadata' : () => Promise<Array<[TokenIndex__1, [Metadata, Balance__1]]>>,
   'allRegistry' : () => Promise<
-      Array<[TokenIndex, Array<[AccountIdentifier__1, Balance__1]>]>
+      Array<[TokenIndex__1, Array<[AccountIdentifier__1, Balance__1]>]>
     >,
   'availableCycles' : () => Promise<bigint>,
   'balance' : (arg_0: BalanceRequest) => Promise<BalanceResponse>,
@@ -13,6 +13,7 @@ export interface AntKingdoms {
   'claiming' : () => Promise<Result_6>,
   'extensions' : () => Promise<Array<Extension>>,
   'getTokensMetadata' : () => Promise<Array<MetadataExt>>,
+  'getUserInfo' : (arg_0: AccountIdentifier__1) => Promise<UserInfoExt>,
   'getUserTokens' : (arg_0: AccountIdentifier__1) => Promise<Result_5>,
   'metadata' : (arg_0: TokenIdentifier__1) => Promise<Result_4>,
   'numberOfTokenHolders' : (arg_0: TokenIdentifier__1) => Promise<Result_3>,
@@ -61,14 +62,15 @@ export type Result_3 = { 'ok' : bigint } |
   { 'err' : CommonError };
 export type Result_4 = { 'ok' : Metadata } |
   { 'err' : CommonError };
-export type Result_5 = { 'ok' : Array<Metadata> } |
+export type Result_5 = { 'ok' : Array<MetadataExt> } |
   { 'err' : CommonError };
-export type Result_6 = { 'ok' : TokenIndex } |
+export type Result_6 = { 'ok' : TokenIndex__1 } |
   { 'err' : string };
 export type SubAccount = Array<number>;
 export type TokenIdentifier = string;
 export type TokenIdentifier__1 = string;
 export type TokenIndex = number;
+export type TokenIndex__1 = number;
 export interface TransferRequest {
   'to' : User,
   'token' : TokenIdentifier,
@@ -89,4 +91,9 @@ export type TransferResponse = { 'ok' : Balance } |
   };
 export type User = { 'principal' : Principal } |
   { 'address' : AccountIdentifier };
+export interface UserInfoExt {
+  'id' : string,
+  'name' : string,
+  'tokens' : Array<TokenIndex>,
+}
 export interface _SERVICE extends AntKingdoms {}

@@ -1,3 +1,9 @@
+type UserInfoExt = 
+ record {
+   id: text;
+   name: text;
+   tokens: vec TokenIndex;
+ };
 type User = 
  variant {
    address: AccountIdentifier;
@@ -26,6 +32,7 @@ type TransferRequest =
    to: User;
    token: TokenIdentifier;
  };
+type TokenIndex__1 = nat32;
 type TokenIndex = nat32;
 type TokenIdentifier__1 = text;
 type TokenIdentifier = text;
@@ -33,12 +40,12 @@ type SubAccount = vec nat8;
 type Result_6 = 
  variant {
    err: text;
-   ok: TokenIndex;
+   ok: TokenIndex__1;
  };
 type Result_5 = 
  variant {
    err: CommonError;
-   ok: vec Metadata;
+   ok: vec MetadataExt;
  };
 type Result_4 = 
  variant {
@@ -118,26 +125,28 @@ type AntKingdoms =
    acceptCycles: () -> ();
    allMetadata: () ->
     (vec record {
-           TokenIndex;
+           TokenIndex__1;
            record {
              Metadata;
              Balance__1;
            };
          }) query;
    allRegistry: () ->
-    (vec record {
-           TokenIndex;
-           vec record {
-                 AccountIdentifier__1;
-                 Balance__1;
-               };
-         }) query;
+    (vec
+      record {
+        TokenIndex__1;
+        vec record {
+              AccountIdentifier__1;
+              Balance__1;
+            };
+      }) query;
    availableCycles: () -> (nat) query;
    balance: (BalanceRequest) -> (BalanceResponse) query;
    changeAdmin: (principal) -> ();
    claiming: () -> (Result_6);
    extensions: () -> (vec Extension) query;
    getTokensMetadata: () -> (vec MetadataExt);
+   getUserInfo: (AccountIdentifier__1) -> (UserInfoExt) query;
    getUserTokens: (AccountIdentifier__1) -> (Result_5) query;
    metadata: (TokenIdentifier__1) -> (Result_4) query;
    numberOfTokenHolders: (TokenIdentifier__1) -> (Result_3) query;
