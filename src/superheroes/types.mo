@@ -18,22 +18,33 @@ module {
         name: Text;
         description : Text;
         image: Text;
-        var attributes: ?[AttributeMeta];
-        // detail: ?[DetailNFT];
+        attributes: [AttributeMeta];
+        // detail: DetailNFT;
     };
 
-    // public type DetailNFT = {
-    //     #nest : {
-    //         rarity: Text;
-    //         level: 
-    //     }
-    // };
+    public type DetailNFT = {
+        #queen : {
+            level: Nat;
+        };
+        #nest : {
+            level: Nat;
+
+        };
+        #worker : {
+            level: Nat;
+        };
+        #land:{
+            wood: Float;
+            leaf: Float;
+            gold: Float;
+        }
+    };
 
     public type MetadataExt = {
          name: Text;
         description : Text;
         image: Text;
-        attributes: ?[AttributeMeta]
+        attributes: [AttributeMeta];
     };
 
     public type AttributeMeta = {
@@ -53,7 +64,7 @@ module {
     public type UserInfoExt = {
         name: Text;
         id: Text;
-        tokens: [Nat];
+        tokens: [TokenIndex];
     };
 
     public type Location = {

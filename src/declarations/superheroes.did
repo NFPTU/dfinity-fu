@@ -68,8 +68,16 @@ type Result =
    err: CommonError;
    ok: Balance__1;
  };
+type MetadataExt = 
+ record {
+   attributes: vec AttributeMeta;
+   description: text;
+   image: text;
+   name: text;
+ };
 type Metadata = 
  record {
+   attributes: vec AttributeMeta;
    description: text;
    image: text;
    name: text;
@@ -98,6 +106,13 @@ type BalanceRequest =
    user: User;
  };
 type Balance = nat;
+type AttributeMeta = 
+ record {
+   max: opt text;
+   min: opt text;
+   trait_type: text;
+   value: text;
+ };
 type AntKingdoms = 
  service {
    acceptCycles: () -> ();
@@ -122,13 +137,13 @@ type AntKingdoms =
    changeAdmin: (principal) -> ();
    claiming: () -> (Result_6);
    extensions: () -> (vec Extension) query;
-   getTokensMetadata: () -> (vec Metadata);
+   getTokensMetadata: () -> (vec MetadataExt);
    getUserTokens: (AccountIdentifier__1) -> (Result_5) query;
    metadata: (TokenIdentifier__1) -> (Result_4) query;
    numberOfTokenHolders: (TokenIdentifier__1) -> (Result_3) query;
    numberOfTokens: () -> (nat) query;
    registry: (TokenIdentifier__1) -> (Result_2) query;
-   setTokensMetadata: (vec Metadata) -> (Result_1);
+   setTokensMetadata: (vec MetadataExt) -> (Result_1);
    supply: (TokenIdentifier__1) -> (Result) query;
    transfer: (TransferRequest) -> (TransferResponse);
  };
