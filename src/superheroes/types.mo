@@ -15,11 +15,11 @@ module {
      type TokenIndex = ExtCore.TokenIndex;
 
     public type Metadata = {
-        name: Text;
-        description : Text;
-        image: Text;
-        attributes: [AttributeMeta];
-        // detail: DetailNFT;
+        var name: Text;
+        var description : Text;
+        var image: Text;
+       var attributes: [AttributeMeta];
+        var detail: DetailNFT;
     };
 
     public type DetailNFT = {
@@ -28,7 +28,7 @@ module {
         };
         #nest : {
             level: Nat;
-
+            queenIn: ?TokenIndex;
         };
         #worker : {
             level: Nat;
@@ -37,6 +37,7 @@ module {
             wood: Float;
             leaf: Float;
             gold: Float;
+            nestStaked: ?TokenIndex;
         }
     };
 
@@ -45,6 +46,7 @@ module {
         description : Text;
         image: Text;
         attributes: [AttributeMeta];
+        detail: DetailNFT;
     };
 
     public type AttributeMeta = {

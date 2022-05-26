@@ -33,7 +33,7 @@ function Admin() {
     const onGetData = async () => {
       // console.log(superheroes, principal?.toString());
       const response = await superheroes?.getTokensMetadata();
-      const resp = await superheroes?.getUserTokens(principal?.toString())
+      const resp = await superheroes?.getUserTokens('2vxsx-fae')
       console.log(resp);
     }
 

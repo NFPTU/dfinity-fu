@@ -929,6 +929,8 @@ shared(msg) actor class AntKingdoms(
   type TokenLedger = HashMap.HashMap<AccountIdentifier, Balance>;
   
   private let EXTENSIONS : [Extension] = ["@ext/common"];
+
+  private let NFT_CLAIMABLE : [Nat] = [0,2,3];
   
   //State work
   private var CREATE_TOKEN_FEE : Nat = 1_000_000_000_000;
@@ -965,6 +967,21 @@ shared(msg) actor class AntKingdoms(
     users := HashMap.fromIter<AccountIdentifier, UserInfo>(usersEntries.vals(), 1, Text.equal, Text.hash);
     usersEntries := [];
   };
+
+  
+    private func _isOwnerOf(tokenId: TokenIndex, who: AccountIdentifier) : Bool {
+      var tokenBalances = switch(_registry.get(tokenId)) {
+      case (?balances) balances;
+      case (_) return false;
+    };
+         var rs = switch (tokenBalances.get(who)) {
+              case (newRs) { 
+                return true;
+              };
+              case (_) {return false}
+         };
+        return rs;
+    };
   
   public shared(msg) func changeAdmin(newAdmin : Principal) : async () {
     assert(msg.caller == _admin);
@@ -984,11 +1001,15 @@ shared(msg) actor class AntKingdoms(
      Iter.toArray(Iter.map(tokensMetadata.entries(), func (i: (Nat, MetadataExt)): MetadataExt {i.1}))
    };
 
-  //  private func _tokenMetadata(info: Metadata) : Metadata {
-  //    return {
-  //      metadata: info;
-  //    }
-  //  };
+   private func _tokenMetadata(info: Metadata) : MetadataExt {
+     return {
+       name = info.name;
+        description = info.description;
+        image= info.image;
+        attributes= info.attributes;
+        detail= info.detail;
+     }
+   };
 
   private func checkTypeToken(tokenId: TokenIndex, tokenType: Text) : Bool {
     var tokenData = switch(_metadata.get(tokenId)) {
@@ -999,15 +1020,25 @@ shared(msg) actor class AntKingdoms(
   return tokenData;
   };
 
-  // public shared(msg) func stakeNestInLand(nestTokenId: TokenIndex, landTokenId: TokenIndex ) : async Result.Result<Bool, Text> {
-  //   if(checkTypeToken(nestTokenId, "Nest") == true and checkTypeToken(landTokenId, "Land") == true) {
-  //     // if(msg.caller != owner_) {
-  //     //           return #err(#Unauthorized);
-  //     //       };
-  //   } else {
-  //     return #err("Token not valid!");
-  //   };
-  // };
+  public shared(msg) func stakeNestInLand(nestTokenId: TokenIndex, landTokenId: TokenIndex ) : async Result.Result<Text, Text> {
+    if(checkTypeToken(nestTokenId, "Nest") == true and checkTypeToken(landTokenId, "Land") == true) {
+      if(_isOwnerOf(nestTokenId, Principal.toText(msg.caller)) == true and _isOwnerOf(landTokenId, Principal.toText(msg.caller)) == true) {
+        var tokenData = switch(_metadata.get(landTokenId)) {
+      case (?metadata)  {
+        var newDetail = #land(metadata.0.detail);
+        metadata.0.detail := newDetail;
+         _metadata.put(landTokenId,metadata);
+         };
+      case (_) return #err("Token not valid!");
+  };
+        return #ok("ok");
+    } else {
+       return #err("Token Staked!");
+    };
+    } else {
+      return #err("Token not valid!");
+    };
+  };
   
   private func registerToken(request: RegisterTokenRequest) : Nat32 {
     /*if (msg.caller != _admin) {
@@ -1020,10 +1051,11 @@ shared(msg) actor class AntKingdoms(
    
     let tokenId : TokenIndex = _nextTokenId;
     let dataNft : Metadata = {
-      name =  request.metadata.name # " #" # Nat32.toText(tokenId);
-      description = request.metadata.description # " #" # Nat32.toText(tokenId);
-      image = request.metadata.image;
-     attributes: [AttributeMeta] = request.metadata.attributes;
+      var name =  request.metadata.name # " #" # Nat32.toText(tokenId);
+      var description = request.metadata.description # " #" # Nat32.toText(tokenId);
+      var image = request.metadata.image;
+     var attributes: [AttributeMeta] = request.metadata.attributes;
+     var detail: DetailNFT = request.metadata.detail;
     };
     let ledger = HashMap.HashMap<AccountIdentifier, Balance>(1, AID.equal, AID.hash);
     ledger.put(request.owner, request.supply);
@@ -1057,32 +1089,17 @@ shared(msg) actor class AntKingdoms(
                 []
             };
         };
-        let ret = Buffer.Buffer<Metadata>(tokenIds.size());
+        let ret = Buffer.Buffer<MetadataExt>(tokenIds.size());
         for(id in Iter.fromArray(tokenIds)) {
           var tokenData = switch(_metadata.get(id)) {
       case (?metadata) metadata;
       case (_) return #err(#InvalidToken(Nat32.toText(id)));
     };
-            ret.add(tokenData.0);
+            ret.add(_tokenMetadata(tokenData.0));
         };
         return  #ok(ret.toArray());
     };
 
-    // private func _ownerOf(tokenId: TokenIndex, who: AccountIdentifier) : Bool {
-    //     var tBalances = switch (_registry.get(tokenId)) {
-    //         case (?balances) { 
-    //             return balances;
-    //           };
-    //         case (_) { return false; };
-    //     };
-    //      var rs = switch (tBalances.get(who)) {
-    //           case (newRs) { 
-    //             return true;
-    //           };
-    //           case (_) {return false}
-    //      };
-    //     return rs;
-    // };
 
      private func _newUser() : UserInfo {
         {
@@ -1106,21 +1123,24 @@ shared(msg) actor class AntKingdoms(
   //   };
    
 
-  public shared(msg) func claiming() : async Result.Result<TokenIndex, Text> {
+  public shared(msg) func claiming() : async Result.Result<Bool, Text> {
       D.print(Principal.toText(msg.caller));
        switch (users.get(Principal.toText(msg.caller))) {
             case (?user) {
                throw Error.reject("userClaimed");
             };
             case _ {
-                
+                for(id in Iter.fromArray(NFT_CLAIMABLE)) {
+
                  let request: RegisterTokenRequest = {
-                  metadata = _unwrap(tokensMetadata.get(1));
+                  metadata = _unwrap(tokensMetadata.get(id));
                     supply = 1;
                     owner = Principal.toText(msg.caller);
               };
               let tokenId = registerToken(request);
-              return #ok(tokenId);
+                };
+
+              return #ok(true);
             };
         };        
      
@@ -1311,7 +1331,7 @@ shared(msg) actor class AntKingdoms(
     };
     #ok(tokenData.1);
   };
-  public query func metadata(token : TokenIdentifier) : async Result.Result<Metadata, CommonError> {
+  public query func metadata(token : TokenIdentifier) : async Result.Result<MetadataExt, CommonError> {
     if (ExtCore.TokenIdentifier.isPrincipal(token, Principal.fromActor(this)) == false) {
 			return #err(#InvalidToken(token));
 		};
@@ -1320,7 +1340,7 @@ shared(msg) actor class AntKingdoms(
       case (?metadata) metadata;
       case (_) return #err(#InvalidToken(token));
     };
-    #ok(tokenData.0);
+    #ok(_tokenMetadata(tokenData.0));
   };
   public query func registry(token : TokenIdentifier) : async Result.Result<[(AccountIdentifier, Balance)], CommonError> {
     if (ExtCore.TokenIdentifier.isPrincipal(token, Principal.fromActor(this)) == false) {
@@ -1334,9 +1354,9 @@ shared(msg) actor class AntKingdoms(
     return #ok(Iter.toArray(tokenBalances.entries()));
   };
   
-  public query func allMetadata() : async [(TokenIndex, (Metadata, Balance))] {
-    Iter.toArray(_metadata.entries());
-  };
+  // public query func allMetadata() : async [(TokenIndex, (MetadataExt, Balance))] {
+  //   Iter.toArray(_metadata.entries());
+  // };
   
   public query func allRegistry() : async [(TokenIndex, [(AccountIdentifier, Balance)])] {
     var ret : [(TokenIndex, [(AccountIdentifier, Balance)])] = [];

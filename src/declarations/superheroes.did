@@ -37,11 +37,6 @@ type TokenIndex = nat32;
 type TokenIdentifier__1 = text;
 type TokenIdentifier = text;
 type SubAccount = vec nat8;
-type Result_6 = 
- variant {
-   err: text;
-   ok: TokenIndex__1;
- };
 type Result_5 = 
  variant {
    err: CommonError;
@@ -50,7 +45,7 @@ type Result_5 =
 type Result_4 = 
  variant {
    err: CommonError;
-   ok: Metadata;
+   ok: MetadataExt;
  };
 type Result_3 = 
  variant {
@@ -79,18 +74,28 @@ type MetadataExt =
  record {
    attributes: vec AttributeMeta;
    description: text;
-   image: text;
-   name: text;
- };
-type Metadata = 
- record {
-   attributes: vec AttributeMeta;
-   description: text;
+   detail: DetailNFT;
    image: text;
    name: text;
  };
 type Memo = blob;
 type Extension = text;
+type DetailNFT = 
+ variant {
+   land:
+    record {
+      gold: float64;
+      leaf: float64;
+      nestStaked: opt TokenIndex;
+      wood: float64;
+    };
+   nest: record {
+           level: nat;
+           queenIn: opt TokenIndex;
+         };
+   queen: record {level: nat;};
+   worker: record {level: nat;};
+ };
 type CommonError__1 = 
  variant {
    InvalidToken: TokenIdentifier;
@@ -123,14 +128,6 @@ type AttributeMeta =
 type AntKingdoms = 
  service {
    acceptCycles: () -> ();
-   allMetadata: () ->
-    (vec record {
-           TokenIndex__1;
-           record {
-             Metadata;
-             Balance__1;
-           };
-         }) query;
    allRegistry: () ->
     (vec
       record {
@@ -143,7 +140,7 @@ type AntKingdoms =
    availableCycles: () -> (nat) query;
    balance: (BalanceRequest) -> (BalanceResponse) query;
    changeAdmin: (principal) -> ();
-   claiming: () -> (Result_6);
+   claiming: () -> (Result_1);
    extensions: () -> (vec Extension) query;
    getTokensMetadata: () -> (vec MetadataExt);
    getUserInfo: (AccountIdentifier__1) -> (UserInfoExt) query;
