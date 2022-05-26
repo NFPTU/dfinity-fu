@@ -24,7 +24,12 @@ export const metadata = [
 				max: ['10'],
 				min: []
 			},
-		]
+		],
+		detail: {
+			queen: {
+				level: 1
+			}
+		}
 	},
 	{
 
@@ -51,7 +56,12 @@ export const metadata = [
 				max: ['10'],
 				min: []
 			},
-		]
+		],
+		detail: {
+			worker: {
+				level: 1
+			}
+		}
 	},
 	{
 
@@ -85,6 +95,12 @@ export const metadata = [
 				min: []
 			},
 		],
+		detail: {
+			nest: {
+				level: 1,
+				queenIn: []
+			}
+		}
 	},
 	{
 
@@ -112,6 +128,14 @@ export const metadata = [
 				min: []
 			},
 		],
+		detail: {
+			land: {
+				gold: 1000,
+				leaf: 10000,
+				wood: 10000,
+				nestStaked: []
+			}
+		}
 	},
 
 ];
