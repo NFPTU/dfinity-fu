@@ -25,10 +25,12 @@ module {
     public type DetailNFT = {
         #queen : {
             level: Nat;
+            inNest: ?TokenIndex;
         };
         #nest : {
             level: Nat;
             queenIn: ?TokenIndex;
+            inLand: ?TokenIndex;
         };
         #worker : {
             level: Nat;

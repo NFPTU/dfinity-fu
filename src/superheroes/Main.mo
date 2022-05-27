@@ -1025,10 +1025,82 @@ shared(msg) actor class AntKingdoms(
       if(_isOwnerOf(nestTokenId, Principal.toText(msg.caller)) == true and _isOwnerOf(landTokenId, Principal.toText(msg.caller)) == true) {
         var tokenData = switch(_metadata.get(landTokenId)) {
       case (?metadata)  {
-        var newDetail = #land(metadata.0.detail);
+        var newDetail: DetailNFT = metadata.0.detail;
+        switch (metadata.0.detail) {
+          case (#land(n)) {
+            newDetail := #land({wood=n.wood; leaf= n.leaf; gold=n.gold; nestStaked= ?nestTokenId});
+          };
+          case (_) {
+
+          };
+        };
+     
         metadata.0.detail := newDetail;
          _metadata.put(landTokenId,metadata);
          };
+      case (_) return #err("Token not valid!");
+  };
+
+   var nestData = switch(_metadata.get(nestTokenId)) {
+      case (?metadata)  {
+        var newDetail: DetailNFT = metadata.0.detail;
+        switch (metadata.0.detail) {
+          case (#nest(n)) {
+            newDetail := #nest({level=n.level; inLand= ?landTokenId;queenIn= n.queenIn});
+          };
+          case (_) {
+
+          };
+        };
+     
+        metadata.0.detail := newDetail;
+         _metadata.put(landTokenId,metadata);
+         };
+      case (_) return #err("Token not valid!");
+  };
+  
+        return #ok("ok");
+    } else {
+       return #err("Token Staked!");
+    };
+    } else {
+      return #err("Token not valid!");
+    };
+  };
+
+  public shared(msg) func stakeQueenInNest(nestTokenId: TokenIndex, queenTokenId: TokenIndex ) : async Result.Result<Text, Text> {
+    if(checkTypeToken(nestTokenId, "Nest") == true and checkTypeToken(queenTokenId, "Queen") == true) {
+      if(_isOwnerOf(nestTokenId, Principal.toText(msg.caller)) == true and _isOwnerOf(queenTokenId, Principal.toText(msg.caller)) == true) {
+        var tokenData = switch(_metadata.get(queenTokenId)) {
+      case (?metadata)  {
+        var newDetail: DetailNFT = metadata.0.detail;
+        switch (metadata.0.detail) {
+          case (#queen(n)) {
+            newDetail := #queen({level=n.level; inNest = ?nestTokenId});
+          };
+          case (_) {
+
+          };
+        };
+     
+        metadata.0.detail := newDetail;
+         _metadata.put(queenTokenId,metadata);
+         };
+      //      var nestData = switch(_metadata.get(nestTokenId)) {
+      // case (?metadata)  {
+      //   var newDetail: DetailNFT = metadata.0.detail;
+      //   switch (metadata.0.detail) {
+      //     case (#nest(n)) {
+      //       newDetail := #nest({level=n.level; inLand= n.landTokenId;queenIn= queenTokenId});
+      //     };
+      //     case (_) {
+
+      //     };
+      //   };
+     
+      //   metadata.0.detail := newDetail;
+      //    _metadata.put(queenTokenId,metadata);
+      //    };
       case (_) return #err("Token not valid!");
   };
         return #ok("ok");
