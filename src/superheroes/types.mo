@@ -18,7 +18,8 @@ module {
         var name: Text;
         var description : Text;
         var image: Text;
-       var attributes: [AttributeMeta];
+        var tokenId: TokenIndex;
+        var attributes: [AttributeMeta];
         var detail: DetailNFT;
     };
 
@@ -49,6 +50,7 @@ module {
         image: Text;
         attributes: [AttributeMeta];
         detail: DetailNFT;
+        tokenId: ?TokenIndex;
     };
 
     public type AttributeMeta = {

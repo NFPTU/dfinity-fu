@@ -69,7 +69,7 @@ const routes = [
         exact: true,
         public: true,
         component: Admin,
-        layout: null
+        layout: MarketLayout
     }
 ]
 
