@@ -21,21 +21,21 @@ const routes = [
         exact: true,
         public: true,
         component: Inventory,
-        layout: MarketLayout
+        layout: GameLayout
     },
     {
         path: "/home-claim",
         exact: true,
         public: true,
         component: HomeClaim,
-        layout: MarketLayout
+        layout: GameLayout
     },
     {
         path: "/",
         exact: true,
         public: true,
         component: LoginGame,
-        layout: MarketLayout
+        layout: null
     },
     {
         path: "/collection/detail",

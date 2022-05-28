@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
     Container,
     Item,
@@ -13,8 +13,21 @@ import {
     RightImg,
     RightWrapper
 } from "./game-navbar.elements";
+import {
+  useLocation
+} from "react-router-dom";
 
 function GameNavbar() {
+  const [navbarTitle, setNavbarTitle] = useState('Ants Kingdoms')
+
+  const location = useLocation()
+  const path = location.pathname.slice(1)
+
+  useEffect(() => {
+    if(path === 'inventory'){
+      setNavbarTitle('Inventory')
+    }
+  }, [location])
 
   return (
     <Container>
@@ -24,8 +37,8 @@ function GameNavbar() {
       </LeftWrapper>
 
       <MiddleWrapper>
-        <MidImg src={'/images/navbar/NavbarMid.png'} alt=""/>
-        <MidTitle>Ants Kingdoms</MidTitle>
+        <MidImg src={'/images/navbar/NavbarMid.png'} alt="" type={path === 'home-claim' ? 'home' : ''}/>
+        <MidTitle>{navbarTitle}</MidTitle>
       </MiddleWrapper>
 
       <RightWrapper>
