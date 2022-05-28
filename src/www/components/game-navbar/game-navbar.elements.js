@@ -38,13 +38,15 @@ export const MiddleWrapper = styled.div`
 
 export const MidImg = styled.img`
     height: ${palette.HEIGHT_NAVBAR};
-    width: 300px;
+    width: ${(props) => props.type === 'home' ? '426px' : '300px'};
 `
 
 export const MidTitle = styled.div`
     position: absolute;
-    left: 15%;
     font-size: ${palette.FONTSIZE_M};
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 `
 
 export const RightWrapper = styled.div`

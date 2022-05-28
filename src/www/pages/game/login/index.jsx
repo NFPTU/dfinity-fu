@@ -15,22 +15,24 @@ import {
 	useConnect,
 } from '@connect2ic/react';
 import { withContext } from '../../../hooks';
-import { useNavigate } from "react-router-dom";
-import './style.css'
+import { useNavigate } from 'react-router-dom';
+import './style.css';
 
 function LoginGame(props) {
 	const { principal, isConnected, disconnect } = useConnect();
 
 	const { prinpId, setPrinpId, logout } = props;
 
-	const navigate = useNavigate()
+	const navigate = useNavigate();
 
 	const onConnectWallet = async () => {
 		try {
-      console.log(principal);
-			if(principal){
+			console.log(principal);
+			if (principal) {
 				setPrinpId(principal);
-				// navigate('/admin');
+				setTimeout(() => {
+					navigate('/home-claim');
+				}, 1500)
 			}
 		} catch (e) {
 			console.log(e);
@@ -46,7 +48,7 @@ function LoginGame(props) {
 	return (
 		<Container style={{ backgroundImage: `url(/images/background.png)` }}>
 			<ConnectDialog dark={false} />
-      <Wrapper>
+			<Wrapper>
 				<Title>Ants Kingdoms</Title>
 				<PlayBtn>
 					<SoundBtn>
