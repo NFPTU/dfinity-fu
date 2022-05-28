@@ -1185,6 +1185,20 @@ shared(msg) actor class AntKingdoms(
         }
     };
 
+    public shared(msg) func updateUser(userName : Text) : async Result.Result<Nat , CommonError> {
+      D.print(Principal.toText(msg.caller));
+      switch(users.get(Principal.toText(msg.caller))) {
+            case (?user) {
+                user.name := userName;
+                users.put(Principal.toText(msg.caller), user);
+            };
+            case _ {
+                assert(false);
+            };
+      };
+      return #ok(1);
+  };
+
   //   private func _removeTokenFrom(owner: Principal, tokenId: Nat) {
   //       assert(_exists(tokenId) and _isOwner(owner, tokenId));
   //       switch(users.get(owner)) {
