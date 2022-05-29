@@ -1008,6 +1008,7 @@ shared(msg) actor class AntKingdoms(
         image= info.image;
         attributes= info.attributes;
         detail= info.detail;
+        tokenId = ?info.tokenId;
      }
    };
 
@@ -1025,12 +1026,86 @@ shared(msg) actor class AntKingdoms(
       if(_isOwnerOf(nestTokenId, Principal.toText(msg.caller)) == true and _isOwnerOf(landTokenId, Principal.toText(msg.caller)) == true) {
         var tokenData = switch(_metadata.get(landTokenId)) {
       case (?metadata)  {
-        var newDetail = #land(metadata.0.detail);
+        var newDetail: DetailNFT = metadata.0.detail;
+        switch (metadata.0.detail) {
+          case (#land(n)) {
+            newDetail := #land({wood=n.wood; leaf= n.leaf; gold=n.gold; nestStaked= ?nestTokenId});
+          };
+          case (_) {
+
+          };
+        };
+     
         metadata.0.detail := newDetail;
          _metadata.put(landTokenId,metadata);
          };
       case (_) return #err("Token not valid!");
   };
+
+   var nestData = switch(_metadata.get(nestTokenId)) {
+      case (?metadata)  {
+        var newDetail: DetailNFT = metadata.0.detail;
+        switch (metadata.0.detail) {
+          case (#nest(n)) {
+            newDetail := #nest({level=n.level; inLand= ?landTokenId;queenIn= n.queenIn});
+          };
+          case (_) {
+
+          };
+        };
+     
+        metadata.0.detail := newDetail;
+         _metadata.put(nestTokenId,metadata);
+         };
+      case (_) return #err("Token not valid!");
+  };
+  
+        return #ok("ok");
+    } else {
+       return #err("Token Staked!");
+    };
+    } else {
+      return #err("Token not valid!");
+    };
+  };
+
+  public shared(msg) func stakeQueenInNest(queenTokenId: TokenIndex,  nestTokenId: TokenIndex ) : async Result.Result<Text, Text> {
+    if(checkTypeToken(nestTokenId, "Nest") == true and checkTypeToken(queenTokenId, "Queen") == true) {
+      if(_isOwnerOf(nestTokenId, Principal.toText(msg.caller)) == true and _isOwnerOf(queenTokenId, Principal.toText(msg.caller)) == true) {
+        var tokenData = switch(_metadata.get(queenTokenId)) {
+      case (?metadata)  {
+        var newDetail: DetailNFT = metadata.0.detail;
+        switch (metadata.0.detail) {
+          case (#queen(n)) {
+            newDetail := #queen({level=n.level; inNest = ?nestTokenId});
+          };
+          case (_) {
+
+          };
+        };
+     
+        metadata.0.detail := newDetail;
+         _metadata.put(queenTokenId,metadata);
+         };
+    
+      case (_) return #err("Token not valid!");
+  };
+         var nestData = switch(_metadata.get(nestTokenId)) {
+      case (?metadata)  {
+        var newDetail: DetailNFT = metadata.0.detail;
+        switch (metadata.0.detail) {
+          case (#nest(n)) {
+            newDetail := #nest({level=n.level; inLand= n.inLand;queenIn= ?queenTokenId});
+          };
+          case (_) {
+          };
+        };
+     
+        metadata.0.detail := newDetail;
+         _metadata.put(nestTokenId,metadata);
+         };
+          case (_) return #err("Token not valid!");
+         };
         return #ok("ok");
     } else {
        return #err("Token Staked!");
@@ -1056,6 +1131,7 @@ shared(msg) actor class AntKingdoms(
       var image = request.metadata.image;
      var attributes: [AttributeMeta] = request.metadata.attributes;
      var detail: DetailNFT = request.metadata.detail;
+     var tokenId: TokenIndex = tokenId;
     };
     let ledger = HashMap.HashMap<AccountIdentifier, Balance>(1, AID.equal, AID.hash);
     ledger.put(request.owner, request.supply);

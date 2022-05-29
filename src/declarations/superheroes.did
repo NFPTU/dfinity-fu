@@ -2,7 +2,7 @@ type UserInfoExt =
  record {
    id: text;
    name: text;
-   tokens: vec TokenIndex;
+   tokens: vec TokenIndex__1;
  };
 type User = 
  variant {
@@ -37,22 +37,22 @@ type TokenIndex = nat32;
 type TokenIdentifier__1 = text;
 type TokenIdentifier = text;
 type SubAccount = vec nat8;
-type Result_5 = 
+type Result_6 = 
  variant {
    err: CommonError;
    ok: vec MetadataExt;
  };
-type Result_4 = 
+type Result_5 = 
  variant {
    err: CommonError;
    ok: MetadataExt;
  };
-type Result_3 = 
+type Result_4 = 
  variant {
    err: CommonError;
    ok: nat;
  };
-type Result_2 = 
+type Result_3 = 
  variant {
    err: CommonError;
    ok: vec record {
@@ -60,10 +60,15 @@ type Result_2 =
              Balance__1;
            };
  };
-type Result_1 = 
+type Result_2 = 
  variant {
    err: text;
    ok: bool;
+ };
+type Result_1 = 
+ variant {
+   err: text;
+   ok: text;
  };
 type Result = 
  variant {
@@ -77,6 +82,7 @@ type MetadataExt =
    detail: DetailNFT;
    image: text;
    name: text;
+   tokenId: opt TokenIndex__1;
  };
 type Memo = blob;
 type Extension = text;
@@ -86,14 +92,19 @@ type DetailNFT =
     record {
       gold: float64;
       leaf: float64;
-      nestStaked: opt TokenIndex;
+      nestStaked: opt TokenIndex__1;
       wood: float64;
     };
-   nest: record {
-           level: nat;
-           queenIn: opt TokenIndex;
-         };
-   queen: record {level: nat;};
+   nest:
+    record {
+      inLand: opt TokenIndex__1;
+      level: nat;
+      queenIn: opt TokenIndex__1;
+    };
+   queen: record {
+            inNest: opt TokenIndex__1;
+            level: nat;
+          };
    worker: record {level: nat;};
  };
 type CommonError__1 = 
@@ -129,27 +140,28 @@ type AntKingdoms =
  service {
    acceptCycles: () -> ();
    allRegistry: () ->
-    (vec
-      record {
-        TokenIndex__1;
-        vec record {
-              AccountIdentifier__1;
-              Balance__1;
-            };
-      }) query;
+    (vec record {
+           TokenIndex;
+           vec record {
+                 AccountIdentifier__1;
+                 Balance__1;
+               };
+         }) query;
    availableCycles: () -> (nat) query;
    balance: (BalanceRequest) -> (BalanceResponse) query;
    changeAdmin: (principal) -> ();
-   claiming: () -> (Result_1);
+   claiming: () -> (Result_2);
    extensions: () -> (vec Extension) query;
    getTokensMetadata: () -> (vec MetadataExt);
    getUserInfo: (AccountIdentifier__1) -> (UserInfoExt) query;
-   getUserTokens: (AccountIdentifier__1) -> (Result_5) query;
-   metadata: (TokenIdentifier__1) -> (Result_4) query;
-   numberOfTokenHolders: (TokenIdentifier__1) -> (Result_3) query;
+   getUserTokens: (AccountIdentifier__1) -> (Result_6) query;
+   metadata: (TokenIdentifier__1) -> (Result_5) query;
+   numberOfTokenHolders: (TokenIdentifier__1) -> (Result_4) query;
    numberOfTokens: () -> (nat) query;
-   registry: (TokenIdentifier__1) -> (Result_2) query;
-   setTokensMetadata: (vec MetadataExt) -> (Result_1);
+   registry: (TokenIdentifier__1) -> (Result_3) query;
+   setTokensMetadata: (vec MetadataExt) -> (Result_2);
+   stakeNestInLand: (TokenIndex, TokenIndex) -> (Result_1);
+   stakeQueenInNest: (TokenIndex, TokenIndex) -> (Result_1);
    supply: (TokenIdentifier__1) -> (Result) query;
    transfer: (TransferRequest) -> (TransferResponse);
  };

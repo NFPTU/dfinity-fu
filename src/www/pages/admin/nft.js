@@ -3,12 +3,13 @@ export const metadata = [
 
 		name: 'Ant Queen',
 		description: 'Ant Queen',
+		tokenId: [],
 		image:
 			'https://storageapi.fleek.co/c86ea07c-070d-40b0-bb7a-12a2d3c468f4-bucket/nft/ant-queen.png',
 		attributes: [
 			{
 				trait_type: 'Type',
-				value: 'Ant Queen',
+				value: 'Queen',
 				max: [],
 				min: []
 			},
@@ -22,12 +23,13 @@ export const metadata = [
 				trait_type: 'Level',
 				value: '1',
 				max: ['10'],
-				min: []
+				min: [],
 			},
 		],
 		detail: {
 			queen: {
-				level: 1
+				level: 1,
+				inNest: []
 			}
 		}
 	},
@@ -35,12 +37,13 @@ export const metadata = [
 
 		name: 'Ant Worker',
 		description: 'Ant Worker',
+		tokenId: [],
 		image:
 			'https://storageapi.fleek.co/c86ea07c-070d-40b0-bb7a-12a2d3c468f4-bucket/nft/ant.png',
 		attributes: [
 			{
 				trait_type: 'Type',
-				value: 'Ant Worker',
+				value: 'Worker',
 				max: [],
 				min: []
 			},
@@ -67,6 +70,7 @@ export const metadata = [
 
 		name: 'Ant Nest',
 		description: 'Ant Nest',
+		tokenId: [],
 		image:
 			'https://storageapi.fleek.co/c86ea07c-070d-40b0-bb7a-12a2d3c468f4-bucket/nft/ant-nest.jpg',
 		attributes: [
@@ -98,7 +102,8 @@ export const metadata = [
 		detail: {
 			nest: {
 				level: 1,
-				queenIn: []
+				queenIn: [],
+				inLand: []
 			}
 		}
 	},
@@ -106,6 +111,7 @@ export const metadata = [
 
 		name: 'Land',
 		description: 'Land',
+		tokenId: [],
 		image:
 			'https://storageapi.fleek.co/c86ea07c-070d-40b0-bb7a-12a2d3c468f4-bucket/nft/land.jpg',
 		attributes: [

@@ -4,21 +4,27 @@ export type AccountIdentifier__1 = string;
 export interface AntKingdoms {
   'acceptCycles' : () => Promise<undefined>,
   'allRegistry' : () => Promise<
-      Array<[TokenIndex__1, Array<[AccountIdentifier__1, Balance__1]>]>
+      Array<[TokenIndex, Array<[AccountIdentifier__1, Balance__1]>]>
     >,
   'availableCycles' : () => Promise<bigint>,
   'balance' : (arg_0: BalanceRequest) => Promise<BalanceResponse>,
   'changeAdmin' : (arg_0: Principal) => Promise<undefined>,
-  'claiming' : () => Promise<Result_1>,
+  'claiming' : () => Promise<Result_2>,
   'extensions' : () => Promise<Array<Extension>>,
   'getTokensMetadata' : () => Promise<Array<MetadataExt>>,
   'getUserInfo' : (arg_0: AccountIdentifier__1) => Promise<UserInfoExt>,
-  'getUserTokens' : (arg_0: AccountIdentifier__1) => Promise<Result_5>,
-  'metadata' : (arg_0: TokenIdentifier__1) => Promise<Result_4>,
-  'numberOfTokenHolders' : (arg_0: TokenIdentifier__1) => Promise<Result_3>,
+  'getUserTokens' : (arg_0: AccountIdentifier__1) => Promise<Result_6>,
+  'metadata' : (arg_0: TokenIdentifier__1) => Promise<Result_5>,
+  'numberOfTokenHolders' : (arg_0: TokenIdentifier__1) => Promise<Result_4>,
   'numberOfTokens' : () => Promise<bigint>,
-  'registry' : (arg_0: TokenIdentifier__1) => Promise<Result_2>,
-  'setTokensMetadata' : (arg_0: Array<MetadataExt>) => Promise<Result_1>,
+  'registry' : (arg_0: TokenIdentifier__1) => Promise<Result_3>,
+  'setTokensMetadata' : (arg_0: Array<MetadataExt>) => Promise<Result_2>,
+  'stakeNestInLand' : (arg_0: TokenIndex, arg_1: TokenIndex) => Promise<
+      Result_1
+    >,
+  'stakeQueenInNest' : (arg_0: TokenIndex, arg_1: TokenIndex) => Promise<
+      Result_1
+    >,
   'supply' : (arg_0: TokenIdentifier__1) => Promise<Result>,
   'transfer' : (arg_0: TransferRequest) => Promise<TransferResponse>,
 }
@@ -42,15 +48,22 @@ export type DetailNFT = {
       'gold' : number,
       'leaf' : number,
       'wood' : number,
-      'nestStaked' : [] | [TokenIndex],
+      'nestStaked' : [] | [TokenIndex__1],
     }
   } |
-  { 'nest' : { 'level' : bigint, 'queenIn' : [] | [TokenIndex] } } |
-  { 'queen' : { 'level' : bigint } } |
+  {
+    'nest' : {
+      'level' : bigint,
+      'inLand' : [] | [TokenIndex__1],
+      'queenIn' : [] | [TokenIndex__1],
+    }
+  } |
+  { 'queen' : { 'level' : bigint, 'inNest' : [] | [TokenIndex__1] } } |
   { 'worker' : { 'level' : bigint } };
 export type Extension = string;
 export type Memo = Array<number>;
 export interface MetadataExt {
+  'tokenId' : [] | [TokenIndex__1],
   'name' : string,
   'description' : string,
   'detail' : DetailNFT,
@@ -59,15 +72,17 @@ export interface MetadataExt {
 }
 export type Result = { 'ok' : Balance__1 } |
   { 'err' : CommonError };
-export type Result_1 = { 'ok' : boolean } |
+export type Result_1 = { 'ok' : string } |
   { 'err' : string };
-export type Result_2 = { 'ok' : Array<[AccountIdentifier__1, Balance__1]> } |
+export type Result_2 = { 'ok' : boolean } |
+  { 'err' : string };
+export type Result_3 = { 'ok' : Array<[AccountIdentifier__1, Balance__1]> } |
   { 'err' : CommonError };
-export type Result_3 = { 'ok' : bigint } |
+export type Result_4 = { 'ok' : bigint } |
   { 'err' : CommonError };
-export type Result_4 = { 'ok' : MetadataExt } |
+export type Result_5 = { 'ok' : MetadataExt } |
   { 'err' : CommonError };
-export type Result_5 = { 'ok' : Array<MetadataExt> } |
+export type Result_6 = { 'ok' : Array<MetadataExt> } |
   { 'err' : CommonError };
 export type SubAccount = Array<number>;
 export type TokenIdentifier = string;
@@ -97,6 +112,6 @@ export type User = { 'principal' : Principal } |
 export interface UserInfoExt {
   'id' : string,
   'name' : string,
-  'tokens' : Array<TokenIndex>,
+  'tokens' : Array<TokenIndex__1>,
 }
 export interface _SERVICE extends AntKingdoms {}

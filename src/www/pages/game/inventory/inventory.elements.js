@@ -123,8 +123,18 @@ export const Body = styled.div`
     border-radius: 10px;
 `;
 
-export const Cart = styled.div`
+export const CardList = styled.div`
     position: absolute;
     top: 0;
-    color: white;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    margin: 20px;
+    z-index: 100;
+`
+
+export const CardItem = styled.div`
+    width: 300px;
+    height: 350px;
+    margin-right: 20px;
 `
