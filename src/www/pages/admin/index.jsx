@@ -68,7 +68,7 @@ function Admin() {
 
   const onChangeName = async () => {
     const resp = await superheroes?.updateUser("main");
-		console.log(resp);
+	console.log("response :", resp);
   }
 
 	const getNFTByType = (type) => {

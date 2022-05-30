@@ -1192,8 +1192,8 @@ shared(msg) actor class AntKingdoms(
                 user.name := userName;
                 users.put(Principal.toText(msg.caller), user);
             };
-            case _ {
-                assert(false);
+            case (_) {
+                D.print("False")
             };
       };
       return #ok(1);
@@ -1217,7 +1217,7 @@ shared(msg) actor class AntKingdoms(
       D.print(Principal.toText(msg.caller));
        switch (users.get(Principal.toText(msg.caller))) {
             case (?user) {
-               throw Error.reject("userClaimed");
+              throw Error.reject("userClaimed");
             };
             case _ {
                 for(id in Iter.fromArray(NFT_CLAIMABLE)) {
