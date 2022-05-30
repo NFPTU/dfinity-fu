@@ -1185,6 +1185,20 @@ shared(msg) actor class AntKingdoms(
         }
     };
 
+    public shared(msg) func updateUser(userName : Text) : async Result.Result<Nat , CommonError> {
+      D.print(Principal.toText(msg.caller));
+      switch(users.get(Principal.toText(msg.caller))) {
+            case (?user) {
+                user.name := userName;
+                users.put(Principal.toText(msg.caller), user);
+            };
+            case (_) {
+                D.print("False")
+            };
+      };
+      return #ok(1);
+  };
+
   //   private func _removeTokenFrom(owner: Principal, tokenId: Nat) {
   //       assert(_exists(tokenId) and _isOwner(owner, tokenId));
   //       switch(users.get(owner)) {
@@ -1203,7 +1217,7 @@ shared(msg) actor class AntKingdoms(
       D.print(Principal.toText(msg.caller));
        switch (users.get(Principal.toText(msg.caller))) {
             case (?user) {
-               throw Error.reject("userClaimed");
+              throw Error.reject("userClaimed");
             };
             case _ {
                 for(id in Iter.fromArray(NFT_CLAIMABLE)) {
