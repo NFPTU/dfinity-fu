@@ -931,6 +931,12 @@ shared(msg) actor class AntKingdoms(
   private let EXTENSIONS : [Extension] = ["@ext/common"];
 
   private let NFT_CLAIMABLE : [Nat] = [0,2,3];
+
+// Ant state: 0: Egg, 1: Idle, 2: Farming
+//
+  private let ANT_STATE : [Nat] = [0,1,2];
+
+  private let _minuteTime = 60 * 1_000_000_000;
   
   //State work
   private var CREATE_TOKEN_FEE : Nat = 1_000_000_000_000;
@@ -1077,7 +1083,7 @@ shared(msg) actor class AntKingdoms(
         var newDetail: DetailNFT = metadata.0.detail;
         switch (metadata.0.detail) {
           case (#queen(n)) {
-            newDetail := #queen({level=n.level; inNest = ?nestTokenId});
+            newDetail := #queen({level=n.level; inNest = ?nestTokenId; breedWorkerTime=n.breedWorkerTime;});
           };
           case (_) {
 
@@ -1220,6 +1226,73 @@ shared(msg) actor class AntKingdoms(
             };
         };        
      
+  };
+
+  public shared(msg) func breedAntWorkder(queenTokenId: TokenIndex) : async Result.Result<Bool, Text> {
+ var tokenData = switch(_metadata.get(queenTokenId)) {
+      case (?metadata)  {
+        var newDetail: DetailNFT = metadata.0.detail;
+        switch (metadata.0.detail) {
+          case (#queen(n)) {
+            let request: RegisterTokenRequest = {
+                  metadata = _unwrap(tokensMetadata.get(1));
+                    supply = 1;
+                    owner = Principal.toText(msg.caller);
+              };
+              let tokenId = registerToken(request);
+              var workerData = switch(_metadata.get(tokenId)) {
+      case (?metadata)  {
+        var newDetail: DetailNFT = metadata.0.detail;
+        switch (metadata.0.detail) {
+          case (#worker(w)) {
+            newDetail := #worker({level=w.level; inNest= w.inNest;queenId= w.queenId; antState=?ANT_STATE[0];breedTimestamp= Time.now()+ n.breedWorkerTime;});
+          };
+          case (_) {
+          };
+        };
+     
+        metadata.0.detail := newDetail;
+         _metadata.put(tokenId,metadata);
+         };
+          case (_) return #err("Token not valid!");
+         };
+          };
+          case (_) {
+          };
+        };
+     
+        metadata.0.detail := newDetail;
+         _metadata.put(queenTokenId,metadata);
+         };
+    
+      case (_) return #err("Token not valid!");
+  };
+  return #ok(true)
+  };
+
+  public shared(msg) func claimWorkerEgg(workerTokenId: TokenIndex): async Result.Result<Bool, Text> {
+    var tokenData = switch(_metadata.get(workerTokenId)) {
+          case (?metadata)  {
+            var newDetail: DetailNFT = metadata.0.detail;
+            switch (metadata.0.detail) {
+              case (#worker(w)) {
+                if(Int.greater(w.breedTimestamp , Time.now())) {
+                  return #err("Breeding not done!");
+                } else {
+                    newDetail := #worker({level=w.level; inNest= w.inNest;queenId= w.queenId; antState=?ANT_STATE[1];breedTimestamp= w.breedTimestamp;});
+                }
+              };
+              case (_) {
+              };
+            };
+        
+            metadata.0.detail := newDetail;
+            _metadata.put(workerTokenId,metadata);
+            };
+        
+          case (_) return #err("Token not valid!");
+      };
+      return #ok(true)
   };
 
      public query func getUserInfo(who: AccountIdentifier) : async UserInfoExt {

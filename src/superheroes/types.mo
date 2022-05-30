@@ -27,6 +27,7 @@ module {
         #queen : {
             level: Nat;
             inNest: ?TokenIndex;
+            breedWorkerTime: Time.Time;
         };
         #nest : {
             level: Nat;
@@ -35,6 +36,10 @@ module {
         };
         #worker : {
             level: Nat;
+            inNest: ?TokenIndex;
+            queenId: ?TokenIndex;
+            antState: ?Nat;
+            breedTimestamp: Time.Time;
         };
         #land:{
             wood: Float;
