@@ -58,6 +58,8 @@ function Inventory() {
 		setFilterData(listNFT);
 	};
 
+	//Handle
+
 	//Get All NFT
 	const onGetData = async () => {
 		// console.log(superheroes, principal?.toString());
@@ -116,7 +118,7 @@ function Inventory() {
 						<CardList>
 							{filterData ? (
 								filterData?.map((item, index) => (
-									<Card data={item} key={index} />
+									<Card data={item} key={index} list={filterData}/>
 								))
 							) : (
 								<SkeletonList>
