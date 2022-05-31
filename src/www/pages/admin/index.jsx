@@ -67,6 +67,11 @@ function Admin() {
 		console.log(resp);
 	};
 
+  const onChangeName = async () => {
+    const resp = await superheroes?.updateUser("main");
+	console.log("response :", resp);
+  }
+
 	const getNFTByType = (type) => {
 		return listNFt.filter((el) => el.attributes[0].value === type);
 	};
@@ -82,6 +87,8 @@ function Admin() {
 			<button onClick={onStakeNestInLand}> stake nest NFT</button>
 			<br />
 			<button onClick={onStakeQueenInNest}> stake Queen NFT</button>
+			<br />
+      <button onClick={onChangeName}> change name</button>
 			<br />
 		</>
 	);

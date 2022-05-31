@@ -6,15 +6,21 @@
  */
 
 // import Array "mo:base/Array";
+import AID "/Lib/Ext/util/AccountIdentifier";
 import Array "mo:base/Array";
 import Buffer "mo:base/Buffer";
 import Cycles "mo:base/ExperimentalCycles";
 import D "mo:base/Debug";
 import Error "mo:base/Error";
+import Ext "Ext";
+import ExtCommon "/Lib/Ext/ext/Common";
+import ExtCore "/Lib/Ext/ext/Core";
+import ExtTypes "Ext/types";
 import Hash "mo:base/Hash";
 import HashMap "mo:base/HashMap";
 import Int "mo:base/Int";
 import Iter "mo:base/Iter";
+import NAT "mo:base/Array";
 import Nat "mo:base/Nat";
 import Nat32 "mo:base/Nat32";
 import Prelude "mo:base/Prelude";
@@ -23,12 +29,6 @@ import Result "mo:base/Result";
 import Text "mo:base/Text";
 import Time "mo:base/Time";
 import TrieSet "mo:base/TrieSet";
-
-import AID "/Lib/Ext/util/AccountIdentifier";
-import Ext "Ext";
-import ExtCommon "/Lib/Ext/ext/Common";
-import ExtCore "/Lib/Ext/ext/Core";
-import ExtTypes "Ext/types";
 import Types "./types";
 import User "./User";
 
@@ -915,6 +915,7 @@ shared(msg) actor class AntKingdoms(
     type AttributeMeta= Types.AttributeMeta;
     type MetadataExt = Types.MetadataExt;
     type DetailNFT = Types.DetailNFT;
+    type UserState = Types.UserState;
 
   type RegisterTokenRequest = {
     metadata : MetadataExt;
@@ -931,6 +932,12 @@ shared(msg) actor class AntKingdoms(
   private let EXTENSIONS : [Extension] = ["@ext/common"];
 
   private let NFT_CLAIMABLE : [Nat] = [0,2,3];
+
+// Ant state: 0: Egg, 1: Idle, 2: Farming
+//
+  private let ANT_STATE : [Nat] = [0,1,2];
+
+  private let _minuteTime = 60 * 1_000_000_000;
   
   //State work
   private var CREATE_TOKEN_FEE : Nat = 1_000_000_000_000;
@@ -1077,7 +1084,7 @@ shared(msg) actor class AntKingdoms(
         var newDetail: DetailNFT = metadata.0.detail;
         switch (metadata.0.detail) {
           case (#queen(n)) {
-            newDetail := #queen({level=n.level; inNest = ?nestTokenId});
+            newDetail := #queen({level=n.level; inNest = ?nestTokenId; breedWorkerTime=n.breedWorkerTime;});
           };
           case (_) {
 
@@ -1182,8 +1189,51 @@ shared(msg) actor class AntKingdoms(
             var id = "";
             var name = "";
             var tokens = TrieSet.empty<TokenIndex>();
+            var userState : UserState = {wood=0; leaf= 0; gold=0;};
         }
     };
+
+    public shared(msg) func updateUser(userName : Text) : async Result.Result<Nat , CommonError> {
+      D.print(Principal.toText(msg.caller));
+      switch(users.get(Principal.toText(msg.caller))) {
+            case (?user) {
+                user.name := userName;
+                users.put(Principal.toText(msg.caller), user);
+            };
+            case (_) {
+                D.print("False")
+            };
+      };
+      return #ok(1);
+  };
+
+
+  public shared(msg) func workerFarmInLand(workerTokenIds: [TokenIndex], landTokenId: TokenIndex): async Result.Result<Bool , Text> {
+  for(id in Iter.fromArray(workerTokenIds)) {
+    var tokenData = switch(_metadata.get(id)) {
+          case (?metadata)  {
+            var newDetail: DetailNFT = metadata.0.detail;
+            switch (metadata.0.detail) {
+              case (#worker(w)) {
+                if(Nat.equal(w.antState, ANT_STATE[0])) {
+                    newDetail := #worker({level=w.level; inNest= w.inNest;queenId= w.queenId; antState=ANT_STATE[2];breedTimestamp= w.breedTimestamp;farmTimestamp=Time.now()+w.farmingTime;farmingTime=w.farmingTime});
+
+                } else {
+                }
+              };
+              case (_) {
+              };
+            };
+        
+            metadata.0.detail := newDetail;
+            _metadata.put(id,metadata);
+            };
+        
+          case (_) return #err("Token not valid!");
+      };
+                };
+                return #ok(true)
+  };
 
   //   private func _removeTokenFrom(owner: Principal, tokenId: Nat) {
   //       assert(_exists(tokenId) and _isOwner(owner, tokenId));
@@ -1200,10 +1250,9 @@ shared(msg) actor class AntKingdoms(
    
 
   public shared(msg) func claiming() : async Result.Result<Bool, Text> {
-      D.print(Principal.toText(msg.caller));
        switch (users.get(Principal.toText(msg.caller))) {
             case (?user) {
-               throw Error.reject("userClaimed");
+              throw Error.reject("userClaimed");
             };
             case _ {
                 for(id in Iter.fromArray(NFT_CLAIMABLE)) {
@@ -1215,12 +1264,87 @@ shared(msg) actor class AntKingdoms(
               };
               let tokenId = registerToken(request);
                 };
-
+                switch(users.get(Principal.toText(msg.caller))) {
+            case (?user) {
+                user.userState := {wood=500; leaf= 500; gold=50;};
+                users.put(Principal.toText(msg.caller), user);
+            };
+            case (_) {
+               return #err("User Not Found")
+            };
+      };
               return #ok(true);
             };
         };        
+};
+
+  public shared(msg) func breedAntWorkder(queenTokenId: TokenIndex) : async Result.Result<Bool, Text> {
+ var tokenData = switch(_metadata.get(queenTokenId)) {
+      case (?metadata)  {
+        var newDetail: DetailNFT = metadata.0.detail;
+        switch (metadata.0.detail) {
+          case (#queen(n)) {
+            let request: RegisterTokenRequest = {
+                  metadata = _unwrap(tokensMetadata.get(1));
+                    supply = 1;
+                    owner = Principal.toText(msg.caller);
+              };
+              let tokenId = registerToken(request);
+              var workerData = switch(_metadata.get(tokenId)) {
+      case (?metadata)  {
+        var newDetail: DetailNFT = metadata.0.detail;
+        switch (metadata.0.detail) {
+          case (#worker(w)) {
+            newDetail := #worker({level=w.level; inNest= w.inNest;queenId= w.queenId; antState=ANT_STATE[0];breedTimestamp= Time.now()+ n.breedWorkerTime;farmTimestamp=w.farmTimestamp;farmingTime=w.farmingTime;});
+          };
+          case (_) {
+          };
+        };
      
+        metadata.0.detail := newDetail;
+         _metadata.put(tokenId,metadata);
+         };
+          case (_) return #err("Token not valid!");
+         };
+          };
+          case (_) {
+          };
+        };
+     
+        metadata.0.detail := newDetail;
+         _metadata.put(queenTokenId,metadata);
+         };
+    
+      case (_) return #err("Token not valid!");
   };
+  return #ok(true)
+  };
+
+  public shared(msg) func claimWorkerEgg(workerTokenId: TokenIndex): async Result.Result<Bool, Text> {
+    var tokenData = switch(_metadata.get(workerTokenId)) {
+          case (?metadata)  {
+            var newDetail: DetailNFT = metadata.0.detail;
+            switch (metadata.0.detail) {
+              case (#worker(w)) {
+                if(Int.greater(w.breedTimestamp , Time.now()) and Nat.equal(w.antState, ANT_STATE[0])) {
+                  return #err("Can't claim!");
+                } else {
+                    newDetail := #worker({level=w.level; inNest= w.inNest;queenId= w.queenId; antState=ANT_STATE[1];breedTimestamp= w.breedTimestamp;farmTimestamp=w.farmTimestamp;farmingTime=w.farmingTime;});
+                }
+              };
+              case (_) {
+              };
+            };
+        
+            metadata.0.detail := newDetail;
+            _metadata.put(workerTokenId,metadata);
+            };
+        
+          case (_) return #err("Token not valid!");
+      };
+      return #ok(true)
+  };
+
 
      public query func getUserInfo(who: AccountIdentifier) : async UserInfoExt {
         switch (users.get(who)) {
@@ -1238,6 +1362,7 @@ shared(msg) actor class AntKingdoms(
             name = info.name;
             id = info.id;
             tokens = TrieSet.toArray(info.tokens);
+            userState = info.userState;
         };
     };
 
