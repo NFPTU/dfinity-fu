@@ -14,8 +14,16 @@ const LoginGame = lazy(() => import("./game/login"))
 const Inventory = lazy(() => import("./game/inventory"))
 const Admin = lazy(() => import("./admin"))
 const HomeClaim = lazy(() => import("./game/home"))
+const Popup = lazy(() => import("../components/popup"))
 
 const routes = [
+    {
+        path: "/test-popup",
+        exact: true,
+        public: true,
+        component: Popup,
+        layout: null
+    },
     {
         path: "/inventory",
         exact: true,
