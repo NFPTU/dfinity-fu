@@ -41,15 +41,32 @@ module {
             antState: Nat;
             breedTimestamp: Time.Time;
             farmTimestamp: Time.Time;
-            farmingTime: Time.Time;
+            info: {
+                farmingTime: Time.Time;
+                farmPerTime: Resource;
+            }
         };
         #land:{
-            wood: Float;
-            leaf: Float;
-            gold: Float;
+            resource: Resource;
             nestStaked: ?TokenIndex;
+            claimableResource : Resource
         }
     };
+
+    public type Resource = {
+             soil: Float;
+             leaf: Float;
+             gold: Float;
+             food: Float;
+    };
+
+    public type WorkerFarmRequest = {
+        soil: [TokenIndex];
+        leaf: [TokenIndex];
+        gold: [TokenIndex];
+        food: [TokenIndex];
+    };
+
 
     public type MetadataExt = {
          name: Text;
@@ -75,9 +92,8 @@ module {
     };
 
     public type UserState = {
-        wood: Float;
-        leaf: Float;
-        gold: Float;
+      
+        resource: Resource;
     };
 
     
