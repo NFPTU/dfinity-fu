@@ -1,35 +1,35 @@
-import React from 'react'
+import React from 'react';
 import {
-  Button,
-  Container,
-  Content,
-  Desc,
-  Glass,
-  Img,
-  ImgWrapper,
-  Info,
-  Name,
-  InfoTop
-} from './card.elements'
+	Button,
+	Container,
+	Content,
+	Desc,
+	Glass,
+	Img,
+	ImgWrapper,
+	Info,
+	Name,
+	InfoTop,
+} from './card.elements';
 
 function Card({ data }) {
-  return (
-    <Container>
-        <Glass></Glass>
-        <Content>
-            <ImgWrapper>
-            <Img src={data?.image} alt="" />
-            </ImgWrapper>
-            <Info>
-              <InfoTop>
-                  <Name>Ant worker #2</Name>
-                  <Desc>Description of Ant worker #2</Desc>
-              </InfoTop>
-              <Button>Stake</Button>
-            </Info>
-        </Content>
-    </Container>
-  )
+	const { attributes, description, detail, image, name, tokenId } = data;
+	return (
+		<Container>
+			<Content>
+				<ImgWrapper>
+					<Img src={image} alt='' />
+				</ImgWrapper>
+				<Info>
+					<InfoTop>
+						<Name>{name}</Name>
+						<Desc>{description}</Desc>
+					</InfoTop>
+					{attributes[0].value !== 'Land' && <Button>Stake</Button>}
+				</Info>
+			</Content>
+		</Container>
+	);
 }
 
-export default Card
+export default Card;

@@ -1,13 +1,13 @@
 import styled from "styled-components";
 
 export const Container = styled.div`
-  position: relative;
   width: 300px;
-  height: 380px;
+  height: 400px;
   display: flex;
   justify-content: center;
   align-items: center;
   background: #525d83;
+  margin: 40px;
 
   &:before {
     content: "";
@@ -57,29 +57,23 @@ export const Container = styled.div`
   }
 `;
 
-export const Glass = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 50%;
-  height: 100%;
-  display: block;
-  background: rgba(255, 255, 255, 0.1);
-  pointer-events: none;
-`;
 
 export const Content = styled.div`
-  position: absolute;
+  width: 100%;
+  height: 100%;
   padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
 `;
 
 export const ImgWrapper = styled.div`
-  height: 246px;
+  width: 200px;
 `;
 
 export const Img = styled.img`
   width: 100%;
-  border-radius: 50%;
 `;
 
 export const Info = styled.div`
@@ -87,7 +81,10 @@ export const Info = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   padding: 5px;
+  width: 280px;
+  height: 100px;
 `
 
 export const InfoTop = styled.div`
@@ -114,7 +111,6 @@ export const Button = styled.button`
   font-size: 15px;
   font-weight: 500;
   transition: all 0.3s ease;
-  cursor: pointer;
 
   &:hover {
     color: white;
