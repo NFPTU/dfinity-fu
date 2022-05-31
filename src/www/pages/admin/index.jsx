@@ -34,12 +34,13 @@ function Admin() {
 		try {
 			const listNest = getNFTByType('Nest');
 			const listLand = getNFTByType('Land');
-			console.log(listNest, listLand);
+			console.log('nest', listNest)
+			console.log('land', listLand)
 			const res = await superheroes?.stakeNestInLand(
-				listNest[0].tokenId[0],
-				listLand[0].tokenId[0]
+				listNest[0]?.tokenId[0],
+				listLand[0]?.tokenId[0]
 			);
-			console.log(res);
+			console.log('res', res);
 		} catch (er) {
 			console.log(er);
 		}
@@ -50,8 +51,8 @@ function Admin() {
 			const listNest = getNFTByType('Queen');
 			const listLand = getNFTByType('Nest');
 			const res = await superheroes?.stakeQueenInNest(
-				listNest[0].tokenId[0],
-				listLand[0].tokenId[0]
+				listNest[0]?.tokenId[0],
+				listLand[0]?.tokenId[0]
 			);
 			console.log(res);
 		} catch (er) {

@@ -37,8 +37,10 @@ export const Btn = styled.div`
     width: 250px;
     position: relative;
     margin-bottom: 25px;
-    opacity: 0.8;
+    opacity: ${(props) => props.active === true ? '1' : '0.7'};
+    transform: ${(props) => props.active === true ? 'scale(1.05)' : 'scale(1)'};
     transition: all 0.5s ease;
+    cursor: pointer;
     &:hover {
         opacity: 1;
         transform: scale(1.05);
@@ -113,24 +115,11 @@ export const BodyBorder = styled.div`
     border: 1px solid white;
     flex: 1;
     border-radius: 10px;
-    position: relative;
 `
 
-export const Body = styled.div`
-    background-color: black;
-    opacity: 0.3;
-    height: 100%;
-    border-radius: 10px;
-`;
-
 export const CardList = styled.div`
-    position: absolute;
-    top: 0;
     display: flex;
-    align-items: center;
     flex-wrap: wrap;
-    margin: 20px;
-    z-index: 100;
 `
 
 export const CardItem = styled.div`
@@ -138,3 +127,10 @@ export const CardItem = styled.div`
     height: 350px;
     margin-right: 20px;
 `
+export const SkeletonList = styled.div`
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+`
+
