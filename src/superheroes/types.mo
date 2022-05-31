@@ -38,8 +38,10 @@ module {
             level: Nat;
             inNest: ?TokenIndex;
             queenId: ?TokenIndex;
-            antState: ?Nat;
+            antState: Nat;
             breedTimestamp: Time.Time;
+            farmTimestamp: Time.Time;
+            farmingTime: Time.Time;
         };
         #land:{
             wood: Float;
@@ -69,6 +71,13 @@ module {
         var name: Text;
         var id: AccountIdentifier;
         var tokens: TrieSet.Set<TokenIndex>;              // user's tokens
+        var userState: UserState;
+    };
+
+    public type UserState = {
+        wood: Float;
+        leaf: Float;
+        gold: Float;
     };
 
     
@@ -76,6 +85,7 @@ module {
         name: Text;
         id: Text;
         tokens: [TokenIndex];
+        userState: UserState;
     };
 
     public type Location = {
