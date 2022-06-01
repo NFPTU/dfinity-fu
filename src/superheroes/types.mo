@@ -49,7 +49,8 @@ module {
         #land:{
             resource: Resource;
             nestStaked: ?TokenIndex;
-            claimableResource : Resource
+            claimableResource : Resource;
+            workersFarmIds: [TokenIndex]
         }
     };
 
@@ -65,6 +66,7 @@ module {
         leaf: [TokenIndex];
         gold: [TokenIndex];
         food: [TokenIndex];
+        countIds: Nat;
     };
 
 

@@ -935,7 +935,7 @@ shared(msg) actor class AntKingdoms(
 
   private let NFT_CLAIMABLE : [Nat] = [0,2,3];
 
-// Ant state: 0: Egg, 1: Idle, 2: Farming
+// Ant state: 0:Idle , 1:Egg , 2: Farming
 //
   private let ANT_STATE : [Nat] = [0,1,2];
 
@@ -1038,7 +1038,7 @@ shared(msg) actor class AntKingdoms(
         var newDetail: DetailNFT = metadata.0.detail;
         switch (metadata.0.detail) {
           case (#land(n)) {
-            newDetail := #land({resource = n.resource;  claimableResource = n.claimableResource; nestStaked=?nestTokenId;});
+            newDetail := #land({resource = n.resource;  claimableResource = n.claimableResource; nestStaked=?nestTokenId; workersFarmIds=n.workersFarmIds;});
           };
           case (_) {
 
@@ -1214,14 +1214,16 @@ shared(msg) actor class AntKingdoms(
     let claimResource = {
       var soil: Float=0; var leaf: Float= 0; var gold: Float=0; var food: Float = 0;
     };
-
+let ret = Buffer.Buffer<TokenIndex>(workerTokenIds.countIds);
   for(id in Iter.fromArray(workerTokenIds.soil)) {
+    if(_isOwnerOf(id, Principal.toText(msg.caller)) == true) return #err("Token not valid!");
     var tokenData = switch(_metadata.get(id)) {
           case (?metadata)  {
             var newDetail: DetailNFT = metadata.0.detail;
             switch (metadata.0.detail) {
               case (#worker(w)) {
                 if(Nat.equal(w.antState, ANT_STATE[0])) {
+                  ret.add(id);
                     newDetail := #worker({level=w.level; inNest= w.inNest;queenId= w.queenId; antState=ANT_STATE[2];breedTimestamp= w.breedTimestamp;farmTimestamp=Time.now()+w.info.farmingTime;info=w.info});
                     claimResource.soil += w.info.farmPerTime.soil;
                 } else {
@@ -1230,7 +1232,7 @@ shared(msg) actor class AntKingdoms(
               case (_) {
               };
             };
-        
+          
             metadata.0.detail := newDetail;
             _metadata.put(id,metadata);
             };
@@ -1239,12 +1241,14 @@ shared(msg) actor class AntKingdoms(
       };
                 };
                 for(id in Iter.fromArray(workerTokenIds.leaf)) {
+                   if(_isOwnerOf(id, Principal.toText(msg.caller)) == true) return #err("Token not valid!");
     var tokenData = switch(_metadata.get(id)) {
           case (?metadata)  {
             var newDetail: DetailNFT = metadata.0.detail;
             switch (metadata.0.detail) {
               case (#worker(w)) {
                 if(Nat.equal(w.antState, ANT_STATE[0])) {
+                  ret.add(id);
                     newDetail := #worker({level=w.level; inNest= w.inNest;queenId= w.queenId; antState=ANT_STATE[2];breedTimestamp= w.breedTimestamp;farmTimestamp=Time.now()+w.info.farmingTime;info=w.info});
                     claimResource.leaf += w.info.farmPerTime.leaf;
                 } else {
@@ -1262,12 +1266,14 @@ shared(msg) actor class AntKingdoms(
       };
                 };
                 for(id in Iter.fromArray(workerTokenIds.food)) {
+                   if(_isOwnerOf(id, Principal.toText(msg.caller)) == true) return #err("Token not valid!");
     var tokenData = switch(_metadata.get(id)) {
           case (?metadata)  {
             var newDetail: DetailNFT = metadata.0.detail;
             switch (metadata.0.detail) {
               case (#worker(w)) {
                 if(Nat.equal(w.antState, ANT_STATE[0])) {
+                  ret.add(id);
                     newDetail := #worker({level=w.level; inNest= w.inNest;queenId= w.queenId; antState=ANT_STATE[2];breedTimestamp= w.breedTimestamp;farmTimestamp=Time.now()+w.info.farmingTime;info=w.info});
                     claimResource.food += w.info.farmPerTime.food;
                 } else {
@@ -1285,12 +1291,14 @@ shared(msg) actor class AntKingdoms(
       };
                 };
                 for(id in Iter.fromArray(workerTokenIds.gold)) {
+                   if(_isOwnerOf(id, Principal.toText(msg.caller)) == true) return #err("Token not valid!");
     var tokenData = switch(_metadata.get(id)) {
           case (?metadata)  {
             var newDetail: DetailNFT = metadata.0.detail;
             switch (metadata.0.detail) {
               case (#worker(w)) {
                 if(Nat.equal(w.antState, ANT_STATE[0])) {
+                  ret.add(id);
                     newDetail := #worker({level=w.level; inNest= w.inNest;queenId= w.queenId; antState=ANT_STATE[2];breedTimestamp= w.breedTimestamp;farmTimestamp=Time.now()+w.info.farmingTime;info=w.info});
                     claimResource.gold += w.info.farmPerTime.gold;
                 } else {
@@ -1307,14 +1315,55 @@ shared(msg) actor class AntKingdoms(
           case (_) return #err("Token not valid!");
       };
                 };
+                 if(_isOwnerOf(landTokenId, Principal.toText(msg.caller)) == true) return #err("Token not valid!");
  var tokenData = switch(_metadata.get(landTokenId)) {
           case (?metadata)  {
             var newDetail: DetailNFT = metadata.0.detail;
             switch (metadata.0.detail) {
               case (#land(w)) {
-                if(Nat.equal(w.antState, ANT_STATE[0])) {
-                    newDetail := #land({-});
-                    claimResource.gold += w.info.farmPerTime.gold;
+                    newDetail := #land({
+                      nestStaked=w.nestStaked;
+                      resource = w.resource;
+                      claimableResource = {soil= claimResource.soil;leaf=claimResource.leaf;gold=claimResource.gold;food=claimResource.food;};
+                      workersFarmIds = ret.toArray();
+                    });
+              };
+              case (_) {
+              };
+            };
+        
+            metadata.0.detail := newDetail;
+            _metadata.put(landTokenId,metadata);
+            };
+        
+          case (_) return #err("Token not valid!");
+      };
+                return #ok(true)
+  };
+
+  public shared(msg) func claimResourceInLand(landTokenId: TokenIndex): async Result.Result<Bool, Text>{
+         if(_isOwnerOf(landTokenId, Principal.toText(msg.caller)) == true) return #err("Token not valid!");
+ var tokenData = switch(_metadata.get(landTokenId)) {
+          case (?metadata)  {
+            var newDetail: DetailNFT = metadata.0.detail;
+            switch (metadata.0.detail) {
+              case (#land(w)) {
+                    newDetail := #land({
+                      nestStaked=w.nestStaked;
+                      resource = {soil= w.resource.soil - w.claimableResource.soil;leaf= w.resource.leaf - w.claimableResource.leaf;
+                      gold= w.resource.gold - w.claimableResource.gold;food=w.resource.food - w.claimableResource.food;};
+                      claimableResource = {soil= 0;leaf=0;gold=0;food=0;};
+                      workersFarmIds = [];
+                    });
+                    for(id in Iter.fromArray(w.workersFarmIds)) {
+                   if(_isOwnerOf(id, Principal.toText(msg.caller)) == true) return #err("Token not valid!");
+    var tokenData = switch(_metadata.get(id)) {
+          case (?metadata)  {
+            var newDetail: DetailNFT = metadata.0.detail;
+            switch (metadata.0.detail) {
+              case (#worker(w)) {
+                if(Nat.equal(w.antState, ANT_STATE[2])) {
+                    newDetail := #worker({level=w.level; inNest= w.inNest;queenId= w.queenId; antState=ANT_STATE[0];breedTimestamp= w.breedTimestamp;farmTimestamp=w.farmTimestamp;info=w.info});
                 } else {
                 }
               };
@@ -1328,7 +1377,19 @@ shared(msg) actor class AntKingdoms(
         
           case (_) return #err("Token not valid!");
       };
-                return #ok(true)
+                };
+              };
+              case (_) {
+              };
+            };
+        
+            metadata.0.detail := newDetail;
+            _metadata.put(landTokenId,metadata);
+            };
+        
+          case (_) return #err("Token not valid!");
+      };
+      return #ok(true)
   };
 
   //   private func _removeTokenFrom(owner: Principal, tokenId: Nat) {
@@ -1391,7 +1452,7 @@ shared(msg) actor class AntKingdoms(
         var newDetail: DetailNFT = metadata.0.detail;
         switch (metadata.0.detail) {
           case (#worker(w)) {
-            newDetail := #worker({level=w.level; inNest= w.inNest;queenId= w.queenId; antState=ANT_STATE[0];breedTimestamp= Time.now()+ n.breedWorkerTime;farmTimestamp=w.farmTimestamp;info=w.info;});
+            newDetail := #worker({level=w.level; inNest= w.inNest;queenId= w.queenId; antState=ANT_STATE[1];breedTimestamp= Time.now()+ n.breedWorkerTime;farmTimestamp=w.farmTimestamp;info=w.info;});
           };
           case (_) {
           };
@@ -1425,7 +1486,7 @@ shared(msg) actor class AntKingdoms(
                 if(Int.greater(w.breedTimestamp , Time.now()) and Nat.equal(w.antState, ANT_STATE[0])) {
                   return #err("Can't claim!");
                 } else {
-                    newDetail := #worker({level=w.level; inNest= w.inNest;queenId= w.queenId; antState=ANT_STATE[1];breedTimestamp= w.breedTimestamp;farmTimestamp=w.farmTimestamp;info=w.info;});
+                    newDetail := #worker({level=w.level; inNest= w.inNest;queenId= w.queenId; antState=ANT_STATE[0];breedTimestamp= w.breedTimestamp;farmTimestamp=w.farmTimestamp;info=w.info;});
                 };
               };
               case (_) {
