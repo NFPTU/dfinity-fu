@@ -1,3 +1,6 @@
+const second = 1000000000
+const minute = 60 * second;
+
 export const metadata = [
 	{
 
@@ -29,7 +32,11 @@ export const metadata = [
 		detail: {
 			queen: {
 				level: 1,
-				inNest: []
+				inNest: [],
+				info: {
+					foodPerWorker: 10,
+					breedWorkerTime: 60 * second
+				}
 			}
 		}
 	},
@@ -62,7 +69,21 @@ export const metadata = [
 		],
 		detail: {
 			worker: {
-				level: 1
+				level: 1,
+				antState: 0,
+				farmTimestamp: 0,
+				queenId: [],
+				inNest: [],
+				breedTimestamp: 0,
+				info: {
+					farmingTime: minute * 5,
+					farmPerTime: {
+						'food': 10,
+						'gold': 0.1,
+						'leaf': 20,
+						'soil': 30,
+					}
+				}
 			}
 		}
 	},
@@ -136,10 +157,20 @@ export const metadata = [
 		],
 		detail: {
 			land: {
-				gold: 1000,
-				leaf: 10000,
-				wood: 10000,
-				nestStaked: []
+				resource: {
+					gold: 1000,
+					leaf: 10000,
+					soil: 20000,
+					food: 8000,
+				},
+				workersFarmIds: [],
+				nestStaked: [],
+				claimableResource: {
+					gold: 0,
+					leaf: 0,
+					soil: 0,
+					food: 0,
+				}
 			}
 		}
 	},

@@ -2,7 +2,6 @@ import React, { Fragment } from 'react';
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import './App.scss';
-import { CreateNFTPage } from './pages/create-nft';
 import 'react-toastify/dist/ReactToastify.css';
 import ListCollections from './pages/detail-collections';
 import Navbar from './components/navbar';

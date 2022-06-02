@@ -8,7 +8,6 @@ import GameLayout from '../components/layout/game-layout'
 const HomePage = lazy(() => import("./home"))
 const DetailCollections = lazy(() => import("./detail-collections"))
 const DetailNft = lazy(() => import("./detail-nft"))
-const CreateNft = lazy(() => import("./create-nft"))
 const ListNft = lazy(() => import("./list-nft"))
 const LoginGame = lazy(() => import("./game/login"))
 const Inventory = lazy(() => import("./game/inventory"))
@@ -57,13 +56,6 @@ const routes = [
         exact: true,
         public: true,
         component: DetailNft,
-        layout: MarketLayout
-    },
-    {
-        path: "nft/create",
-        exact: true,
-        public: true,
-        component: CreateNft,
         layout: MarketLayout
     },
     {

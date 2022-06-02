@@ -27,7 +27,10 @@ module {
         #queen : {
             level: Nat;
             inNest: ?TokenIndex;
+            info : {
             breedWorkerTime: Time.Time;
+            foodPerWorker: Float;
+            }
         };
         #nest : {
             level: Nat;
@@ -41,15 +44,34 @@ module {
             antState: Nat;
             breedTimestamp: Time.Time;
             farmTimestamp: Time.Time;
-            farmingTime: Time.Time;
+            info: {
+                farmingTime: Time.Time;
+                farmPerTime: Resource;
+            }
         };
         #land:{
-            wood: Float;
-            leaf: Float;
-            gold: Float;
+            resource: Resource;
             nestStaked: ?TokenIndex;
+            claimableResource : Resource;
+            workersFarmIds: [TokenIndex]
         }
     };
+
+    public type Resource = {
+             soil: Float;
+             leaf: Float;
+             gold: Float;
+             food: Float;
+    };
+
+    public type WorkerFarmRequest = {
+        soil: [TokenIndex];
+        leaf: [TokenIndex];
+        gold: [TokenIndex];
+        food: [TokenIndex];
+        countIds: Nat;
+    };
+
 
     public type MetadataExt = {
          name: Text;
@@ -75,9 +97,8 @@ module {
     };
 
     public type UserState = {
-        wood: Float;
-        leaf: Float;
-        gold: Float;
+      
+        resource: Resource;
     };
 
     
