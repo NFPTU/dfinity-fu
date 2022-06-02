@@ -16,6 +16,7 @@ import Ext "Ext";
 import ExtCommon "/Lib/Ext/ext/Common";
 import ExtCore "/Lib/Ext/ext/Core";
 import ExtTypes "Ext/types";
+import Float "mo:base/Float";
 import Hash "mo:base/Hash";
 import HashMap "mo:base/HashMap";
 import Int "mo:base/Int";
@@ -1086,7 +1087,7 @@ shared(msg) actor class AntKingdoms(
         var newDetail: DetailNFT = metadata.0.detail;
         switch (metadata.0.detail) {
           case (#queen(n)) {
-            newDetail := #queen({level=n.level; inNest = ?nestTokenId; breedWorkerTime=n.breedWorkerTime;});
+            newDetail := #queen({level=n.level; inNest = ?nestTokenId; info=n.info;});
           };
           case (_) {
 
@@ -1355,6 +1356,19 @@ let ret = Buffer.Buffer<TokenIndex>(workerTokenIds.countIds);
                       claimableResource = {soil= 0;leaf=0;gold=0;food=0;};
                       workersFarmIds = [];
                     });
+
+switch (users.get(Principal.toText(msg.caller))) {
+            case (?user) {
+              let userRes  = user.userState.resource;
+              user.userState := {resource = {soil=userRes.soil + w.claimableResource.soil; leaf= userRes.leaf + w.claimableResource.leaf; gold=userRes.gold + w.claimableResource.gold;food= userRes.food + w.claimableResource.food;}};
+                users.put(Principal.toText(msg.caller), user);
+            };
+         
+            case (_) {
+               return #err("User Not Found")
+            };
+      };
+
                     for(id in Iter.fromArray(w.workersFarmIds)) {
                    if(_isOwnerOf(id, Principal.toText(msg.caller)) == true) return #err("Token not valid!");
     var tokenData = switch(_metadata.get(id)) {
@@ -1452,7 +1466,19 @@ let ret = Buffer.Buffer<TokenIndex>(workerTokenIds.countIds);
         var newDetail: DetailNFT = metadata.0.detail;
         switch (metadata.0.detail) {
           case (#worker(w)) {
-            newDetail := #worker({level=w.level; inNest= w.inNest;queenId= w.queenId; antState=ANT_STATE[1];breedTimestamp= Time.now()+ n.breedWorkerTime;farmTimestamp=w.farmTimestamp;info=w.info;});
+            switch (users.get(Principal.toText(msg.caller))) {
+            case (?user) {
+              let userRes  = user.userState.resource;
+              if(Float.greaterOrEqual(userRes.food, n.info.foodPerWorker) == false) {return #err("not enough food!")};
+              user.userState := {resource = {soil=userRes.soil ; leaf= userRes.leaf; gold=userRes.gold;food= userRes.food- n.info.foodPerWorker;}};
+                users.put(Principal.toText(msg.caller), user);
+            };
+         
+            case (_) {
+               return #err("User Not Found")
+            };
+      };
+            newDetail := #worker({level=w.level; inNest= w.inNest;queenId= w.queenId; antState=ANT_STATE[1];breedTimestamp= Time.now()+ n.info.breedWorkerTime;farmTimestamp=w.farmTimestamp;info=w.info;});
           };
           case (_) {
           };
