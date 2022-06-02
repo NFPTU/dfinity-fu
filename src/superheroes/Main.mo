@@ -1167,7 +1167,7 @@ shared(msg) actor class AntKingdoms(
     }; 
 
      public query func getUserTokens(owner: AccountIdentifier) : async Result.Result<[MetadataExt] , CommonError>{
-        let tokenIds = switch (users.get(owner)) {
+      let tokenIds = switch (users.get(owner)) {
             case (?user) {
                 TrieSet.toArray(user.tokens)
             };
@@ -1181,7 +1181,7 @@ shared(msg) actor class AntKingdoms(
       case (?metadata) metadata;
       case (_) return #err(#InvalidToken(Nat32.toText(id)));
     };
-            ret.add(_tokenMetadata(tokenData.0));
+        ret.add(_tokenMetadata(tokenData.0));
         };
         return  #ok(ret.toArray());
     };
@@ -1761,6 +1761,78 @@ switch (users.get(Principal.toText(msg.caller))) {
   };
   public query func availableCycles() : async Nat {
     return Cycles.balance();
+  };
+
+
+  public shared(msg) func getDataByLandId(landTokenId : TokenIndex) : async Result.Result<[MetadataExt], Text> {
+    let ret = Buffer.Buffer<MetadataExt>(3);
+    
+    if(checkTypeToken(landTokenId, "Land")) {
+      if(_isOwnerOf(landTokenId, Principal.toText(msg.caller))) {
+       switch (_metadata.get(landTokenId)) {
+         case (?metadataLand) {
+            ret.add(_tokenMetadata(metadataLand.0));
+
+            switch(metadataLand.0.detail) {
+              case (#land(n)) {
+                switch (n.nestStaked) {
+                  case (?nestStaked) {
+                    switch (_metadata.get(nestStaked)) {
+                      case (?metadataNest) {
+                        ret.add(_tokenMetadata(metadataNest.0));
+
+                        switch (metadataNest.0.detail) {
+                          case (#nest(n)) {
+                              switch(n.inLand) {
+                                case (?inland) {
+                                  switch(_metadata.get(inland)) {
+                                    case (?metadataQueen) {
+                                       ret.add(_tokenMetadata(metadataQueen.0));
+                                    };
+
+                                    case (_) {
+                                      D.print("Don't have tokenId of this Queen");
+                                    };
+                                  };
+                                };
+                                case (_) {
+                                      D.print("Don't have inLand of Nest");
+                                };
+                              };
+                          };
+                          case (_) {
+                            D.print("Don't have tokenId of this Queen");
+                          };
+                      
+                        };
+                    
+                      };
+                      case (_) {
+                        D.print("Don't have Nest with this NestID");
+                      };
+                    };
+                  };
+                  case (_) {
+                        D.print("Don't have NestStaked in Land");
+                  };
+                }
+                
+              };
+
+              case (_) {
+                D.print("Do not have detail of Land");
+              };
+            };
+          };
+          case (_) {
+            D.print("Do not have Land with this LandId");
+          };
+        };
+
+      };
+      return #ok(ret.toArray());
+    };
+    return #err("land Id is not correct");
   };
 
 };
