@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import {
 	Container,
@@ -12,19 +12,20 @@ import {
 	Desc,
 } from './card-popup.element';
 
-function CardPopUp({ data }) {
+function CardPopUp({ data, handleClickCardStake, border }) {
+	const { attributes, description, detail, image, name, tokenId } = data;
 	return (
 		<>
-			<Container>
+			<Container onClick={() => handleClickCardStake(tokenId[0])} border={border}>
 				<Glass></Glass>
 				<Content>
 					<ImgWrapper>
-						<Img src={data?.image} alt='' />
+						<Img src={image} alt='' />
 					</ImgWrapper>
 					<Info>
 						<InfoTop>
-							<Name>Ant worker #2</Name>
-							<Desc>Description of Ant worker #2</Desc>
+							<Name>{name}</Name>
+							<Desc>{description}</Desc>
 						</InfoTop>
 					</Info>
 				</Content>

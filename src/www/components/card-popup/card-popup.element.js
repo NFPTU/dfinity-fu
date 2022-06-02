@@ -10,6 +10,7 @@ export const Container = styled.div`
   background: #525d83;
   margin-top: 10px;
   flex-wrap: wrap;
+  border: ${(props) => props.border === true ? '3px solid black' : '3px solid transparent'};
 
   &:before {
     content: "";

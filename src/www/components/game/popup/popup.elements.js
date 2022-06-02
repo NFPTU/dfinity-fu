@@ -57,5 +57,5 @@ export const CancelButton = styled.div`
 	position: absolute;
     width: 100%;
     top: 14%;
-    left: 94%;
+    left: 87%;
 `

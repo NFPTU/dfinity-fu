@@ -77,6 +77,8 @@ function Inventory() {
 		setFilterData(data);
 	}, [data]);
 
+	console.log(data)
+
 	return (
 		<>
 			<Container>

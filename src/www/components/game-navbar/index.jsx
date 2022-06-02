@@ -1,21 +1,15 @@
 import React, { useState, useEffect } from "react";
 import {
+    Background,
     Container,
-    Item,
-    ItemImg,
-    LeftImg,
-    LeftTitle,
-    LeftWrapper,
-    MidImg,
-    MidTitle,
-    MiddleWrapper,
-    Option,
-    RightImg,
-    RightWrapper
+    Title,
+    TitleWrapper,
+    Wrapper
 } from "./game-navbar.elements";
 import {
   useLocation
 } from "react-router-dom";
+import Resource from "./resource";
 
 function GameNavbar() {
   const [navbarTitle, setNavbarTitle] = useState('Ants Kingdoms')
@@ -31,27 +25,17 @@ function GameNavbar() {
 
   return (
     <Container>
-      <LeftWrapper>
-        <LeftImg src={'/images/navbar/NavbarLeft.png'} alt=""/>
-        <LeftTitle>Ants</LeftTitle>
-      </LeftWrapper>
+      <Wrapper>
+        <Resource img={'/images/navbar/icons/gold.png'}/>
+        <Resource img={'/images/navbar/icons/wood.png'}/>
+        <TitleWrapper>
+          <Background src={'/images/sidebarButton.png'} alt="background" />
 
-      <MiddleWrapper>
-        <MidImg src={'/images/navbar/NavbarMid.png'} alt="" type={path === 'home-claim' ? 'home' : ''}/>
-        <MidTitle>{navbarTitle}</MidTitle>
-      </MiddleWrapper>
-
-      <RightWrapper>
-        <RightImg src={'/images/navbar/NavbarRight.png'} alt=""/>
-        <Option>
-            <Item>
-                <ItemImg src={'images/navbar/SettingsBtn.png'}/>
-            </Item>
-            <Item>
-                <ItemImg src={'images/navbar/LogoutBtn.png'}/>
-            </Item>
-        </Option>
-      </RightWrapper>
+          <Title>Ants Kingdoms</Title>
+        </TitleWrapper>
+        <Resource img={'/images/navbar/icons/meet.png'}/>
+        <Resource img={'/images/navbar/icons/thunder.png'}/>
+      </Wrapper>
     </Container>
   );
 }
