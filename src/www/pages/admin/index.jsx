@@ -72,15 +72,46 @@ function Admin() {
 	console.log("response :", resp);
   }
 
+  const onBreedingWorker = async() => {
+	const listQ = getNFTByType('Queen');
+	const res = await superheroes.breedAntWorkder(listQ[0].tokenId[0])
+	console.log(res);
+  }
+
+  const onClaimWorker = async() => {
+	const listQ = getNFTByType('Worker');
+	const res = await superheroes.claimWorkerEgg(listQ[0].tokenId[0])
+	console.log(res);
+  }
+
+  const onWorkerFarmInLand = async () => {
+	  const farmRequest  = {
+		food: [],
+		gold: [],
+		leaf: [],
+		soil: [],
+		countIds: []
+	  }
+	  const listQ = getNFTByType('Land');
+	const res = await superheroes.workerFarmInLand(farmRequest, listQ[0].tokenId[0])
+  }
+
 	const getNFTByType = (type) => {
 		return listNFt.filter((el) => el.attributes[0].value === type);
 	};
+
+	const onClaimResourceInLand = async() => {
+		const listQ = getNFTByType('Land');
+		const res = await superheroes.claimResourceInLand(listQ[0].tokenId[0])
+		console.log(res);
+	  }
 
 	return (
 		<>
 			<button onClick={onGetData}> get Data</button>
 			<br />
 			<button onClick={onSubmit}> Submit</button>
+
 			<br />
 			<button onClick={onClaim}> Claiming NFT</button>
 			<br />
@@ -88,8 +119,15 @@ function Admin() {
 			<br />
 			<button onClick={onStakeQueenInNest}> stake Queen NFT</button>
 			<br />
-      <button onClick={onChangeName}> change name</button>
+      			<button onClick={onChangeName}> change name</button>
 			<br />
+			<button onClick={onBreedingWorker}> Breeding worker ant</button>
+			<br />
+			<button onClick={onClaimWorker}> Claim worker ant</button>
+			<br />
+			<button onClick={onWorkerFarmInLand}> worker ant Farm land</button>
+			<br />
+			<button onClick={onClaimResourceInLand}> claim Resource In Land</button>
 		</>
 	);
 }
