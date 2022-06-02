@@ -4,7 +4,7 @@ import { useCanister, useConnect } from '@connect2ic/react';
 
 function Admin() {
 	const [superheroes, { loading, error }] = useCanister('superheroes');
-	const { principal, isConnected, disconnect } = useConnect();
+	const { principal, isConnected, disconnect, activeProvider , isIdle, connect, isConnecting} = useConnect();
 	const [listNFt, setListNFt] = useState([]);
 
 	const onSubmit = async () => {
@@ -23,6 +23,7 @@ function Admin() {
 
 	const onClaim = async () => {
 		try {
+			console.log(superheroes, activeProvider, isIdle, isConnecting, isConnected);
 			const res = await superheroes?.claiming();
 			console.log(res);
 		} catch (er) {
@@ -61,7 +62,7 @@ function Admin() {
 	};
 
 	const onGetData = async () => {
-		// console.log(superheroes, principal?.toString());
+		console.log( principal?.toString());
 		const resp = await superheroes?.getUserTokens(principal?.toString());
 		setListNFt(resp?.ok);
 		console.log(resp);
@@ -74,6 +75,7 @@ function Admin() {
 
   const onBreedingWorker = async() => {
 	const listQ = getNFTByType('Queen');
+	console.log(listQ);
 	const res = await superheroes.breedAntWorkder(listQ[0].tokenId[0])
 	console.log(res);
   }
@@ -106,8 +108,15 @@ function Admin() {
 		console.log(res);
 	  }
 
+	const getUserInfo = async() => {
+		const res = await superheroes.getUserInfo(principal?.toString())
+		console.log(res);
+	}
+
 	return (
 		<>
+		<button onClick={getUserInfo}> get User</button>
+			<br />
 			<button onClick={onGetData}> get Data</button>
 			<br />
 			<button onClick={onSubmit}> Submit</button>

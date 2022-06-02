@@ -1421,6 +1421,7 @@ switch (users.get(Principal.toText(msg.caller))) {
    
 
   public shared(msg) func claiming() : async Result.Result<Bool, Text> {
+    D.print(Principal.toText(msg.caller));
        switch (users.get(Principal.toText(msg.caller))) {
             case (?user) {
               throw Error.reject("userClaimed");
@@ -1452,7 +1453,7 @@ switch (users.get(Principal.toText(msg.caller))) {
   public shared(msg) func breedAntWorkder(queenTokenId: TokenIndex) : async Result.Result<Bool, Text> {
  var tokenData = switch(_metadata.get(queenTokenId)) {
       case (?metadata)  {
-        var newDetail: DetailNFT = metadata.0.detail;
+        var newQueenDetail: DetailNFT = metadata.0.detail;
         switch (metadata.0.detail) {
           case (#queen(n)) {
             let request: RegisterTokenRequest = {
@@ -1461,9 +1462,10 @@ switch (users.get(Principal.toText(msg.caller))) {
                     owner = Principal.toText(msg.caller);
               };
               let tokenId = registerToken(request);
+              D.print(Nat32.toText(tokenId));
               var workerData = switch(_metadata.get(tokenId)) {
       case (?metadata)  {
-        var newDetail: DetailNFT = metadata.0.detail;
+        var newWorkerDetail: DetailNFT = metadata.0.detail;
         switch (metadata.0.detail) {
           case (#worker(w)) {
             switch (users.get(Principal.toText(msg.caller))) {
@@ -1478,13 +1480,13 @@ switch (users.get(Principal.toText(msg.caller))) {
                return #err("User Not Found")
             };
       };
-            newDetail := #worker({level=w.level; inNest= w.inNest;queenId= w.queenId; antState=ANT_STATE[1];breedTimestamp= Time.now()+ n.info.breedWorkerTime;farmTimestamp=w.farmTimestamp;info=w.info;});
+            newWorkerDetail := #worker({level=w.level; inNest= w.inNest;queenId= w.queenId; antState=ANT_STATE[1];breedTimestamp= Time.now()+ n.info.breedWorkerTime;farmTimestamp=w.farmTimestamp;info=w.info;});
           };
           case (_) {
           };
         };
      
-        metadata.0.detail := newDetail;
+        metadata.0.detail := newWorkerDetail;
          _metadata.put(tokenId,metadata);
          };
           case (_) return #err("Token not valid!");
@@ -1494,7 +1496,7 @@ switch (users.get(Principal.toText(msg.caller))) {
           };
         };
      
-        metadata.0.detail := newDetail;
+        metadata.0.detail := newQueenDetail;
          _metadata.put(queenTokenId,metadata);
          };
     
