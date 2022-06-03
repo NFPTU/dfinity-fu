@@ -21,6 +21,7 @@ export const IconWrapper = styled.div`
 
 export const Image = styled.img`
     width: 100%;
+    border-radius: 50%;
 `
 
 export const ResourceNumber = styled.div`

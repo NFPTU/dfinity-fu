@@ -7,10 +7,10 @@
   resolved "https://registry.yarnpkg.com/@assemblyscript/loader/-/loader-0.9.4.tgz#a483c54c1253656bb33babd464e3154a173e1577"
   integrity sha512-HazVq9zwTVwGmqdwYzu7WyQ6FQVZ7SwET0KKQuKm55jD0IfUpZgN0OPIiZG3zV1iSrVYcN0bdwLRXI/VNCYsUA==
 
-"@astrox/connection@^0.0.41":
-  version "0.0.41"
-  resolved "https://registry.yarnpkg.com/@astrox/connection/-/connection-0.0.41.tgz#59be7f1ea202f1c928c22c14bb0eeca704113fe5"
-  integrity sha512-PtdziNHVqPmhS1Jmr25+VPPvz5FPBpiBixH9xRTKBUznjTjxzGdMeGcbF7N3RbxpATxGhTXUjFBWirhC2buP8g==
+"@astrox/connection@^0.0.40":
+  version "0.0.40"
+  resolved "https://registry.npmjs.org/@astrox/connection/-/connection-0.0.40.tgz#b5176cbcc5915cbfd7cc4a07923b9e8e0921e9a6"
+  integrity sha512-XAoJd4thN8MteKP6Ikt56PD6UnkgEaVe1mEF9hhFv+Cc0ya1rL0wR5xiteYBgiqv1FXF88E+lX4a+DFZtz1UQg==
   dependencies:
     "@dfinity/agent" "^0.10.1"
     "@dfinity/authentication" "0.10.1"
@@ -160,12 +160,12 @@
     "@babel/helper-validator-identifier" "^7.16.7"
     to-fast-properties "^2.0.0"
 
-"@connect2ic/core@^0.0.9":
-  version "0.0.9"
-  resolved "https://registry.yarnpkg.com/@connect2ic/core/-/core-0.0.9.tgz#e089fbc07cd95b939cfe80a0a4c04bd6502d5c9e"
-  integrity sha512-5DKf17o8k0XTcnGIyfwp3k/Bsr7Z6VBl9iyeBjH9ygTQrRlwE71G03dYmjP6nX7r4O6b36jHjpeyfnx93o8veA==
+"@connect2ic/core@^0.0.5":
+  version "0.0.5"
+  resolved "https://registry.npmjs.org/@connect2ic/core/-/core-0.0.5.tgz#dbbf74199ae42faa8814ace25e43ce913d90cfdc"
+  integrity sha512-hE+Eauec0sqIXW6647wZ67wo/A+cN0LA7N8564VoukQuQ51Lk16oj8Syn7upLN55GShN52Dz+aXxydlA6Z2eIQ==
   dependencies:
-    "@astrox/connection" "^0.0.41"
+    "@astrox/connection" "^0.0.40"
     "@dfinity/agent" "0.10.4"
     "@dfinity/auth-client" "0.10.4"
     "@dfinity/authentication" "0.10.4"
@@ -176,10 +176,10 @@
     secp256k1 "^4.0.3"
     xstate "^4.30.5"
 
-"@connect2ic/react@^0.0.7":
-  version "0.0.7"
-  resolved "https://registry.yarnpkg.com/@connect2ic/react/-/react-0.0.7.tgz#88328c72d0cc0aa808337dd64ec8fb23ebbef91c"
-  integrity sha512-K2J6aqNUQK4OM5mWqniqPPEq+8u+L4tfjYS/aQEVMT9co9HRspobAGZj5ihb8cHMAZhr8KIGK7rvm9L+BlXkNA==
+"@connect2ic/react@^0.0.5":
+  version "0.0.5"
+  resolved "https://registry.npmjs.org/@connect2ic/react/-/react-0.0.5.tgz#3e0a58eba6c0eb386c76d5a28df8ed96b8f7e27a"
+  integrity sha512-SMIVUvhCU2NUnI4TnZ5P0UGjVjvAslCpMRpeH7TJo4l975cOKXwhDnyqhg7JvL/KxdSz5tjr2XZ845YYFTishA==
   dependencies:
     "@xstate/react" "^3.0.0"
 

@@ -8,7 +8,7 @@ import {
 } from "./resource.elements";
 
 
-function Resource({ img }) {
+function Resource({ img, resource }) {
 
   return (
     <Container>
@@ -18,7 +18,7 @@ function Resource({ img }) {
         <Image src={img} alt="icon_image" />
       </IconWrapper>
 
-      <ResourceNumber>1000</ResourceNumber>
+      <ResourceNumber>{resource || 0}</ResourceNumber>
     </Container>
   );
 }
