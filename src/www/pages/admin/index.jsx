@@ -24,6 +24,7 @@ function Admin() {
 	const onClaim = async () => {
 		try {
 			console.log(superheroes, activeProvider, isIdle, isConnecting, isConnected);
+			connect();
 			const res = await superheroes?.claiming();
 			console.log(res);
 		} catch (er) {

@@ -1,24 +1,23 @@
 import React, { useState, useEffect } from "react";
 import {
+    Background,
     Container,
-    Item,
-    ItemImg,
-    LeftImg,
-    LeftTitle,
-    LeftWrapper,
-    MidImg,
-    MidTitle,
-    MiddleWrapper,
-    Option,
-    RightImg,
-    RightWrapper
+    Title,
+    TitleWrapper,
+    Wrapper
 } from "./game-navbar.elements";
 import {
   useLocation
 } from "react-router-dom";
+import Resource from "./resource";
+import { useCanister, useConnect } from '@connect2ic/react';
 
 function GameNavbar() {
   const [navbarTitle, setNavbarTitle] = useState('Ants Kingdoms')
+  const [resource, setResource] = useState({})
+
+  const [superheroes, { loading, error }] = useCanister('superheroes');
+  const { principal, isConnected, disconnect, activeProvider , isIdle, connect, isConnecting} = useConnect();
 
   const location = useLocation()
   const path = location.pathname.slice(1)
@@ -29,29 +28,31 @@ function GameNavbar() {
     }
   }, [location])
 
+  //Get user info (resource)
+  const getUserInfo = async() => {
+		const res = await superheroes.getUserInfo(principal?.toString())
+		setResource(res?.userState?.resource)
+	}
+
+  useEffect(() => {
+    getUserInfo()
+  }, [superheroes, principal])
+
+  console.log('resource', resource)
+
   return (
     <Container>
-      <LeftWrapper>
-        <LeftImg src={'/images/navbar/NavbarLeft.png'} alt=""/>
-        <LeftTitle>Ants</LeftTitle>
-      </LeftWrapper>
+      <Wrapper>
+        <Resource img={'/images/navbar/icons/gold.png'} resource={resource?.gold}/>
+        <Resource img={'/images/navbar/icons/soil.png'} resource={resource?.soil}/>
+        <TitleWrapper>
+          <Background src={'/images/sidebarButton.png'} alt="background" />
 
-      <MiddleWrapper>
-        <MidImg src={'/images/navbar/NavbarMid.png'} alt="" type={path === 'home-claim' ? 'home' : ''}/>
-        <MidTitle>{navbarTitle}</MidTitle>
-      </MiddleWrapper>
-
-      <RightWrapper>
-        <RightImg src={'/images/navbar/NavbarRight.png'} alt=""/>
-        <Option>
-            <Item>
-                <ItemImg src={'images/navbar/SettingsBtn.png'}/>
-            </Item>
-            <Item>
-                <ItemImg src={'images/navbar/LogoutBtn.png'}/>
-            </Item>
-        </Option>
-      </RightWrapper>
+          <Title>Ants Kingdoms</Title>
+        </TitleWrapper>
+        <Resource img={'/images/navbar/icons/meet.png'} resource={resource?.food}/>
+        <Resource img={'/images/navbar/icons/leaf.png'} resource={resource?.leaf}/>
+      </Wrapper>
     </Container>
   );
 }

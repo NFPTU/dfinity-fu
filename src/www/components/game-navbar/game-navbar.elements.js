@@ -1,78 +1,43 @@
-import styled from 'styled-components'
-import * as palette from './types'
+import styled from "styled-components";
+import * as palette from "./types";
 
 export const Container = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: ${palette.HEIGHT_NAVBAR};
-    position: sticky;
-    z-index: 100;
-    top: 0; // cứng ở 1 chỗ 
-    box-shadow: 0px 5px 8px -9px rgba(0, 0, 0, 0.75);
-    background-color: ${palette.PRIMARY};
-`
-export const LeftWrapper = styled.div`
-    display: flex;
-    align-items: center;
-    position: relative;
-`
+  height: ${palette.HEIGHT_NAVBAR};
+  position: sticky;
+  z-index: 100;
+  top: 0; // cứng ở 1 chỗ
+  box-shadow: 0px 5px 8px -9px rgba(0, 0, 0, 0.75);
+  background-color: ${palette.PRIMARY};
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
 
-export const LeftImg = styled.img`
-    height: ${palette.HEIGHT_NAVBAR};
-    width: 200px;
-`
+export const Wrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 85%;
+  margin-top: 3px;
+`;
 
-export const LeftTitle = styled.p`
-    position: absolute;
-    left: 30%;
-    top: 17%;
-    font-size: ${palette.FONTSIZE_M};
-`
+export const TitleWrapper = styled.div`
+  position: relative;
+  width: 205px;
+  height: 80px;
+`;
 
-export const MiddleWrapper = styled.div`
-    display: flex;
-    align-items: center;
-    position: relative;
-`
+export const Background = styled.img`
+  position: absolute;
+  width: 100%;
+`;
 
-export const MidImg = styled.img`
-    height: ${palette.HEIGHT_NAVBAR};
-    width: ${(props) => props.type === 'home' ? '426px' : '300px'};
-`
-
-export const MidTitle = styled.div`
-    position: absolute;
-    font-size: ${palette.FONTSIZE_M};
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-`
-
-export const RightWrapper = styled.div`
-    display: flex;
-    align-items: center;
-    position: relative;
-`
-
-export const RightImg = styled.img`
-    height: ${palette.HEIGHT_NAVBAR};
-    width: 200px;
-`
-
-export const Option = styled.div`
-    display: flex;
-    align-items: center;
-    position: absolute;
-    left: 28%;
-    top: 23%;
-`
-
-export const Item = styled.div`
-    width: 45px;
-    margin-right: 10px;
-`
-
-export const ItemImg = styled.img`
-    width: 100%;
-`
+export const Title = styled.div`
+  position: absolute;
+  width: 100%;
+  top: 48%;
+  left: 65%;
+  transform: translate(-50%, -50%);
+  font-size: 20px;
+`;
