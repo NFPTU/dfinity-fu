@@ -1,5 +1,6 @@
 import React from 'react'
 import GameNavbar from '../../game-navbar'
+import GameFooter from '../../game-footer'
 import { Container } from './game-layout.elements'
 
 function GameLayout({ children }) {
@@ -7,6 +8,7 @@ function GameLayout({ children }) {
     <Container>
     <GameNavbar />
     { children }
+    <GameFooter />
     </Container>
   )
 }
