@@ -6,16 +6,11 @@
  */
 
 // import Array "mo:base/Array";
-import AID "/Lib/Ext/util/AccountIdentifier";
 import Array "mo:base/Array";
 import Buffer "mo:base/Buffer";
 import Cycles "mo:base/ExperimentalCycles";
 import D "mo:base/Debug";
 import Error "mo:base/Error";
-import Ext "Ext";
-import ExtCommon "/Lib/Ext/ext/Common";
-import ExtCore "/Lib/Ext/ext/Core";
-import ExtTypes "Ext/types";
 import Float "mo:base/Float";
 import Hash "mo:base/Hash";
 import HashMap "mo:base/HashMap";
@@ -30,6 +25,12 @@ import Result "mo:base/Result";
 import Text "mo:base/Text";
 import Time "mo:base/Time";
 import TrieSet "mo:base/TrieSet";
+
+import AID "/Lib/Ext/util/AccountIdentifier";
+import Ext "Ext";
+import ExtCommon "/Lib/Ext/ext/Common";
+import ExtCore "/Lib/Ext/ext/Core";
+import ExtTypes "Ext/types";
 import Types "./types";
 import User "./User";
 
@@ -945,6 +946,7 @@ shared(msg) actor class AntKingdoms(
   //State work
   private var CREATE_TOKEN_FEE : Nat = 1_000_000_000_000;
   private stable var _nextTokenId : TokenIndex = 0;
+  private stable var _nextFarmId : TokenIndex = 0;
   private stable var _registryState : [(TokenIndex, [(AccountIdentifier, Balance)])] = [];
   private stable var _metadataState : [(TokenIndex, (Metadata, Balance))] = [];
   private stable var _admin : Principal = init_admin;
@@ -963,6 +965,8 @@ shared(msg) actor class AntKingdoms(
 
   private var tokensMetadata = HashMap.HashMap<Nat, MetadataExt>(1, Nat.equal, Hash.hash);
     
+
+
   //State functions
   system func preupgrade() {
     Iter.iterate(_registry.entries(), func(x : (TokenIndex, TokenLedger), _index : Nat) {
@@ -1322,10 +1326,15 @@ let ret = Buffer.Buffer<TokenIndex>(workerTokenIds.countIds);
             var newDetail: DetailNFT = metadata.0.detail;
             switch (metadata.0.detail) {
               case (#land(w)) {
+                 let claimableResource = {
+                        resource = {soil= claimResource.soil;leaf=claimResource.leaf;
+                        gold=claimResource.gold;food=claimResource.food;};
+                        id = _nextFarmId; 
+                        claimTimeStamp=Time.now();};
                     newDetail := #land({
                       nestStaked=w.nestStaked;
                       resource = w.resource;
-                      claimableResource = {soil= claimResource.soil;leaf=claimResource.leaf;gold=claimResource.gold;food=claimResource.food;};
+                      claimableResource = Array.append(w.claimableResource, [claimableResource]);
                       workersFarmIds = ret.toArray();
                     });
               };
@@ -1342,25 +1351,29 @@ let ret = Buffer.Buffer<TokenIndex>(workerTokenIds.countIds);
                 return #ok(true)
   };
 
-  public shared(msg) func claimResourceInLand(landTokenId: TokenIndex): async Result.Result<Bool, Text>{
+  public shared(msg) func claimResourceInLand(landTokenId: TokenIndex, farmId: TokenIndex): async Result.Result<Bool, Text>{
          if(_isOwnerOf(landTokenId, Principal.toText(msg.caller)) == true) return #err("Token not valid!");
  var tokenData = switch(_metadata.get(landTokenId)) {
           case (?metadata)  {
             var newDetail: DetailNFT = metadata.0.detail;
             switch (metadata.0.detail) {
               case (#land(w)) {
+                 for(farm in Iter.fromArray(w.claimableResource)) {
+                   if(farm.id == farmId) {
+                     if(Int.greater(farm.claimTimeStamp , Time.now()) ){
                     newDetail := #land({
                       nestStaked=w.nestStaked;
-                      resource = {soil= w.resource.soil - w.claimableResource.soil;leaf= w.resource.leaf - w.claimableResource.leaf;
-                      gold= w.resource.gold - w.claimableResource.gold;food=w.resource.food - w.claimableResource.food;};
-                      claimableResource = {soil= 0;leaf=0;gold=0;food=0;};
+                      resource = {soil= w.resource.soil - farm.resource.soil;leaf= w.resource.leaf - farm.resource.leaf;
+                      gold= w.resource.gold - farm.resource.gold;food=w.resource.food - farm.resource.food;};
+                      claimableResource = w.claimableResource;
                       workersFarmIds = [];
                     });
+                                  
 
 switch (users.get(Principal.toText(msg.caller))) {
             case (?user) {
               let userRes  = user.userState.resource;
-              user.userState := {resource = {soil=userRes.soil + w.claimableResource.soil; leaf= userRes.leaf + w.claimableResource.leaf; gold=userRes.gold + w.claimableResource.gold;food= userRes.food + w.claimableResource.food;}};
+              user.userState := {resource = {soil=userRes.soil + farm.resource.soil; leaf= userRes.leaf + farm.resource.leaf; gold=userRes.gold + farm.resource.gold;food= userRes.food + farm.resource.food;}};
                 users.put(Principal.toText(msg.caller), user);
             };
          
@@ -1368,8 +1381,7 @@ switch (users.get(Principal.toText(msg.caller))) {
                return #err("User Not Found")
             };
       };
-
-                    for(id in Iter.fromArray(w.workersFarmIds)) {
+           for(id in Iter.fromArray(w.workersFarmIds)) {
                    if(_isOwnerOf(id, Principal.toText(msg.caller)) == true) return #err("Token not valid!");
     var tokenData = switch(_metadata.get(id)) {
           case (?metadata)  {
@@ -1392,6 +1404,13 @@ switch (users.get(Principal.toText(msg.caller))) {
           case (_) return #err("Token not valid!");
       };
                 };
+                     } else {
+                       return #err("Not Claim Time!")
+                     }
+                   }
+                 };
+
+               
               };
               case (_) {
               };

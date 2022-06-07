@@ -52,9 +52,15 @@ module {
         #land:{
             resource: Resource;
             nestStaked: ?TokenIndex;
-            claimableResource : Resource;
+            claimableResource : [ClaimResouceInfo];
             workersFarmIds: [TokenIndex]
         }
+    };
+
+    public type ClaimResouceInfo = {
+        resource: Resource;
+        claimTimeStamp: Time.Time;
+        id: TokenIndex;
     };
 
     public type Resource = {
@@ -97,7 +103,6 @@ module {
     };
 
     public type UserState = {
-      
         resource: Resource;
     };
 
