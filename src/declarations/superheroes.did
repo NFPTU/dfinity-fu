@@ -48,6 +48,11 @@ type TokenIdentifier__1 = text;
 type TokenIdentifier = text;
 type Time = int;
 type SubAccount = vec nat8;
+type Result_7 = 
+ variant {
+   err: text;
+   ok: vec MetadataExt;
+ };
 type Result_6 = 
  variant {
    err: CommonError;
@@ -190,6 +195,7 @@ type AntKingdoms =
    claimWorkerEgg: (TokenIndex__1) -> (Result);
    claiming: () -> (Result);
    extensions: () -> (vec Extension) query;
+   getDataByLandId: (TokenIndex__1) -> (Result_7);
    getTokensMetadata: () -> (vec MetadataExt);
    getUserInfo: (AccountIdentifier__1) -> (UserInfoExt) query;
    getUserTokens: (AccountIdentifier__1) -> (Result_6) query;

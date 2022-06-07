@@ -75,6 +75,10 @@ export const idlFactory = ({ IDL }) => {
     'attributes' : IDL.Vec(AttributeMeta),
     'image' : IDL.Text,
   });
+  const Result_7 = IDL.Variant({
+    'ok' : IDL.Vec(MetadataExt),
+    'err' : IDL.Text,
+  });
   const UserState = IDL.Record({ 'resource' : Resource });
   const UserInfoExt = IDL.Record({
     'id' : IDL.Text,
@@ -150,6 +154,7 @@ export const idlFactory = ({ IDL }) => {
     'claimWorkerEgg' : IDL.Func([TokenIndex__1], [Result], []),
     'claiming' : IDL.Func([], [Result], []),
     'extensions' : IDL.Func([], [IDL.Vec(Extension)], ['query']),
+    'getDataByLandId' : IDL.Func([TokenIndex__1], [Result_7], []),
     'getTokensMetadata' : IDL.Func([], [IDL.Vec(MetadataExt)], []),
     'getUserInfo' : IDL.Func([AccountIdentifier__1], [UserInfoExt], ['query']),
     'getUserTokens' : IDL.Func([AccountIdentifier__1], [Result_6], ['query']),

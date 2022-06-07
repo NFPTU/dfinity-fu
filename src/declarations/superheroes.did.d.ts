@@ -14,6 +14,7 @@ export interface AntKingdoms {
   'claimWorkerEgg' : (arg_0: TokenIndex__1) => Promise<Result>,
   'claiming' : () => Promise<Result>,
   'extensions' : () => Promise<Array<Extension>>,
+  'getDataByLandId' : (arg_0: TokenIndex__1) => Promise<Result_7>,
   'getTokensMetadata' : () => Promise<Array<MetadataExt>>,
   'getUserInfo' : (arg_0: AccountIdentifier__1) => Promise<UserInfoExt>,
   'getUserTokens' : (arg_0: AccountIdentifier__1) => Promise<Result_6>,
@@ -114,6 +115,8 @@ export type Result_5 = { 'ok' : MetadataExt } |
   { 'err' : CommonError };
 export type Result_6 = { 'ok' : Array<MetadataExt> } |
   { 'err' : CommonError };
+export type Result_7 = { 'ok' : Array<MetadataExt> } |
+  { 'err' : string };
 export type SubAccount = Array<number>;
 export type Time = bigint;
 export type TokenIdentifier = string;
