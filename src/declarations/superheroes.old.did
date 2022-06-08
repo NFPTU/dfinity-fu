@@ -114,6 +114,7 @@ type DetailNFT =
    land:
     record {
       claimableResource: vec ClaimResouceInfo;
+      info: record {farmingTime: Time;};
       nestStaked: opt TokenIndex;
       resource: Resource;
     };

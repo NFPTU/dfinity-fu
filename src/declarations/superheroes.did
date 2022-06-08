@@ -125,6 +125,7 @@ type DetailNFT =
          };
    queen:
     record {
+      breedingWorkerId: TokenIndex;
       inNest: opt TokenIndex;
       info: record {
               breedWorkerTime: Time;
