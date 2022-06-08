@@ -19,4 +19,9 @@ export const nftType = [
 		image: '/images/sidebarButton.png',
 		name: 'Land',
 	},
+	{
+		id: 5,
+		image: '/images/sidebarButton.png',
+		name: 'Worker',
+	},
 ];
