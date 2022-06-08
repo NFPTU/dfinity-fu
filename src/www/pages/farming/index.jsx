@@ -98,6 +98,7 @@ function Farming() {
   const onClaimFarm = async (item) => {
     console.log(item);
     const resp = await superheroes?.claimResourceInLand(cardSelected.tokenId[0], item.id);
+    onGetData()
     console.log(resp);
   }
 
