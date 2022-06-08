@@ -8,6 +8,8 @@ import {
 	Text,
 	CancelButton,
 	TopWrapper,
+	BtnOk,
+	BtnWrapper
 } from './popup.elements';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -114,7 +116,9 @@ function PopUp(props) {
 							)
 						})}
 					</Card>
-					<button style={{zIndex: '1000'}} onClick={handleClickOk}>OK</button>
+					<BtnWrapper>
+						<BtnOk onClick={handleClickOk}>OK</BtnOk>
+					</BtnWrapper>
 				</Box>
 			</Modal>
 		</>

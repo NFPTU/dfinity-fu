@@ -1,13 +1,14 @@
 import styled from "styled-components";
 
 export const Container = styled.div`
-  width: 300px;
-  height: 400px;
+  width: 100%;
+  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
   background: #525d83;
-  margin: 20px 40px;
+  margin: 40px;
+  
 
   /* &:before {
     content: "";
@@ -81,10 +82,8 @@ export const Info = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
   padding: 5px;
   width: 280px;
-  height: 100px;
 `
 
 export const InfoTop = styled.div`

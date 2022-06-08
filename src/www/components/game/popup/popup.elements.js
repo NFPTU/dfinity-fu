@@ -11,6 +11,7 @@ export const Box = styled.div`
 	box-shadow: 24;
 	padding: 4;
     display: flex;
+	flex-direction: column;
     flex-wrap: wrap;
 	padding: 28px;
 `
@@ -58,4 +59,21 @@ export const CancelButton = styled.div`
     width: 100%;
     top: 14%;
     left: 87%;
+`
+
+export const BtnWrapper = styled.div`
+	display: flex;
+	align-items: center;
+	justify-content: center;
+`
+
+export const BtnOk = styled.div`
+	width: 76px;
+    height: 31px;
+    background-color: green;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+	cursor: pointer;
 `
