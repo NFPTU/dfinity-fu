@@ -56,6 +56,7 @@ export const idlFactory = ({ IDL }) => {
       }),
       'level' : IDL.Nat,
       'inNest' : IDL.Opt(TokenIndex),
+      'breedingWorkerId' : TokenIndex,
     }),
     'worker' : IDL.Record({
       'antState' : IDL.Nat,

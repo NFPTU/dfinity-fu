@@ -82,6 +82,7 @@ export type DetailNFT = {
       'info' : { 'foodPerWorker' : number, 'breedWorkerTime' : Time },
       'level' : bigint,
       'inNest' : [] | [TokenIndex],
+      'breedingWorkerId' : TokenIndex,
     }
   } |
   {
