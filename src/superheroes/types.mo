@@ -53,6 +53,9 @@ module {
             resource: Resource;
             nestStaked: ?TokenIndex;
             claimableResource : [ClaimResouceInfo];
+            info: {
+                farmingTime: Time.Time;
+            }
         }
     };
 

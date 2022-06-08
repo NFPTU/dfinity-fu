@@ -116,7 +116,6 @@ type DetailNFT =
       claimableResource: vec ClaimResouceInfo;
       nestStaked: opt TokenIndex;
       resource: Resource;
-      workersFarmIds: vec TokenIndex;
     };
    nest: record {
            inLand: opt TokenIndex;
@@ -161,6 +160,7 @@ type ClaimResouceInfo =
    claimTimeStamp: Time;
    id: TokenIndex;
    resource: Resource;
+   workersFarmIds: vec TokenIndex;
  };
 type Balance__1 = nat;
 type BalanceResponse = 

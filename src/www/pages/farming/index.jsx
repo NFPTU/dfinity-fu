@@ -80,6 +80,8 @@ function Farming() {
     console.log(superheroes);
     const resp = await superheroes?.workerFarmInLand(sliceFarm(), cardSelected.tokenId[0]);
     console.log(resp);
+    onGetData()
+    setShowFarmDialog(false);
   }
 
   const sliceFarm = () => {

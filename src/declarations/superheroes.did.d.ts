@@ -56,6 +56,7 @@ export interface ClaimResouceInfo {
   'id' : TokenIndex,
   'resource' : Resource,
   'claimTimeStamp' : Time,
+  'workersFarmIds' : Array<TokenIndex>,
 }
 export type CommonError = { 'InvalidToken' : TokenIdentifier } |
   { 'Other' : string };
@@ -65,7 +66,7 @@ export type DetailNFT = {
     'land' : {
       'resource' : Resource,
       'claimableResource' : Array<ClaimResouceInfo>,
-      'workersFarmIds' : Array<TokenIndex>,
+      'info' : { 'farmingTime' : Time },
       'nestStaked' : [] | [TokenIndex],
     }
   } |

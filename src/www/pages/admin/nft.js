@@ -76,13 +76,13 @@ export const metadata = [
 				inNest: [],
 				breedTimestamp: 0,
 				info: {
-					farmingTime: minute * 5,
 					farmPerTime: {
 						'food': 10,
 						'gold': 0.1,
 						'leaf': 20,
 						'soil': 30,
-					}
+					},
+					farmingTime: minute * 5,
 				}
 			}
 		}
@@ -163,7 +163,7 @@ export const metadata = [
 					soil: 20000,
 					food: 8000,
 				},
-				workersFarmIds: [],
+				info: { farmingTime: minute * 5, },
 				nestStaked: [],
 				claimableResource: []
 			}

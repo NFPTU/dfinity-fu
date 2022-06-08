@@ -35,12 +35,13 @@ export const idlFactory = ({ IDL }) => {
     'id' : TokenIndex,
     'resource' : Resource,
     'claimTimeStamp' : Time,
+    'workersFarmIds' : IDL.Vec(TokenIndex),
   });
   const DetailNFT = IDL.Variant({
     'land' : IDL.Record({
       'resource' : Resource,
       'claimableResource' : IDL.Vec(ClaimResouceInfo),
-      'workersFarmIds' : IDL.Vec(TokenIndex),
+      'info' : IDL.Record({ 'farmingTime' : Time }),
       'nestStaked' : IDL.Opt(TokenIndex),
     }),
     'nest' : IDL.Record({
