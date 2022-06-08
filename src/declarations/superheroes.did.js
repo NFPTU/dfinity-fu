@@ -31,11 +31,17 @@ export const idlFactory = ({ IDL }) => {
     'soil' : IDL.Float64,
   });
   const Time = IDL.Int;
+  const ClaimResouceInfo = IDL.Record({
+    'id' : TokenIndex,
+    'resource' : Resource,
+    'claimTimeStamp' : Time,
+    'workersFarmIds' : IDL.Vec(TokenIndex),
+  });
   const DetailNFT = IDL.Variant({
     'land' : IDL.Record({
       'resource' : Resource,
-      'claimableResource' : Resource,
-      'workersFarmIds' : IDL.Vec(TokenIndex),
+      'claimableResource' : IDL.Vec(ClaimResouceInfo),
+      'info' : IDL.Record({ 'farmingTime' : Time }),
       'nestStaked' : IDL.Opt(TokenIndex),
     }),
     'nest' : IDL.Record({
@@ -79,13 +85,6 @@ export const idlFactory = ({ IDL }) => {
     'ok' : IDL.Vec(MetadataExt),
     'err' : IDL.Text,
   });
-  const UserState = IDL.Record({ 'resource' : Resource });
-  const UserInfoExt = IDL.Record({
-    'id' : IDL.Text,
-    'userState' : UserState,
-    'name' : IDL.Text,
-    'tokens' : IDL.Vec(TokenIndex),
-  });
   const CommonError = IDL.Variant({
     'InvalidToken' : TokenIdentifier,
     'Other' : IDL.Text,
@@ -93,6 +92,13 @@ export const idlFactory = ({ IDL }) => {
   const Result_6 = IDL.Variant({
     'ok' : IDL.Vec(MetadataExt),
     'err' : CommonError,
+  });
+  const UserState = IDL.Record({ 'resource' : Resource });
+  const UserInfoExt = IDL.Record({
+    'id' : IDL.Text,
+    'userState' : UserState,
+    'name' : IDL.Text,
+    'tokens' : IDL.Vec(TokenIndex),
   });
   const TokenIdentifier__1 = IDL.Text;
   const Result_5 = IDL.Variant({ 'ok' : MetadataExt, 'err' : CommonError });
@@ -150,12 +156,21 @@ export const idlFactory = ({ IDL }) => {
     'balance' : IDL.Func([BalanceRequest], [BalanceResponse], ['query']),
     'breedAntWorkder' : IDL.Func([TokenIndex__1], [Result], []),
     'changeAdmin' : IDL.Func([IDL.Principal], [], []),
-    'claimResourceInLand' : IDL.Func([TokenIndex__1], [Result], []),
+    'claimResourceInLand' : IDL.Func(
+        [TokenIndex__1, TokenIndex__1],
+        [Result],
+        [],
+      ),
     'claimWorkerEgg' : IDL.Func([TokenIndex__1], [Result], []),
     'claiming' : IDL.Func([], [Result], []),
     'extensions' : IDL.Func([], [IDL.Vec(Extension)], ['query']),
     'getDataByLandId' : IDL.Func([TokenIndex__1], [Result_7], []),
     'getTokensMetadata' : IDL.Func([], [IDL.Vec(MetadataExt)], []),
+    'getUserAvailableWorker' : IDL.Func(
+        [AccountIdentifier__1],
+        [Result_6],
+        ['query'],
+      ),
     'getUserInfo' : IDL.Func([AccountIdentifier__1], [UserInfoExt], ['query']),
     'getUserTokens' : IDL.Func([AccountIdentifier__1], [Result_6], ['query']),
     'metadata' : IDL.Func([TokenIdentifier__1], [Result_5], ['query']),

@@ -113,10 +113,10 @@ type DetailNFT =
  variant {
    land:
     record {
-      claimableResource: Resource;
+      claimableResource: vec ClaimResouceInfo;
+      info: record {farmingTime: Time;};
       nestStaked: opt TokenIndex;
       resource: Resource;
-      workersFarmIds: vec TokenIndex;
     };
    nest: record {
            inLand: opt TokenIndex;
@@ -156,6 +156,13 @@ type CommonError =
    InvalidToken: TokenIdentifier;
    Other: text;
  };
+type ClaimResouceInfo = 
+ record {
+   claimTimeStamp: Time;
+   id: TokenIndex;
+   resource: Resource;
+   workersFarmIds: vec TokenIndex;
+ };
 type Balance__1 = nat;
 type BalanceResponse = 
  variant {
@@ -191,12 +198,13 @@ type AntKingdoms =
    balance: (BalanceRequest) -> (BalanceResponse) query;
    breedAntWorkder: (TokenIndex__1) -> (Result);
    changeAdmin: (principal) -> ();
-   claimResourceInLand: (TokenIndex__1) -> (Result);
+   claimResourceInLand: (TokenIndex__1, TokenIndex__1) -> (Result);
    claimWorkerEgg: (TokenIndex__1) -> (Result);
    claiming: () -> (Result);
    extensions: () -> (vec Extension) query;
    getDataByLandId: (TokenIndex__1) -> (Result_7);
    getTokensMetadata: () -> (vec MetadataExt);
+   getUserAvailableWorker: (AccountIdentifier__1) -> (Result_6) query;
    getUserInfo: (AccountIdentifier__1) -> (UserInfoExt) query;
    getUserTokens: (AccountIdentifier__1) -> (Result_6) query;
    metadata: (TokenIdentifier__1) -> (Result_5) query;

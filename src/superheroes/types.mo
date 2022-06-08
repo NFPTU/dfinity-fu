@@ -53,7 +53,9 @@ module {
             resource: Resource;
             nestStaked: ?TokenIndex;
             claimableResource : [ClaimResouceInfo];
-            workersFarmIds: [TokenIndex]
+            info: {
+                farmingTime: Time.Time;
+            }
         }
     };
 
@@ -61,6 +63,7 @@ module {
         resource: Resource;
         claimTimeStamp: Time.Time;
         id: TokenIndex;
+            workersFarmIds: [TokenIndex];
     };
 
     public type Resource = {

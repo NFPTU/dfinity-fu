@@ -24,6 +24,12 @@ function GameFooter() {
 			title: 'Breeding',
       to: '/breeding'
 		},
+    {
+      id: 4,
+      imgUrl: '/images/footer/breed.png',
+      title: "Farming",
+      to: "/farming"
+    },
 	];
 
 	return (

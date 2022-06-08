@@ -15,6 +15,7 @@ const Admin = lazy(() => import("./admin"))
 const HomeClaim = lazy(() => import("./game/home"))
 const Popup = lazy(() => import("../components/popup"))
 const Breeding = lazy(() => import("./game/breeding"))
+const Farming = lazy(() => import("./farming"))
 
 const routes = [
     {
@@ -43,6 +44,13 @@ const routes = [
         exact: true,
         public: true,
         component: HomeClaim,
+        layout: GameLayout
+    },
+    {
+        path: "/farming",
+        exact: true,
+        public: true,
+        component: Farming,
         layout: GameLayout
     },
     {

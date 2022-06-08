@@ -1043,7 +1043,7 @@ shared(msg) actor class AntKingdoms(
         var newDetail: DetailNFT = metadata.0.detail;
         switch (metadata.0.detail) {
           case (#land(n)) {
-            newDetail := #land({resource = n.resource;  claimableResource = n.claimableResource; nestStaked=?nestTokenId; workersFarmIds=n.workersFarmIds;});
+            newDetail := #land({resource = n.resource;  claimableResource = n.claimableResource; nestStaked=?nestTokenId;info=n.info;});
           };
           case (_) {
 
@@ -1190,6 +1190,35 @@ shared(msg) actor class AntKingdoms(
         return  #ok(ret.toArray());
     };
 
+     public query func getUserAvailableWorker(owner: AccountIdentifier) : async Result.Result<[MetadataExt] , CommonError>{
+      let tokenIds = switch (users.get(owner)) {
+            case (?user) {
+                TrieSet.toArray(user.tokens)
+            };
+            case _ {
+                []
+            };
+        };
+        let ret = Buffer.Buffer<MetadataExt>(tokenIds.size());
+        for(id in Iter.fromArray(tokenIds)) {
+          var tokenData = switch(_metadata.get(id)) {
+      case (?metadata) {
+          switch (metadata.0.detail) {
+              case (#worker(w)) {
+                if(Nat.equal(w.antState, ANT_STATE[0])) {
+                         ret.add(_tokenMetadata(metadata.0));
+                };
+              };
+              case (_) {
+              };
+            };
+      };
+      case (_) return #err(#InvalidToken(Nat32.toText(id)));
+    };
+        };
+        return  #ok(ret.toArray());
+    };
+
 
      private func _newUser() : UserInfo {
         {
@@ -1201,7 +1230,6 @@ shared(msg) actor class AntKingdoms(
     };
 
     public shared(msg) func updateUser(userName : Text) : async Result.Result<Nat , CommonError> {
-      D.print(Principal.toText(msg.caller));
       switch(users.get(Principal.toText(msg.caller))) {
             case (?user) {
                 user.name := userName;
@@ -1221,7 +1249,7 @@ shared(msg) actor class AntKingdoms(
     };
 let ret = Buffer.Buffer<TokenIndex>(workerTokenIds.countIds);
   for(id in Iter.fromArray(workerTokenIds.soil)) {
-    if(_isOwnerOf(id, Principal.toText(msg.caller)) == true) return #err("Token not valid!");
+    if(_isOwnerOf(id, Principal.toText(msg.caller)) == false) return #err("Token owner not valid!");
     var tokenData = switch(_metadata.get(id)) {
           case (?metadata)  {
             var newDetail: DetailNFT = metadata.0.detail;
@@ -1242,11 +1270,11 @@ let ret = Buffer.Buffer<TokenIndex>(workerTokenIds.countIds);
             _metadata.put(id,metadata);
             };
         
-          case (_) return #err("Token not valid!");
+          case (_) return #err("Token soil not valid!");
       };
                 };
                 for(id in Iter.fromArray(workerTokenIds.leaf)) {
-                   if(_isOwnerOf(id, Principal.toText(msg.caller)) == true) return #err("Token not valid!");
+                   if(_isOwnerOf(id, Principal.toText(msg.caller)) == false) return #err("Token not valid!");
     var tokenData = switch(_metadata.get(id)) {
           case (?metadata)  {
             var newDetail: DetailNFT = metadata.0.detail;
@@ -1267,11 +1295,11 @@ let ret = Buffer.Buffer<TokenIndex>(workerTokenIds.countIds);
             _metadata.put(id,metadata);
             };
         
-          case (_) return #err("Token not valid!");
+          case (_) return #err("Token leaf not valid!");
       };
                 };
                 for(id in Iter.fromArray(workerTokenIds.food)) {
-                   if(_isOwnerOf(id, Principal.toText(msg.caller)) == true) return #err("Token not valid!");
+                   if(_isOwnerOf(id, Principal.toText(msg.caller)) == false) return #err("Token food ow not valid!");
     var tokenData = switch(_metadata.get(id)) {
           case (?metadata)  {
             var newDetail: DetailNFT = metadata.0.detail;
@@ -1292,11 +1320,11 @@ let ret = Buffer.Buffer<TokenIndex>(workerTokenIds.countIds);
             _metadata.put(id,metadata);
             };
         
-          case (_) return #err("Token not valid!");
+          case (_) return #err("Token food not valid!");
       };
                 };
                 for(id in Iter.fromArray(workerTokenIds.gold)) {
-                   if(_isOwnerOf(id, Principal.toText(msg.caller)) == true) return #err("Token not valid!");
+                   if(_isOwnerOf(id, Principal.toText(msg.caller)) == false) return #err("Token not valid!");
     var tokenData = switch(_metadata.get(id)) {
           case (?metadata)  {
             var newDetail: DetailNFT = metadata.0.detail;
@@ -1317,10 +1345,10 @@ let ret = Buffer.Buffer<TokenIndex>(workerTokenIds.countIds);
             _metadata.put(id,metadata);
             };
         
-          case (_) return #err("Token not valid!");
+          case (_) return #err("Token gold not valid!");
       };
                 };
-                 if(_isOwnerOf(landTokenId, Principal.toText(msg.caller)) == true) return #err("Token not valid!");
+                 if(_isOwnerOf(landTokenId, Principal.toText(msg.caller)) == false) return #err("Token land ow not valid!");
  var tokenData = switch(_metadata.get(landTokenId)) {
           case (?metadata)  {
             var newDetail: DetailNFT = metadata.0.detail;
@@ -1330,12 +1358,14 @@ let ret = Buffer.Buffer<TokenIndex>(workerTokenIds.countIds);
                         resource = {soil= claimResource.soil;leaf=claimResource.leaf;
                         gold=claimResource.gold;food=claimResource.food;};
                         id = _nextFarmId; 
-                        claimTimeStamp=Time.now();};
+                        claimTimeStamp=Time.now() + w.info.farmingTime;
+                         workersFarmIds = ret.toArray();
+                        };
                     newDetail := #land({
                       nestStaked=w.nestStaked;
                       resource = w.resource;
                       claimableResource = Array.append(w.claimableResource, [claimableResource]);
-                      workersFarmIds = ret.toArray();
+                     info = w.info;
                     });
               };
               case (_) {
@@ -1344,31 +1374,46 @@ let ret = Buffer.Buffer<TokenIndex>(workerTokenIds.countIds);
         
             metadata.0.detail := newDetail;
             _metadata.put(landTokenId,metadata);
+            _nextFarmId+=1;
             };
         
-          case (_) return #err("Token not valid!");
+          case (_) return #err("Token Land not valid!");
       };
                 return #ok(true)
   };
 
   public shared(msg) func claimResourceInLand(landTokenId: TokenIndex, farmId: TokenIndex): async Result.Result<Bool, Text>{
-         if(_isOwnerOf(landTokenId, Principal.toText(msg.caller)) == true) return #err("Token not valid!");
+         if(_isOwnerOf(landTokenId, Principal.toText(msg.caller)) == false) return #err("Token not valid!");
  var tokenData = switch(_metadata.get(landTokenId)) {
           case (?metadata)  {
-            var newDetail: DetailNFT = metadata.0.detail;
+            var newDetailLand: DetailNFT = metadata.0.detail;
             switch (metadata.0.detail) {
               case (#land(w)) {
+                let iterArr = Iter.fromArray(w.claimableResource);
+                var order =0;
+                var farmSelected =0;
+                let ret = Buffer.Buffer<Types.ClaimResouceInfo>(Iter.size(iterArr));
                  for(farm in Iter.fromArray(w.claimableResource)) {
+                   order+=1;
                    if(farm.id == farmId) {
-                     if(Int.greater(farm.claimTimeStamp , Time.now()) ){
-                    newDetail := #land({
+                     if(Int.lessOrEqual(farm.claimTimeStamp , Time.now()) ){
+                       farmSelected := order;
+                     } else {
+                       return #err("Not Claim Time!")
+                     }
+                   } else {
+                     ret.add(farm);
+                   };
+                 };
+                 if(farmSelected != 0) {
+                 let farm = w.claimableResource[farmSelected -1];
+                    newDetailLand := #land({
                       nestStaked=w.nestStaked;
                       resource = {soil= w.resource.soil - farm.resource.soil;leaf= w.resource.leaf - farm.resource.leaf;
                       gold= w.resource.gold - farm.resource.gold;food=w.resource.food - farm.resource.food;};
-                      claimableResource = w.claimableResource;
-                      workersFarmIds = [];
+                      claimableResource = ret.toArray();
+                      info=w.info;
                     });
-                                  
 
 switch (users.get(Principal.toText(msg.caller))) {
             case (?user) {
@@ -1381,8 +1426,8 @@ switch (users.get(Principal.toText(msg.caller))) {
                return #err("User Not Found")
             };
       };
-           for(id in Iter.fromArray(w.workersFarmIds)) {
-                   if(_isOwnerOf(id, Principal.toText(msg.caller)) == true) return #err("Token not valid!");
+           for(id in Iter.fromArray(farm.workersFarmIds)) {
+                   if(_isOwnerOf(id, Principal.toText(msg.caller)) == false) return #err("Token not valid!");
     var tokenData = switch(_metadata.get(id)) {
           case (?metadata)  {
             var newDetail: DetailNFT = metadata.0.detail;
@@ -1404,19 +1449,15 @@ switch (users.get(Principal.toText(msg.caller))) {
           case (_) return #err("Token not valid!");
       };
                 };
-                     } else {
-                       return #err("Not Claim Time!")
-                     }
-                   }
-                 };
-
-               
+               } else {
+                 return #err("farm not found!");
+               };
               };
               case (_) {
               };
             };
         
-            metadata.0.detail := newDetail;
+            metadata.0.detail := newDetailLand;
             _metadata.put(landTokenId,metadata);
             };
         
@@ -1481,7 +1522,6 @@ switch (users.get(Principal.toText(msg.caller))) {
                     owner = Principal.toText(msg.caller);
               };
               let tokenId = registerToken(request);
-              D.print(Nat32.toText(tokenId));
               var workerData = switch(_metadata.get(tokenId)) {
       case (?metadata)  {
         var newWorkerDetail: DetailNFT = metadata.0.detail;
