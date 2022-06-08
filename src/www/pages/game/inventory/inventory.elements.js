@@ -30,7 +30,7 @@ export const ListBtn = styled.div`
     display: flex;
     flex-direction: column;
     left: 9%;
-    top: 5%;
+    top: 20px;
 `
 
 export const Btn = styled.div`
@@ -74,7 +74,7 @@ export const BodyWrapper = styled.div`
     display: flex;
     flex-direction: column;
     flex: 1;
-    margin-top: 18px;
+    margin-top: 0px;
 `;
 
 export const BodyTop = styled.div`
@@ -115,11 +115,13 @@ export const BodyBorder = styled.div`
     border: 1px solid white;
     flex: 1;
     border-radius: 10px;
+    box-sizing: border-box;
 `
 
 export const CardList = styled.div`
     display: flex;
     flex-wrap: wrap;
+    padding-bottom: 50px;
 `
 
 export const CardItem = styled.div`

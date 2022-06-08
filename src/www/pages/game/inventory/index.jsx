@@ -120,7 +120,7 @@ function Inventory() {
 						<CardList>
 							{filterData ? (
 								filterData?.map((item, index) => (
-									<Card data={item} key={index} list={filterData}/>
+									<Card data={item} key={index} list={filterData} listOrigin={data}/>
 								))
 							) : (
 								<SkeletonList>

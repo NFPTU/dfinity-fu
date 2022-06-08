@@ -15,7 +15,7 @@ import StakePopUp from '../../game/popup';
 import { useCanister, useConnect } from '@connect2ic/react';
 
 function Card(props) {
-	const { data, list } = props;
+	const { data, list, listOrigin } = props;
 
 	const { attributes, description, detail, image, name, tokenId } = data;
 	const typeNFT = attributes[0].value;
@@ -69,7 +69,7 @@ function Card(props) {
 	};
 
 	const getNFTByType = (type) => {
-		return list.filter((el) => el.attributes[0].value === type);
+		return listOrigin.filter((el) => el.attributes[0].value === type);
 	};
 
 	return (
@@ -84,7 +84,7 @@ function Card(props) {
 							<Name>{name}</Name>
 							<Desc>{description}</Desc>
 						</InfoTop>
-						{attributes[0].value !== 'Land' && (
+						{(typeNFT !== 'Land' && typeNFT !== 'Worker') && (
 							<Button onClick={handleOpenPopup}>Stake</Button>
 						)}
 					</Info>

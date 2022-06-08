@@ -77,14 +77,14 @@ function Admin() {
   const onBreedingWorker = async() => {
 	const listQ = getNFTByType('Queen');
 	console.log(listQ);
-	const res = await superheroes.breedAntWorkder(listQ[0].tokenId[0])
-	console.log(res);
+	const res = await superheroes.breedAntWorkder(listQ[0]?.tokenId[0])
+	console.log('onBreedingWorker', res);
   }
 
   const onClaimWorker = async() => {
 	const listQ = getNFTByType('Worker');
 	const res = await superheroes.claimWorkerEgg(listQ[0].tokenId[0])
-	console.log(res);
+	console.log('onClaimWorker' ,res);
   }
 
   const onWorkerFarmInLand = async () => {
