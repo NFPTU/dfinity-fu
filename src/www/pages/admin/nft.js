@@ -165,12 +165,7 @@ export const metadata = [
 				},
 				workersFarmIds: [],
 				nestStaked: [],
-				claimableResource: {
-					gold: 0,
-					leaf: 0,
-					soil: 0,
-					food: 0,
-				}
+				claimableResource: []
 			}
 		}
 	},

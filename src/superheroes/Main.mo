@@ -1190,6 +1190,35 @@ shared(msg) actor class AntKingdoms(
         return  #ok(ret.toArray());
     };
 
+     public query func getUserAvailableWorker(owner: AccountIdentifier) : async Result.Result<[MetadataExt] , CommonError>{
+      let tokenIds = switch (users.get(owner)) {
+            case (?user) {
+                TrieSet.toArray(user.tokens)
+            };
+            case _ {
+                []
+            };
+        };
+        let ret = Buffer.Buffer<MetadataExt>(tokenIds.size());
+        for(id in Iter.fromArray(tokenIds)) {
+          var tokenData = switch(_metadata.get(id)) {
+      case (?metadata) {
+          switch (metadata.0.detail) {
+              case (#worker(w)) {
+                if(Nat.equal(w.antState, ANT_STATE[0])) {
+                         ret.add(_tokenMetadata(metadata.0));
+                };
+              };
+              case (_) {
+              };
+            };
+      };
+      case (_) return #err(#InvalidToken(Nat32.toText(id)));
+    };
+        };
+        return  #ok(ret.toArray());
+    };
+
 
      private func _newUser() : UserInfo {
         {

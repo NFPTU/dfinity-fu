@@ -10,12 +10,16 @@ export interface AntKingdoms {
   'balance' : (arg_0: BalanceRequest) => Promise<BalanceResponse>,
   'breedAntWorkder' : (arg_0: TokenIndex__1) => Promise<Result>,
   'changeAdmin' : (arg_0: Principal) => Promise<undefined>,
-  'claimResourceInLand' : (arg_0: TokenIndex__1) => Promise<Result>,
+  'claimResourceInLand' : (
+      arg_0: TokenIndex__1,
+      arg_1: TokenIndex__1,
+    ) => Promise<Result>,
   'claimWorkerEgg' : (arg_0: TokenIndex__1) => Promise<Result>,
   'claiming' : () => Promise<Result>,
   'extensions' : () => Promise<Array<Extension>>,
   'getDataByLandId' : (arg_0: TokenIndex__1) => Promise<Result_7>,
   'getTokensMetadata' : () => Promise<Array<MetadataExt>>,
+  'getUserAvailableWorker' : (arg_0: AccountIdentifier__1) => Promise<Result_6>,
   'getUserInfo' : (arg_0: AccountIdentifier__1) => Promise<UserInfoExt>,
   'getUserTokens' : (arg_0: AccountIdentifier__1) => Promise<Result_6>,
   'metadata' : (arg_0: TokenIdentifier__1) => Promise<Result_5>,
@@ -48,6 +52,11 @@ export interface BalanceRequest { 'token' : TokenIdentifier, 'user' : User }
 export type BalanceResponse = { 'ok' : Balance } |
   { 'err' : CommonError__1 };
 export type Balance__1 = bigint;
+export interface ClaimResouceInfo {
+  'id' : TokenIndex,
+  'resource' : Resource,
+  'claimTimeStamp' : Time,
+}
 export type CommonError = { 'InvalidToken' : TokenIdentifier } |
   { 'Other' : string };
 export type CommonError__1 = { 'InvalidToken' : TokenIdentifier } |
@@ -55,7 +64,7 @@ export type CommonError__1 = { 'InvalidToken' : TokenIdentifier } |
 export type DetailNFT = {
     'land' : {
       'resource' : Resource,
-      'claimableResource' : Resource,
+      'claimableResource' : Array<ClaimResouceInfo>,
       'workersFarmIds' : Array<TokenIndex>,
       'nestStaked' : [] | [TokenIndex],
     }

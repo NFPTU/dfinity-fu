@@ -25,7 +25,7 @@ ReactDOM.render(
 		<Connect2ICProvider
 			canisters={canisterDefinitions}
 			providers={defaultProviders}
-			dev={window.location.origin.includes("localhost")}
+			dev={window.location.origin.includes("localhost") || window.location.origin.includes("192.168")}
 			host={host}>
 			<Provider>
 				<App />
