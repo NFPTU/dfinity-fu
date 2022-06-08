@@ -14,6 +14,8 @@ import Stack from '@mui/material/Stack';
 import Slider from '@mui/material/Slider';
 import DialogContent from '@mui/material/DialogContent';
 import SliderItem from './components/slider';
+import Countdown from "react-countdown";
+import { getRemainingTime } from '../../utils/utils';
 
 function Farming() {
   const [listNFt, setListNFt] = useState([]);
@@ -23,6 +25,7 @@ function Farming() {
     food: 0, gold: 0, leaf: 0, soil: 0
   });
   const [listWorker, setListWorker] = useState([]);
+  const [remainWorker, setRemainWorker] = useState([]);
   const [superheroes, { loading, error }] = useCanister('superheroes');
 	const { principal} = useConnect();
 
@@ -37,6 +40,7 @@ function Farming() {
   const onGetAvailWorker = async () => {
 		const resp = await superheroes?.getUserAvailableWorker(principal?.toString());
     setListWorker(resp?.ok)
+    setRemainWorker(resp?.ok.length)
     console.log(resp);
 	};
 
@@ -61,7 +65,45 @@ function Farming() {
   };
 
   const onChangeSlide = (item, value) => {
-    setValueResource((preValue) => ({ ...preValue, [item]: value,}))
+    const selectedWorker = Object.values(valueResource).reduce((previousValue, currentValue) => previousValue + currentValue,
+    0)
+    console.log(selectedWorker);
+    const remainW = listWorker.length -selectedWorker
+    if(value-valueResource[item]<=remainW) {
+      setRemainWorker(remainW)
+      setValueResource((preValue) => ({ ...preValue, [item]: value}))
+    }
+   
+  }
+
+  const onSubmitFarm = async () => {
+    console.log(superheroes);
+    const resp = await superheroes?.workerFarmInLand(sliceFarm(), cardSelected.tokenId[0]);
+    console.log(resp);
+  }
+
+  const sliceFarm = () => {
+    const farmRequest = {}
+    farmRequest.food = listWorker.slice(0, valueResource.food).map(el => el.tokenId[0])
+    farmRequest.soil = listWorker.slice(0, valueResource.soil).map(el => el.tokenId[0])
+    farmRequest.leaf = listWorker.slice(0, valueResource.leaf).map(el => el.tokenId[0])
+    farmRequest.gold = listWorker.slice(0, valueResource.gold).map(el => el.tokenId[0])
+    farmRequest.countIds = listWorker.length - remainWorker
+    console.log(farmRequest);
+    return farmRequest 
+  }
+
+  const onClaimFarm = async (item) => {
+    console.log(item);
+    const resp = await superheroes?.claimResourceInLand(cardSelected.tokenId[0], item.id);
+    console.log(resp);
+  }
+
+  const resourceItem = (item) => {
+    return <div>
+      <Countdown date={Date.now() + (getRemainingTime(item.claimTimeStamp) * 1000)} />
+      <Button name="Claim" onClick={() => onClaimFarm(item)} />
+    </div>
   }
 
   return (
@@ -79,6 +121,7 @@ function Farming() {
         </Grid>
         <Grid item xs={7}>
           Detail
+        {cardSelected?.detail?.land?.claimableResource.map(el => resourceItem(el))}
           <Button name={"Farm"} onClick={onClickFarm} />
         </Grid>
      </Grid>
@@ -86,7 +129,7 @@ function Farming() {
       onClose={handleClose}
       open={showFarmDialog}
       >
-          <DialogContent>
+          {listWorker?.length ? <DialogContent>
          <Stack sx={{ height: 300 }} spacing={1} direction="row">
       <SliderItem
         min={0}
@@ -118,7 +161,9 @@ function Farming() {
       />
       
     </Stack>
-    </DialogContent>
+    <Button name={'Farm'} onClick={onSubmitFarm}/>
+    Idle: {remainWorker}
+    </DialogContent> : <div>You need more ant worker!</div>}
      </Dialog>
     </Container >
   )

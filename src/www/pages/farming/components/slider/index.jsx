@@ -11,7 +11,7 @@ const Input = styled(MuiInput)`
 `;
 
 function SliderItem(props) {
-  const {min, max, value, handleSliderChange, handleInputChange, img } = props
+  const {min, max, value, handleSliderChange, handleInputChange, img, handleSliderDone } = props
 
   return (
          <Stack spacing={1} direction="column">
@@ -26,6 +26,7 @@ function SliderItem(props) {
         min={min}
         max={max}
         onChange={handleSliderChange}
+        onChangeCommitted={handleSliderDone}
         value={typeof value === 'number' ? value : 0}
       />
       <Image src={img} alt="icon_image" />

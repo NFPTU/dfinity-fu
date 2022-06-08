@@ -83,7 +83,7 @@ function Admin() {
 
   const onClaimWorker = async() => {
 	const listQ = getNFTByType('Worker');
-	const res = await superheroes.claimWorkerEgg(listQ[0].tokenId[0])
+	const res = await superheroes.claimWorkerEgg(listQ[2].tokenId[0])
 	console.log(res);
   }
 
