@@ -107,7 +107,7 @@ function Breeding() {
 	//Get Queen NFT:
 	const getQueenNFT = () => {
 		const queen = getNFTByType('Queen')
-
+		console.log(queen);
 		setQueenNFT(queen && queen[0]);
 	};
 
@@ -120,7 +120,7 @@ function Breeding() {
 
 	const handleCompleteCountDown = () => {
 		setEndCountDown(true)
-
+		onGetData()
 		toastDialog()
 	}
 
@@ -133,9 +133,9 @@ function Breeding() {
 	  }
 
 	  const onClaimWorker = async(e) => {
-		// const listQ = getNFTByType('Worker');
-		// const res = await superheroes.claimWorkerEgg(listQ[0].tokenId[0])
-		// console.log('onClaimWorker' ,res);
+		const listQ = getNFTByType('Queen');
+		const res = await superheroes.claimWorkerEgg(listQ[0].tokenId[0])
+		console.log('onClaimWorker' ,res);
 		if(endCountDown){
 			console.log('handle claim worker...')
 		}
@@ -200,15 +200,15 @@ function Breeding() {
 									breedTimestamp && (
 										<Countdown 
 										onComplete={handleCompleteCountDown}
-										date={Date.now() + (getRemainingTime(BigInt(breedTimestamp)) * 1000)}/>	
+										date={Date.now() + (getRemainingTime(lastWorker?.detail?.worker?.breedTimestamp) * 1000)}/>	
 									)
 								}
 							</CountdownInside>
 						</CountdownWrapper>
 
 						<BtnList>
-							<Btn disabled={true} onClick={dialogClaim}>Breeding</Btn>
-							<Btn disabled={endCountDown} onCLick={onClaimWorker}>Claim Worker Ant</Btn>
+							<Btn onClick={dialogClaim}>Breeding</Btn>
+							<Btn  onClick={onClaimWorker}>Claim Worker Ant</Btn>
 						</BtnList>
 					</Right>
 				</Wrapper>

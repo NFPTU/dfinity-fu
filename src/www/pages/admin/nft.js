@@ -33,8 +33,9 @@ export const metadata = [
 			queen: {
 				level: 1,
 				inNest: [],
+				breedingWorkerId :0,
 				info: {
-					foodPerWorker: 10,
+					foodPerWorker: 40,
 					breedWorkerTime: 60 * second
 				}
 			}

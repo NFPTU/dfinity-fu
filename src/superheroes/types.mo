@@ -27,6 +27,7 @@ module {
         #queen : {
             level: Nat;
             inNest: ?TokenIndex;
+            breedingWorkerId : TokenIndex;
             info : {
             breedWorkerTime: Time.Time;
             foodPerWorker: Float;

@@ -146,11 +146,11 @@ export const Btn = styled.div`
     font-size: 18px;
     text-align: center;
     color: #fff;
-    cursor: ${({ disabled }) => disabled ? 'pointer' : 'not-allowed'};
+    cursor: ${({ disabled }) => !disabled ? 'pointer' : 'not-allowed'};
     text-shadow: -3px 2px 2px #923935;
     display: flex;
     align-items: center;
     justify-content: center;
     //Disable button
-    filter: ${({ disabled }) => !disabled ? 'grayscale(1)' : ''};
+    filter: ${({ disabled }) => disabled ? 'grayscale(1)' : ''};
 `

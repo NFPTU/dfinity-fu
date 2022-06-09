@@ -1091,7 +1091,7 @@ shared(msg) actor class AntKingdoms(
         var newDetail: DetailNFT = metadata.0.detail;
         switch (metadata.0.detail) {
           case (#queen(n)) {
-            newDetail := #queen({level=n.level; inNest = ?nestTokenId; info=n.info;});
+            newDetail := #queen({level=n.level; inNest = ?nestTokenId; info=n.info;breedingWorkerId=n.breedingWorkerId;});
           };
           case (_) {
 
@@ -1511,23 +1511,13 @@ switch (users.get(Principal.toText(msg.caller))) {
 };
 
   public shared(msg) func breedAntWorkder(queenTokenId: TokenIndex) : async Result.Result<Bool, Text> {
+    
  var tokenData = switch(_metadata.get(queenTokenId)) {
       case (?metadata)  {
         var newQueenDetail: DetailNFT = metadata.0.detail;
         switch (metadata.0.detail) {
           case (#queen(n)) {
-            let request: RegisterTokenRequest = {
-                  metadata = _unwrap(tokensMetadata.get(1));
-                    supply = 1;
-                    owner = Principal.toText(msg.caller);
-              };
-              let tokenId = registerToken(request);
-              var workerData = switch(_metadata.get(tokenId)) {
-      case (?metadata)  {
-        var newWorkerDetail: DetailNFT = metadata.0.detail;
-        switch (metadata.0.detail) {
-          case (#worker(w)) {
-            switch (users.get(Principal.toText(msg.caller))) {
+             switch (users.get(Principal.toText(msg.caller))) {
             case (?user) {
               let userRes  = user.userState.resource;
               if(Float.greaterOrEqual(userRes.food, n.info.foodPerWorker) == false) {return #err("not enough food!")};
@@ -1539,7 +1529,23 @@ switch (users.get(Principal.toText(msg.caller))) {
                return #err("User Not Found")
             };
       };
+      if(n.breedingWorkerId!=0) {
+        return #err("Queen is breeding!")
+      };
+            let request: RegisterTokenRequest = {
+                  metadata = _unwrap(tokensMetadata.get(1));
+                    supply = 1;
+                    owner = Principal.toText(msg.caller);
+              };
+              let tokenId = registerToken(request);
+              var workerData = switch(_metadata.get(tokenId)) {
+      case (?metadata)  {
+        var newWorkerDetail: DetailNFT = metadata.0.detail;
+        switch (metadata.0.detail) {
+          case (#worker(w)) {
             newWorkerDetail := #worker({level=w.level; inNest= w.inNest;queenId= w.queenId; antState=ANT_STATE[1];breedTimestamp= Time.now()+ n.info.breedWorkerTime;farmTimestamp=w.farmTimestamp;info=w.info;});
+            newQueenDetail := #queen({level=n.level; inNest = n.inNest; info=n.info;breedingWorkerId=tokenId;});
+
           };
           case (_) {
           };
@@ -1564,29 +1570,48 @@ switch (users.get(Principal.toText(msg.caller))) {
   return #ok(true)
   };
 
-  public shared(msg) func claimWorkerEgg(workerTokenId: TokenIndex): async Result.Result<Bool, Text> {
-    var tokenData = switch(_metadata.get(workerTokenId)) {
-          case (?metadata)  {
-            var newDetail: DetailNFT = metadata.0.detail;
-            switch (metadata.0.detail) {
-              case (#worker(w)) {
-                if(Int.greater(w.breedTimestamp , Time.now()) and Nat.equal(w.antState, ANT_STATE[0])) {
+  public shared(msg) func claimWorkerEgg(queenTokenId: TokenIndex): async Result.Result<Bool, Text> {
+ 
+ var tokenData = switch(_metadata.get(queenTokenId)) {
+      case (?metadata)  {
+        var newQueenDetail: DetailNFT = metadata.0.detail;
+        switch (metadata.0.detail) {
+          case (#queen(n)) {
+              let tokenId = n.breedingWorkerId;
+              var workerData = switch(_metadata.get(tokenId)) {
+      case (?metadata)  {
+        var newWorkerDetail: DetailNFT = metadata.0.detail;
+        switch (metadata.0.detail) {
+          case (#worker(w)) {
+             if(Int.greater(w.breedTimestamp , Time.now()) and Nat.equal(w.antState, ANT_STATE[0])) {
                   return #err("Can't claim!");
                 } else {
-                    newDetail := #worker({level=w.level; inNest= w.inNest;queenId= w.queenId; antState=ANT_STATE[0];breedTimestamp= w.breedTimestamp;farmTimestamp=w.farmTimestamp;info=w.info;});
+                    newWorkerDetail := #worker({level=w.level; inNest= w.inNest;queenId= w.queenId; antState=ANT_STATE[0];breedTimestamp= w.breedTimestamp;farmTimestamp=w.farmTimestamp;info=w.info;});
+            newQueenDetail := #queen({level=n.level; inNest = n.inNest; info=n.info;breedingWorkerId=0;});
+                
                 };
-              };
-              case (_) {
-              };
-            };
-        
-            metadata.0.detail := newDetail;
-            _metadata.put(workerTokenId,metadata);
-            };
-        
+          };
+          case (_) {
+          };
+        };
+     
+        metadata.0.detail := newWorkerDetail;
+         _metadata.put(tokenId,metadata);
+         };
           case (_) return #err("Token not valid!");
-      };
-      return #ok(true)
+         };
+          };
+          case (_) {
+          };
+        };
+     
+        metadata.0.detail := newQueenDetail;
+         _metadata.put(queenTokenId,metadata);
+         };
+    
+      case (_) return #err("Token not valid!");
+  };
+  return #ok(true)
   };
 
 
