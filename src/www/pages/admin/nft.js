@@ -125,7 +125,8 @@ export const metadata = [
 			nest: {
 				level: 1,
 				queenIn: [],
-				inLand: []
+				inLand: [],
+				limit: 10
 			}
 		}
 	},
