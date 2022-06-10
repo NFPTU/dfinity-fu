@@ -37,6 +37,7 @@ module {
             level: Nat;
             queenIn: ?TokenIndex;
             inLand: ?TokenIndex;
+            limit: Nat;
         };
         #worker : {
             level: Nat;
@@ -108,6 +109,7 @@ module {
 
     public type UserState = {
         resource: Resource;
+        limitAnt : Nat;
     };
 
     
