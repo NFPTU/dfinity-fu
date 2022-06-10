@@ -21,6 +21,7 @@ import Nat "mo:base/Nat";
 import Nat32 "mo:base/Nat32";
 import Prelude "mo:base/Prelude";
 import Principal "mo:base/Principal";
+import List "mo:base/List";
 import Result "mo:base/Result";
 import Text "mo:base/Text";
 import Time "mo:base/Time";
@@ -920,6 +921,8 @@ shared(msg) actor class AntKingdoms(
     type UserState = Types.UserState;
     type Resource = Types.Resource;
     type WorkerFarmRequest = Types.WorkerFarmRequest;
+    type LevelData = Types.LevelData;
+    type ResourceInt= Types.ResourceInt;
 
   type RegisterTokenRequest = {
     metadata : MetadataExt;
@@ -937,9 +940,11 @@ shared(msg) actor class AntKingdoms(
 
   private let NFT_CLAIMABLE : [Nat] = [0,2,3];
 
+private let NFT_TYPE : [Text] =   ["Queen","Worker","Nest", "Land"];
+private let NFT_RARITY : [Text] =   ["Common","Uncommon","Rare", "Epec", "Legendary"];
 // Ant state: 0:Idle , 1:Egg , 2: Farming
 //
-  private let ANT_STATE : [Nat] = [0,1,2];
+  private let ANT_STATE : [Nat] = [0,2,3];
 
   private let _minuteTime = 60 * 1_000_000_000;
   
@@ -964,8 +969,8 @@ shared(msg) actor class AntKingdoms(
   });
 
   private var tokensMetadata = HashMap.HashMap<Nat, MetadataExt>(1, Nat.equal, Hash.hash);
-    
 
+  private var levelMetadata: [Types.LevelData] = [];
 
   //State functions
   system func preupgrade() {
@@ -1009,6 +1014,11 @@ shared(msg) actor class AntKingdoms(
       i +=1;
     };
     return #ok(true);
+  };
+
+  public shared(msg) func setLevelMetadata(listMeta: [LevelData]): async Result.Result<[LevelData], Text> {
+    levelMetadata:=listMeta;
+    return #ok(levelMetadata);
   };
 
    public shared(msg) func getTokensMetadata(): async [MetadataExt] {
@@ -1061,7 +1071,7 @@ shared(msg) actor class AntKingdoms(
         var newDetail: DetailNFT = metadata.0.detail;
         switch (metadata.0.detail) {
           case (#nest(n)) {
-            newDetail := #nest({level=n.level; inLand= ?landTokenId;queenIn= n.queenIn});
+            newDetail := #nest({level=n.level; inLand= ?landTokenId;queenIn= n.queenIn; limitAnt=n.limitAnt;});
           };
           case (_) {
 
@@ -1084,7 +1094,7 @@ shared(msg) actor class AntKingdoms(
   };
 
   public shared(msg) func stakeQueenInNest(queenTokenId: TokenIndex,  nestTokenId: TokenIndex ) : async Result.Result<Text, Text> {
-    if(checkTypeToken(nestTokenId, "Nest") == true and checkTypeToken(queenTokenId, "Queen") == true) {
+    if(checkTypeToken(nestTokenId, "Nest") == true and checkTypeToken(queenTokenId,NFT_TYPE[0]) == true) {
       if(_isOwnerOf(nestTokenId, Principal.toText(msg.caller)) == true and _isOwnerOf(queenTokenId, Principal.toText(msg.caller)) == true) {
         var tokenData = switch(_metadata.get(queenTokenId)) {
       case (?metadata)  {
@@ -1109,7 +1119,7 @@ shared(msg) actor class AntKingdoms(
         var newDetail: DetailNFT = metadata.0.detail;
         switch (metadata.0.detail) {
           case (#nest(n)) {
-            newDetail := #nest({level=n.level; inLand= n.inLand;queenIn= ?queenTokenId});
+            newDetail := #nest({level=n.level; inLand= n.inLand;queenIn= ?queenTokenId; limitAnt=n.limitAnt;});
           };
           case (_) {
           };
@@ -1244,9 +1254,7 @@ shared(msg) actor class AntKingdoms(
 
 
   public shared(msg) func workerFarmInLand(workerTokenIds: WorkerFarmRequest, landTokenId: TokenIndex): async Result.Result<Bool , Text> {
-    let claimResource = {
-      var soil: Float=0; var leaf: Float= 0; var gold: Float=0; var food: Float = 0;
-    };
+    let claimResource = newResource();
 let ret = Buffer.Buffer<TokenIndex>(workerTokenIds.countIds);
   for(id in Iter.fromArray(workerTokenIds.soil)) {
     if(_isOwnerOf(id, Principal.toText(msg.caller)) == false) return #err("Token owner not valid!");
@@ -1464,6 +1472,133 @@ switch (users.get(Principal.toText(msg.caller))) {
           case (_) return #err("Token not valid!");
       };
       return #ok(true)
+  };
+
+  public shared(msg) func upgradeLevelQueen(queenTokenId: TokenIndex): async Result.Result<MetadataExt, Text>  {
+     if(checkTypeToken(queenTokenId,NFT_TYPE[0]) == true and _isOwnerOf(queenTokenId, Principal.toText(msg.caller)) == true) {
+        var tokenData = switch(_metadata.get(queenTokenId)) {
+      case (?metadata)  {
+        var newDetail: DetailNFT = metadata.0.detail;
+        switch (metadata.0.detail) {
+          case (#queen(n)) {
+            let levelInfo = getLevelInfoByAnt(NFT_TYPE[0], NFT_RARITY[0], n.level-1);
+              switch(levelInfo) {
+                      case (?info) {
+                        var isUpdate = updateUserResource(Principal.toText(msg.caller), info.costResource); 
+                        if(isUpdate == true) {
+                            switch (info.nextLevel) {
+                              case (#queen(nextLevel)) {
+                                 newDetail := #queen({level=n.level +1 ; inNest = n.inNest; info={foodPerWorker=nextLevel.foodPerWorker;breedWorkerTime=nextLevel.breedWorkerTime;};breedingWorkerId=n.breedingWorkerId;});
+                              };
+                                case (_) {
+
+                            };
+                          };
+     
+                        } else {
+                          return #err("not enough resource!")
+                        }
+                      };
+                      case _ {
+                        return #err("no ant detail found!")
+                      };
+                  };
+          };
+          case (_) {
+
+          };
+        };
+     
+        metadata.0.detail := newDetail;
+         _metadata.put(queenTokenId,metadata);
+         return #ok(_tokenMetadata(metadata.0));
+         };
+    
+      case (_) return #err("Token not valid!");
+  };
+  };
+    return #err("failed")
+  };
+
+   public shared(msg) func upgradeLevelNest(nestTokenId: TokenIndex): async Result.Result<MetadataExt, Text>  {
+     if(checkTypeToken(nestTokenId,NFT_TYPE[0]) == true and _isOwnerOf(nestTokenId, Principal.toText(msg.caller)) == true) {
+        var tokenData = switch(_metadata.get(nestTokenId)) {
+      case (?metadata)  {
+        var newDetail: DetailNFT = metadata.0.detail;
+        switch (metadata.0.detail) {
+          case (#nest(n)) {
+            let levelInfo = getLevelInfoByAnt(NFT_TYPE[2], metadata.0.attributes[1].value, n.level-1);
+              switch(levelInfo) {
+                      case (?info) {
+                        var isUpdate = updateUserResource(Principal.toText(msg.caller), info.costResource); 
+                        if(isUpdate == true) {
+                            switch (info.nextLevel) {
+                              case (#nest(nextLevel)) {
+                                 newDetail := #nest({level=n.level +1 ;inLand= n.inLand;queenIn= n.queenIn; limitAnt=nextLevel.limitAnt;});
+                              };
+                                case (_) {
+
+                            };
+                          };
+     
+                        } else {
+                          return #err("not enough resource!")
+                        }
+                      };
+                      case _ {
+                        return #err("no ant detail found!")
+                      };
+                  };
+          };
+          case (_) {
+
+          };
+        };
+     
+        metadata.0.detail := newDetail;
+         _metadata.put(nestTokenId,metadata);
+         return #ok(_tokenMetadata(metadata.0));
+         };
+    
+      case (_) return #err("Token not valid!");
+  };
+  };
+    return #err("failed")
+  };
+
+  private func newResource(): Types.ResourceInt {
+    return {
+      var soil: Float=0; var leaf: Float= 0; var gold: Float=0; var food: Float = 0;
+    }
+  };
+
+  private func updateUserResource(account: AccountIdentifier, resource: Resource): Bool {
+         switch (users.get(account)) {
+            case (?user) {
+              let userRes  = user.userState.resource;
+              if(userRes.food < resource.food or userRes.soil < resource.soil or userRes.leaf < resource.leaf or userRes.gold < resource.gold) {return false};
+              user.userState := {resource = {soil=userRes.soil - resource.soil ; leaf= userRes.leaf- resource.leaf ; gold=userRes.gold-resource.gold;food= userRes.food- resource.food;}};
+                users.put(account, user);
+                return true;
+            };
+         
+            case (_) {
+               return false
+            };
+      };
+  };
+
+  private func getLevelInfoByAnt(tokenType: Text, rarity: Text, level: Nat) : ?Types.CostInfo {
+    for(metadata in Iter.fromArray(levelMetadata)) {
+      if(metadata.name == tokenType) {
+         for(info in Iter.fromArray(metadata.info)) {
+           if(info.rarity == rarity) {
+            return List.get(List.fromArray(info.info), level);
+           };
+         };
+      };
+    };
+    return null;
   };
 
   //   private func _removeTokenFrom(owner: Principal, tokenId: Nat) {

@@ -173,36 +173,56 @@ export const metadata = [
 
 ];
 
-export const metadata = [
+export const levelData = [
 	{
 		type: "Queen",
-		rarity: "Common",
-		cost : [
-			{level: 1, resource: {
-				gold: 10,
-				leaf: 30,
-				food: 40,
-			}},
-			{level: 2, resource: {
-				gold: 10,
-				leaf: 30,
-				food: 40,
-			}},
-			{level: 3, resource: {
-				gold: 10,
-				leaf: 30,
-				food: 40,
-			}},
-			{level: 4, resource: {
-				gold: 10,
-				leaf: 30,
-				food: 40,
-			}},
-			{level: 5, resource: {
-				gold: 10,
-				leaf: 30,
-				food: 40,
-			}}
+		info: [
+			{
+				rarity: "Common",
+				data: [
+					{
+						level: 1, costResource: {
+							gold: 10,
+							leaf: 30,
+							food: 40,
+						},
+						nextLevel: {
+							
+						}
+					},
+					{
+						level: 2, resource: {
+							gold: 10,
+							leaf: 30,
+							food: 40,
+						}
+					},
+					{
+						level: 3, resource: {
+							gold: 10,
+							leaf: 30,
+							food: 40,
+						}
+					},
+					{
+						level: 4, resource: {
+							gold: 10,
+							leaf: 30,
+							food: 40,
+						}
+					},
+					{
+						level: 5, resource: {
+							gold: 10,
+							leaf: 30,
+							food: 40,
+						}
+					}
+				],
+				nextLevel : [
+					
+				]
+			}
 		]
 	}
 ]

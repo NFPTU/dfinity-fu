@@ -23,6 +23,33 @@ module {
         var detail: DetailNFT;
     };
 
+      public type LevelData = {
+        name: Text;
+        info: [InfoLevel];
+    };
+
+    public type InfoLevel = {
+        rarity: Text;
+        info: [CostInfo];
+    };
+
+    public type CostInfo = {
+        level: Nat;
+        costResource: Resource;
+        nextLevel : {
+                #queen : {
+                    foodPerWorker : Float;
+                    breedWorkerTime: Time.Time;
+                };
+                #nest : {
+                    limitAnt: Nat;
+                };
+                #worker: {
+                    farmPerTime: Resource
+                };
+                };
+    };
+
     public type DetailNFT = {
         #queen : {
             level: Nat;
@@ -37,6 +64,7 @@ module {
             level: Nat;
             queenIn: ?TokenIndex;
             inLand: ?TokenIndex;
+            limitAnt: Nat;
         };
         #worker : {
             level: Nat;
@@ -72,6 +100,13 @@ module {
              leaf: Float;
              gold: Float;
              food: Float;
+    };
+
+    public type ResourceInt = {
+             var soil: Float;
+             var leaf: Float;
+             var gold: Float;
+             var food: Float;
     };
 
     public type WorkerFarmRequest = {
