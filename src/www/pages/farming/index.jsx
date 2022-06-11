@@ -131,6 +131,8 @@ function Farming() {
 		);
 	};
 
+  console.log('cardSelected', cardSelected)
+
 	return (
 		<Container>
 			<Grid container spacing={2}>

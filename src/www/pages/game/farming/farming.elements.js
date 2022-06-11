@@ -32,7 +32,7 @@ export const Wrapper = styled.div`
 export const Left = styled.div`
    width: 280px;
    height: 100%;
-   margin-right: 150px;
+   margin-right: 105px;
 `
 
 export const LeftWrapper = styled.div`
@@ -65,16 +65,16 @@ export const CardImg = styled.img`
 `
 
 export const CardWrapper = styled.div`
-    height: 100%;
+    height: 380px;
     width: 280px;
-    margin-left:70px;
+    margin-left: 70px;
 `
 
 export const Right = styled.div`
     display: flex;
     flex-direction: column;
     height: 100%;
-    width: 400px;
+    width: 460px;
     background-color: rgba(233,225,214,.6);
     border-radius: 5px;
     padding: 10px 10px;
@@ -143,6 +143,16 @@ export const CountdownWrapper = styled.div`
     border-radius: 5px;
 `
 
+export const CountdownInside = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    color: #923935;
+    padding: 6px 0px;
+    font-size: 20px;
+`
+
 export const Countdown = styled.div`
     display: flex;
     align-items: center;
@@ -150,6 +160,7 @@ export const Countdown = styled.div`
     padding: 15px 10px;
     font-size: 20px;
 `
+
 
 export const Hour = styled.div`
 
@@ -194,7 +205,8 @@ export const Btn = styled.div`
 
 //=========== Resource =================
 export const ListResourceWrapper = styled.div`
-    width: 100%;
+    width: 437px;
+    box-sizing: border-box;
     display: flex;
     flex-direction: column;
     border: 2px solid #de8d2b;
@@ -218,6 +230,8 @@ export const ResourceItem = styled.div`
     display: flex;
     align-items: center;
     margin-right: 5px;
+    width: 90px;
+    box-sizing: border-box;
 `
 
 export const ResourceImg = styled.img`
