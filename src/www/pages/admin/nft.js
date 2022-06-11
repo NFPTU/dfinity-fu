@@ -468,6 +468,7 @@ export const metadata = [
 				level: 1,
 				queenIn: [],
 				inLand: [],
+<<<<<<< HEAD
 				limitAnt: 10, //tang
 			},
 		},
@@ -639,6 +640,11 @@ export const metadata = [
 				limitAnt: 15, //tang
 			},
 		},
+=======
+				limit: 10
+			}
+		}
+>>>>>>> ae83896968e6bc3e81b7dbe8307fcbac26a1d804
 	},
 	{
 		name: 'Land',
