@@ -24,7 +24,7 @@ function Card({ data }) {
                   <Name>{data?.name}</Name>
                   <Desc>{data?.description}</Desc>
               </InfoTop>
-              <Button>Stake</Button>
+              {/* <Button>Stake</Button> */}
             </Info>
         </Content>
     </Container>
