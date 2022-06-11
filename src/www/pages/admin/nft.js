@@ -4,6 +4,27 @@ const minute = 60 * second;
 export const metadata = [
 	{
 
+		name: 'Ant Kingdom',
+		description: 'Ant Kingdom',
+		tokenId: [],
+		image:
+			'https://storageapi.fleek.co/c86ea07c-070d-40b0-bb7a-12a2d3c468f4-bucket/nft/ant-queen.png',
+		attributes: [
+			{
+				trait_type: 'Type',
+				value: 'Kingdom',
+				max: [],
+				min: []
+			},
+		],
+		detail: {
+			kingdom: {
+				landId: []
+			}
+		}
+	},
+	{
+
 		name: 'Ant Queen',
 		description: 'Ant Queen',
 		tokenId: [],
@@ -33,7 +54,7 @@ export const metadata = [
 			queen: {
 				level: 1,
 				inNest: [],
-				breedingWorkerId :0,
+				breedingWorkerId: 0,
 				info: {
 					foodPerWorker: 40,
 					breedWorkerTime: 60 * second
@@ -173,36 +194,56 @@ export const metadata = [
 
 ];
 
-export const metadata = [
+export const levelData = [
 	{
 		type: "Queen",
-		rarity: "Common",
-		cost : [
-			{level: 1, resource: {
-				gold: 10,
-				leaf: 30,
-				food: 40,
-			}},
-			{level: 2, resource: {
-				gold: 10,
-				leaf: 30,
-				food: 40,
-			}},
-			{level: 3, resource: {
-				gold: 10,
-				leaf: 30,
-				food: 40,
-			}},
-			{level: 4, resource: {
-				gold: 10,
-				leaf: 30,
-				food: 40,
-			}},
-			{level: 5, resource: {
-				gold: 10,
-				leaf: 30,
-				food: 40,
-			}}
+		info: [
+			{
+				rarity: "Common",
+				data: [
+					{
+						level: 1, costResource: {
+							gold: 10,
+							leaf: 30,
+							food: 40,
+						},
+						nextLevel: {
+							
+						}
+					},
+					{
+						level: 2, resource: {
+							gold: 10,
+							leaf: 30,
+							food: 40,
+						}
+					},
+					{
+						level: 3, resource: {
+							gold: 10,
+							leaf: 30,
+							food: 40,
+						}
+					},
+					{
+						level: 4, resource: {
+							gold: 10,
+							leaf: 30,
+							food: 40,
+						}
+					},
+					{
+						level: 5, resource: {
+							gold: 10,
+							leaf: 30,
+							food: 40,
+						}
+					}
+				],
+				nextLevel : [
+					
+				]
+			}
 		]
 	}
 ]
