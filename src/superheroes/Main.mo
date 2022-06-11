@@ -6,11 +6,16 @@
  */
 
 // import Array "mo:base/Array";
+import AID "/Lib/Ext/util/AccountIdentifier";
 import Array "mo:base/Array";
 import Buffer "mo:base/Buffer";
 import Cycles "mo:base/ExperimentalCycles";
 import D "mo:base/Debug";
 import Error "mo:base/Error";
+import Ext "Ext";
+import ExtCommon "/Lib/Ext/ext/Common";
+import ExtCore "/Lib/Ext/ext/Core";
+import ExtTypes "Ext/types";
 import Float "mo:base/Float";
 import Hash "mo:base/Hash";
 import HashMap "mo:base/HashMap";
@@ -25,13 +30,8 @@ import List "mo:base/List";
 import Result "mo:base/Result";
 import Text "mo:base/Text";
 import Time "mo:base/Time";
+import TokenIndex "mo:base/Bool";
 import TrieSet "mo:base/TrieSet";
-
-import AID "/Lib/Ext/util/AccountIdentifier";
-import Ext "Ext";
-import ExtCommon "/Lib/Ext/ext/Common";
-import ExtCore "/Lib/Ext/ext/Core";
-import ExtTypes "Ext/types";
 import Types "./types";
 import User "./User";
 
@@ -1038,7 +1038,7 @@ private let NFT_RARITY : [Text] =   ["Common","Uncommon","Rare", "Epec", "Legend
 
   private func checkTypeToken(tokenId: TokenIndex, tokenType: Text) : Bool {
     var tokenData = switch(_metadata.get(tokenId)) {
-      case (?metadata) metadata.0.attributes[0].value == tokenType;
+            case (?metadata) metadata.0.attributes[0].value == tokenType;
       case (_) return false;
   };
 
@@ -1071,7 +1071,7 @@ private let NFT_RARITY : [Text] =   ["Common","Uncommon","Rare", "Epec", "Legend
         var newDetail: DetailNFT = metadata.0.detail;
         switch (metadata.0.detail) {
           case (#nest(n)) {
-            newDetail := #nest({level=n.level; inLand= ?landTokenId;queenIn= n.queenIn; limitAnt=n.limitAnt;});
+            newDetail := #nest({level=n.level; inLand= ?landTokenId;queenIn= n.queenIn; limit = n.limit});
           };
           case (_) {
 
@@ -1119,7 +1119,7 @@ private let NFT_RARITY : [Text] =   ["Common","Uncommon","Rare", "Epec", "Legend
         var newDetail: DetailNFT = metadata.0.detail;
         switch (metadata.0.detail) {
           case (#nest(n)) {
-            newDetail := #nest({level=n.level; inLand= n.inLand;queenIn= ?queenTokenId; limitAnt=n.limitAnt;});
+            newDetail := #nest({level=n.level; inLand= n.inLand;queenIn= ?queenTokenId; limit= n.limit});
           };
           case (_) {
           };
@@ -1235,7 +1235,7 @@ private let NFT_RARITY : [Text] =   ["Common","Uncommon","Rare", "Epec", "Legend
             var id = "";
             var name = "";
             var tokens = TrieSet.empty<TokenIndex>();
-            var userState : UserState = {resource = {soil=0; leaf= 0; gold=0;food=0;}; kingdomId=0};
+            var userState : UserState = {resource = {soil=0; leaf= 0; gold=0;food=0;}; limitAnt = 0;kingdomId=0;currentAnt=0;};
         }
     };
 
@@ -1428,7 +1428,10 @@ let ret = Buffer.Buffer<TokenIndex>(workerTokenIds.countIds);
 switch (users.get(Principal.toText(msg.caller))) {
             case (?user) {
               let userRes  = user.userState.resource;
-              user.userState := { kingdomId=user.userState.kingdomId;resource = {soil=userRes.soil + farm.resource.soil; leaf= userRes.leaf + farm.resource.leaf; gold=userRes.gold + farm.resource.gold;food= userRes.food + farm.resource.food;}};
+              let userLimit = user.userState.limitAnt;
+              user.userState := {kingdomId=user.userState.kingdomId;
+              resource = {soil=userRes.soil + farm.resource.soil; leaf= userRes.leaf + farm.resource.leaf; gold=userRes.gold + farm.resource.gold;food= userRes.food + farm.resource.food;}; 
+              limitAnt= userLimit;currentAnt=user.userState.currentAnt};
                 users.put(Principal.toText(msg.caller), user);
             };
          
@@ -1490,7 +1493,7 @@ switch (users.get(Principal.toText(msg.caller))) {
                         if(isUpdate == true) {
                             switch (info.nextLevel) {
                               case (#queen(nextLevel)) {
-                                 newDetail := #queen({level=n.level +1 ; inNest = n.inNest; info={foodPerWorker=nextLevel.foodPerWorker;breedWorkerTime=nextLevel.breedWorkerTime;};breedingWorkerId=n.breedingWorkerId;});
+                                 newDetail := #queen({level=n.level +1 ; inNest = n.inNest; info={resourcePerWorker=nextLevel.resourcePerWorker;breedWorkerTime=nextLevel.breedWorkerTime;resourcePerArmy=nextLevel.resourcePerArmy;};breedingWorkerId=n.breedingWorkerId;});
                               };
                                 case (_) {
 
@@ -1536,7 +1539,7 @@ switch (users.get(Principal.toText(msg.caller))) {
                         if(isUpdate == true) {
                             switch (info.nextLevel) {
                               case (#nest(nextLevel)) {
-                                 newDetail := #nest({level=n.level +1 ;inLand= n.inLand;queenIn= n.queenIn; limitAnt=nextLevel.limitAnt;});
+                                 newDetail := #nest({level=n.level +1 ;inLand= n.inLand;queenIn= n.queenIn; limit=nextLevel.limit;});
                               };
                                 case (_) {
 
@@ -1579,7 +1582,7 @@ switch (users.get(Principal.toText(msg.caller))) {
             case (?user) {
               let userRes  = user.userState.resource;
               if(userRes.food < resource.food or userRes.soil < resource.soil or userRes.leaf < resource.leaf or userRes.gold < resource.gold) {return false};
-              user.userState := { kingdomId=user.userState.kingdomId;resource = {soil=userRes.soil - resource.soil ; leaf= userRes.leaf- resource.leaf ; gold=userRes.gold-resource.gold;food= userRes.food- resource.food;}};
+              user.userState := { kingdomId=user.userState.kingdomId;limitAnt=user.userState.limitAnt;currentAnt=user.userState.currentAnt;resource = {soil=userRes.soil - resource.soil ; leaf= userRes.leaf- resource.leaf ; gold=userRes.gold-resource.gold;food= userRes.food- resource.food;}};
                 users.put(account, user);
                 return true;
             };
@@ -1635,7 +1638,7 @@ switch (users.get(Principal.toText(msg.caller))) {
                 };
                 switch(users.get(Principal.toText(msg.caller))) {
             case (?user) {
-                user.userState := {resource = {soil=500; leaf= 500; gold=50;food= 200;}; kingdomId=user.userState.kingdomId;};
+                user.userState := {resource = {soil=500; leaf= 500; gold=50;food= 200;} ; limitAnt= 10;kingdomId=user.userState.kingdomId;currentAnt=user.userState.currentAnt};
                 users.put(Principal.toText(msg.caller), user);
             };
             case (_) {
@@ -1688,7 +1691,7 @@ switch (users.get(Principal.toText(msg.caller))) {
   switch (users.get(Principal.toText(msg.caller))) {
             case (?user) {
               if(user.userState.kingdomId==0) {
-                user.userState := {resource = user.userState.resource; kingdomId= kingdomTokenId};
+                user.userState := {resource = user.userState.resource; kingdomId= kingdomTokenId;limitAnt=user.userState.limitAnt;currentAnt=user.userState.currentAnt};
                 users.put(Principal.toText(msg.caller), user);
               };
               
@@ -1718,8 +1721,11 @@ switch (users.get(Principal.toText(msg.caller))) {
              switch (users.get(Principal.toText(msg.caller))) {
             case (?user) {
               let userRes  = user.userState.resource;
-              if(Float.greaterOrEqual(userRes.food, n.info.foodPerWorker) == false) {return #err("not enough food!")};
-              user.userState := {resource = {soil=userRes.soil ; leaf= userRes.leaf; gold=userRes.gold;food= userRes.food- n.info.foodPerWorker;}; kingdomId=user.userState.kingdomId};
+              let userLimitAnt = user.userState.limitAnt;
+              if(user.userState.currentAnt <= user.userState.limitAnt) {return #err("Limit not enough")};
+              var isUpdate = updateUserResource(Principal.toText(msg.caller), n.info.resourcePerWorker); 
+              if(isUpdate == false) {return #err("not enough food!")};
+              user.userState := {kingdomId=user.userState.kingdomId;resource = userRes; limitAnt = userLimitAnt;currentAnt=user.userState.currentAnt+1};
                 users.put(Principal.toText(msg.caller), user);
             };
          
@@ -1768,26 +1774,45 @@ switch (users.get(Principal.toText(msg.caller))) {
   return #ok(true)
   };
 
-  public shared(msg) func claimWorkerEgg(queenTokenId: TokenIndex): async Result.Result<Bool, Text> {
- 
+  public shared(msg) func breedAntArmy(queenTokenId: TokenIndex) : async Result.Result<Bool, Text> {
+    
  var tokenData = switch(_metadata.get(queenTokenId)) {
       case (?metadata)  {
         var newQueenDetail: DetailNFT = metadata.0.detail;
         switch (metadata.0.detail) {
           case (#queen(n)) {
-              let tokenId = n.breedingWorkerId;
+             switch (users.get(Principal.toText(msg.caller))) {
+            case (?user) {
+              let userRes  = user.userState.resource;
+              let userLimitAnt = user.userState.limitAnt;
+              if(user.userState.currentAnt <= user.userState.limitAnt) {return #err("Limit not enough")};
+              var isUpdate = updateUserResource(Principal.toText(msg.caller), n.info.resourcePerWorker); 
+              if(isUpdate == false) {return #err("not enough food!")};
+              user.userState := {kingdomId=user.userState.kingdomId;resource = userRes; limitAnt = userLimitAnt;currentAnt=user.userState.currentAnt+1};
+                users.put(Principal.toText(msg.caller), user);
+            };
+         
+            case (_) {
+               return #err("User Not Found")
+            };
+      };
+      if(n.breedingWorkerId!=0) {
+        return #err("Queen is breeding!")
+      }; 
+            let request: RegisterTokenRequest = {
+                  metadata = _unwrap(tokensMetadata.get(1));
+                    supply = 1;
+                    owner = Principal.toText(msg.caller);
+              };
+              let tokenId = registerToken(request);
               var workerData = switch(_metadata.get(tokenId)) {
       case (?metadata)  {
         var newWorkerDetail: DetailNFT = metadata.0.detail;
         switch (metadata.0.detail) {
           case (#worker(w)) {
-             if(Int.greater(w.breedTimestamp , Time.now()) and Nat.equal(w.antState, ANT_STATE[0])) {
-                  return #err("Can't claim!");
-                } else {
-                    newWorkerDetail := #worker({inNest= w.inNest;queenId= w.queenId; antState=ANT_STATE[0];breedTimestamp= w.breedTimestamp;farmTimestamp=w.farmTimestamp;info=w.info;});
-            newQueenDetail := #queen({level=n.level; inNest = n.inNest; info=n.info;breedingWorkerId=0;});
-                
-                };
+            newWorkerDetail := #worker({ inNest= w.inNest;queenId= w.queenId; antState=ANT_STATE[1];breedTimestamp= Time.now()+ n.info.breedWorkerTime;farmTimestamp=w.farmTimestamp;info=w.info;});
+            newQueenDetail := #queen({level=n.level; inNest = n.inNest; info=n.info;breedingWorkerId=tokenId;});
+
           };
           case (_) {
           };
@@ -1805,6 +1830,50 @@ switch (users.get(Principal.toText(msg.caller))) {
      
         metadata.0.detail := newQueenDetail;
          _metadata.put(queenTokenId,metadata);
+         };
+    
+      case (_) return #err("Token not valid!");
+  };
+  return #ok(true)
+  };
+
+  public shared(msg) func claimWorkerEgg(queenTokenId: TokenIndex): async Result.Result<Bool, Text> {
+ 
+ var tokenData = switch(_metadata.get(queenTokenId)) {
+      case (?metadataOfQueen)  {
+        var newQueenDetail: DetailNFT = metadataOfQueen.0.detail;
+        switch (metadataOfQueen.0.detail) {
+          case (#queen(n)) {
+              let tokenId = n.breedingWorkerId;
+              var workerData = switch(_metadata.get(tokenId)) {
+      case (?metadata)  {
+        var newWorkerDetail: DetailNFT = metadata.0.detail;
+        switch (metadata.0.detail) {
+          case (#worker(w)) {
+             if(Int.greater(w.breedTimestamp , Time.now()) and Nat.equal(w.antState, ANT_STATE[0])) {
+                  return #err("Can't claim!");
+                } else {
+                    newWorkerDetail := #worker({ inNest= n.inNest;queenId= ?queenTokenId; antState=ANT_STATE[0];breedTimestamp= w.breedTimestamp;farmTimestamp=w.farmTimestamp;info=w.info;});
+                    newQueenDetail := #queen({level=n.level; inNest = n.inNest; info=n.info;breedingWorkerId=0;});
+                
+                };
+          };
+          case (_) {
+          };
+        };
+     
+        metadata.0.detail := newWorkerDetail;
+         _metadata.put(tokenId,metadata);
+         };
+          case (_) return #err("Token not valid!");
+         };
+          };
+          case (_) {
+          };
+        };
+     
+        metadataOfQueen.0.detail := newQueenDetail;
+         _metadata.put(queenTokenId,metadataOfQueen);
          };
     
       case (_) return #err("Token not valid!");

@@ -40,9 +40,11 @@ module {
                 #queen : {
                     foodPerWorker : Float;
                     breedWorkerTime: Time.Time;
+                    resourcePerArmy: Resource;
+                    resourcePerWorker: Resource;
                 };
                 #nest : {
-                    limitAnt: Nat;
+                    limit: Nat;
                 };
                 #worker: {
                     farmPerTime: Resource
@@ -57,14 +59,15 @@ module {
             breedingWorkerId : TokenIndex;
             info : {
             breedWorkerTime: Time.Time;
-            foodPerWorker: Float;
+            resourcePerWorker: Resource;
+            resourcePerArmy: Resource;
             }
         };
         #nest : {
             level: Nat;
             queenIn: ?TokenIndex;
             inLand: ?TokenIndex;
-            limitAnt: Nat;
+            limit: Nat;
         };
         #worker : {
             inNest: ?TokenIndex;
@@ -90,7 +93,9 @@ module {
             landId: [TokenIndex]
         };
         #army: {
-             level: Nat;
+              queenId: TokenIndex;
+              kingdomId: TokenIndex;
+            antState: Nat;
         };
     };
 
@@ -150,6 +155,8 @@ module {
     public type UserState = {
         resource: Resource;
         kingdomId: TokenIndex;
+        limitAnt : Nat;
+        currentAnt: Nat;
     };
 
     
