@@ -47,6 +47,7 @@ export const idlFactory = ({ IDL }) => {
     'nest' : IDL.Record({
       'level' : IDL.Nat,
       'inLand' : IDL.Opt(TokenIndex),
+      'limitAnt' : IDL.Nat,
       'queenIn' : IDL.Opt(TokenIndex),
     }),
     'queen' : IDL.Record({
@@ -82,7 +83,7 @@ export const idlFactory = ({ IDL }) => {
     'attributes' : IDL.Vec(AttributeMeta),
     'image' : IDL.Text,
   });
-  const Result_7 = IDL.Variant({
+  const Result_9 = IDL.Variant({
     'ok' : IDL.Vec(MetadataExt),
     'err' : IDL.Text,
   });
@@ -90,7 +91,7 @@ export const idlFactory = ({ IDL }) => {
     'InvalidToken' : TokenIdentifier,
     'Other' : IDL.Text,
   });
-  const Result_6 = IDL.Variant({
+  const Result_8 = IDL.Variant({
     'ok' : IDL.Vec(MetadataExt),
     'err' : CommonError,
   });
@@ -102,14 +103,35 @@ export const idlFactory = ({ IDL }) => {
     'tokens' : IDL.Vec(TokenIndex),
   });
   const TokenIdentifier__1 = IDL.Text;
-  const Result_5 = IDL.Variant({ 'ok' : MetadataExt, 'err' : CommonError });
-  const Result_1 = IDL.Variant({ 'ok' : IDL.Nat, 'err' : CommonError });
-  const Result_4 = IDL.Variant({
+  const Result_7 = IDL.Variant({ 'ok' : MetadataExt, 'err' : CommonError });
+  const Result_2 = IDL.Variant({ 'ok' : IDL.Nat, 'err' : CommonError });
+  const Result_6 = IDL.Variant({
     'ok' : IDL.Vec(IDL.Tuple(AccountIdentifier__1, Balance__1)),
     'err' : CommonError,
   });
-  const Result_3 = IDL.Variant({ 'ok' : IDL.Text, 'err' : IDL.Text });
-  const Result_2 = IDL.Variant({ 'ok' : Balance__1, 'err' : CommonError });
+  const CostInfo = IDL.Record({
+    'nextLevel' : IDL.Variant({
+      'nest' : IDL.Record({ 'limitAnt' : IDL.Nat }),
+      'queen' : IDL.Record({
+        'foodPerWorker' : IDL.Float64,
+        'breedWorkerTime' : Time,
+      }),
+      'worker' : IDL.Record({ 'farmPerTime' : Resource }),
+    }),
+    'costResource' : Resource,
+    'level' : IDL.Nat,
+  });
+  const InfoLevel = IDL.Record({
+    'info' : IDL.Vec(CostInfo),
+    'rarity' : IDL.Text,
+  });
+  const LevelData = IDL.Record({
+    'info' : IDL.Vec(InfoLevel),
+    'name' : IDL.Text,
+  });
+  const Result_5 = IDL.Variant({ 'ok' : IDL.Vec(LevelData), 'err' : IDL.Text });
+  const Result_4 = IDL.Variant({ 'ok' : IDL.Text, 'err' : IDL.Text });
+  const Result_3 = IDL.Variant({ 'ok' : Balance__1, 'err' : CommonError });
   const Memo = IDL.Vec(IDL.Nat8);
   const SubAccount = IDL.Vec(IDL.Nat8);
   const TransferRequest = IDL.Record({
@@ -132,6 +154,7 @@ export const idlFactory = ({ IDL }) => {
       'Other' : IDL.Text,
     }),
   });
+  const Result_1 = IDL.Variant({ 'ok' : MetadataExt, 'err' : IDL.Text });
   const WorkerFarmRequest = IDL.Record({
     'food' : IDL.Vec(TokenIndex),
     'gold' : IDL.Vec(TokenIndex),
@@ -165,37 +188,40 @@ export const idlFactory = ({ IDL }) => {
     'claimWorkerEgg' : IDL.Func([TokenIndex__1], [Result], []),
     'claiming' : IDL.Func([], [Result], []),
     'extensions' : IDL.Func([], [IDL.Vec(Extension)], ['query']),
-    'getDataByLandId' : IDL.Func([TokenIndex__1], [Result_7], []),
+    'getDataByLandId' : IDL.Func([TokenIndex__1], [Result_9], []),
     'getTokensMetadata' : IDL.Func([], [IDL.Vec(MetadataExt)], []),
     'getUserAvailableWorker' : IDL.Func(
         [AccountIdentifier__1],
-        [Result_6],
+        [Result_8],
         ['query'],
       ),
     'getUserInfo' : IDL.Func([AccountIdentifier__1], [UserInfoExt], ['query']),
-    'getUserTokens' : IDL.Func([AccountIdentifier__1], [Result_6], ['query']),
-    'metadata' : IDL.Func([TokenIdentifier__1], [Result_5], ['query']),
+    'getUserTokens' : IDL.Func([AccountIdentifier__1], [Result_8], ['query']),
+    'metadata' : IDL.Func([TokenIdentifier__1], [Result_7], ['query']),
     'numberOfTokenHolders' : IDL.Func(
         [TokenIdentifier__1],
-        [Result_1],
+        [Result_2],
         ['query'],
       ),
     'numberOfTokens' : IDL.Func([], [IDL.Nat], ['query']),
-    'registry' : IDL.Func([TokenIdentifier__1], [Result_4], ['query']),
+    'registry' : IDL.Func([TokenIdentifier__1], [Result_6], ['query']),
+    'setLevelMetadata' : IDL.Func([IDL.Vec(LevelData)], [Result_5], []),
     'setTokensMetadata' : IDL.Func([IDL.Vec(MetadataExt)], [Result], []),
     'stakeNestInLand' : IDL.Func(
         [TokenIndex__1, TokenIndex__1],
-        [Result_3],
+        [Result_4],
         [],
       ),
     'stakeQueenInNest' : IDL.Func(
         [TokenIndex__1, TokenIndex__1],
-        [Result_3],
+        [Result_4],
         [],
       ),
-    'supply' : IDL.Func([TokenIdentifier__1], [Result_2], ['query']),
+    'supply' : IDL.Func([TokenIdentifier__1], [Result_3], ['query']),
     'transfer' : IDL.Func([TransferRequest], [TransferResponse], []),
-    'updateUser' : IDL.Func([IDL.Text], [Result_1], []),
+    'updateUser' : IDL.Func([IDL.Text], [Result_2], []),
+    'upgradeLevelNest' : IDL.Func([TokenIndex__1], [Result_1], []),
+    'upgradeLevelQueen' : IDL.Func([TokenIndex__1], [Result_1], []),
     'workerFarmInLand' : IDL.Func(
         [WorkerFarmRequest, TokenIndex__1],
         [Result],
