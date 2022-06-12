@@ -4,7 +4,15 @@ import { useCanister, useConnect } from '@connect2ic/react';
 
 function Admin() {
 	const [superheroes, { loading, error }] = useCanister('superheroes');
-	const { principal, isConnected, disconnect, activeProvider , isIdle, connect, isConnecting} = useConnect();
+	const {
+		principal,
+		isConnected,
+		disconnect,
+		activeProvider,
+		isIdle,
+		connect,
+		isConnecting,
+	} = useConnect();
 	const [listNFt, setListNFt] = useState([]);
 
 	const onSubmit = async () => {
@@ -23,12 +31,18 @@ function Admin() {
 
 	const onClaim = async () => {
 		try {
-			console.log(superheroes, activeProvider, isIdle, isConnecting, isConnected);
+			console.log(
+				superheroes,
+				activeProvider,
+				isIdle,
+				isConnecting,
+				isConnected
+			);
 			connect();
 			const res = await superheroes?.claiming();
 			console.log(res);
 		} catch (er) {
-			console.log(er);
+			console.log('Err', er);
 		}
 	};
 
@@ -36,8 +50,8 @@ function Admin() {
 		try {
 			const listNest = getNFTByType('Nest');
 			const listLand = getNFTByType('Land');
-			console.log('nest', listNest)
-			console.log('land', listLand)
+			console.log('nest', listNest);
+			console.log('land', listLand);
 			const res = await superheroes?.stakeNestInLand(
 				listNest[0]?.tokenId[0],
 				listLand[0]?.tokenId[0]
@@ -63,60 +77,63 @@ function Admin() {
 	};
 
 	const onGetData = async () => {
-		console.log( principal?.toString());
+		console.log(principal?.toString());
 		const resp = await superheroes?.getUserTokens(principal?.toString());
 		setListNFt(resp?.ok);
 		console.log(resp);
 	};
 
-  const onChangeName = async () => {
-    const resp = await superheroes?.updateUser("main");
-	console.log("response :", resp);
-  }
+	const onChangeName = async () => {
+		const resp = await superheroes?.updateUser('main');
+		console.log('response :', resp);
+	};
 
-  const onBreedingWorker = async() => {
-	const listQ = getNFTByType('Queen');
-	console.log(listQ);
-	const res = await superheroes.breedAntWorkder(listQ[0]?.tokenId[0])
-	console.log('onBreedingWorker', res);
-  }
+	const onBreedingWorker = async () => {
+		const listQ = getNFTByType('Queen');
+		console.log(listQ);
+		const res = await superheroes.breedAntWorkder(listQ[0]?.tokenId[0]);
+		console.log('onBreedingWorker', res);
+	};
 
-  const onClaimWorker = async() => {
-	const listQ = getNFTByType('Worker');
-	const res = await superheroes.claimWorkerEgg(listQ[0].tokenId[0])
-	console.log('onClaimWorker' ,res);
-  }
+	const onClaimWorker = async () => {
+		const listQ = getNFTByType('Worker');
+		const res = await superheroes.claimWorkerEgg(listQ[0].tokenId[0]);
+		console.log('onClaimWorker', res);
+	};
 
-  const onWorkerFarmInLand = async () => {
-	  const farmRequest  = {
-		food: [],
-		gold: [],
-		leaf: [],
-		soil: [],
-		countIds: []
-	  }
-	  const listQ = getNFTByType('Land');
-	const res = await superheroes.workerFarmInLand(farmRequest, listQ[0].tokenId[0])
-  }
+	const onWorkerFarmInLand = async () => {
+		const farmRequest = {
+			food: [],
+			gold: [],
+			leaf: [],
+			soil: [],
+			countIds: [],
+		};
+		const listQ = getNFTByType('Land');
+		const res = await superheroes.workerFarmInLand(
+			farmRequest,
+			listQ[0].tokenId[0]
+		);
+	};
 
 	const getNFTByType = (type) => {
 		return listNFt.filter((el) => el.attributes[0].value === type);
 	};
 
-	const onClaimResourceInLand = async() => {
+	const onClaimResourceInLand = async () => {
 		const listQ = getNFTByType('Land');
-		const res = await superheroes.claimResourceInLand(listQ[0].tokenId[0])
+		const res = await superheroes.claimResourceInLand(listQ[0].tokenId[0]);
 		console.log(res);
-	  }
+	};
 
-	const getUserInfo = async() => {
-		const res = await superheroes.getUserInfo(principal?.toString())
+	const getUserInfo = async () => {
+		const res = await superheroes.getUserInfo(principal?.toString());
 		console.log(res);
-	}
+	};
 
 	return (
 		<>
-		<button onClick={getUserInfo}> get User</button>
+			<button onClick={getUserInfo}> get User</button>
 			<br />
 			<button onClick={onGetData}> get Data</button>
 			<br />
@@ -129,7 +146,7 @@ function Admin() {
 			<br />
 			<button onClick={onStakeQueenInNest}> stake Queen NFT</button>
 			<br />
-      			<button onClick={onChangeName}> change name</button>
+			<button onClick={onChangeName}> change name</button>
 			<br />
 			<button onClick={onBreedingWorker}> Breeding worker ant</button>
 			<br />
