@@ -26,16 +26,15 @@ function LoginGame(props) {
 	const { prinpId, setPrinpId, logout } = props;
 
 	const navigate = useNavigate();
+
 	const getUserInfo = async () => {
-		const res = await superheroes.getUserInfo(principal?.toString());
-		if (res?.tokens == null) {
-			setTimeout(() => {
-				navigate('/home-claim');
-			}, 1500);
-		} else {
-			setTimeout(() => {
+		try {
+			const res = await superheroes.getUserInfo(principal?.toString());
+			if (res) {
 				navigate('/inventory');
-			}, 1500);
+			}
+		} catch (error) {
+			navigate('/home-claim');
 		}
 	};
 
