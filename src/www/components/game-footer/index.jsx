@@ -33,8 +33,14 @@ function GameFooter() {
 		{
 			id: 5,
 			imgUrl: '/images/footer/breed.png',
-			title: 'FarmingBeta',
-			to: '/farming-test',
+			title: 'Nest',
+			to: '/nest',
+		},
+		{
+			id: 6,
+			imgUrl: '/images/footer/breed.png',
+			title: 'Kingdom',
+			to: '/kingdom',
 		},
 	];
 
