@@ -13,6 +13,7 @@ import {
 	ConnectDialog,
 	Connect2ICProvider,
 	useConnect,
+	useCanister,
 } from '@connect2ic/react';
 import { withContext } from '../../../hooks';
 import { useNavigate } from 'react-router-dom';
@@ -20,19 +21,29 @@ import './style.css';
 
 function LoginGame(props) {
 	const { principal, isConnected, disconnect } = useConnect();
+	const [superheroes, { loading, error }] = useCanister('superheroes');
 
 	const { prinpId, setPrinpId, logout } = props;
 
 	const navigate = useNavigate();
+
+	const getUserInfo = async () => {
+		try {
+			const res = await superheroes.getUserInfo(principal?.toString());
+			if (res) {
+				navigate('/inventory');
+			}
+		} catch (error) {
+			navigate('/home-claim');
+		}
+	};
 
 	const onConnectWallet = async () => {
 		try {
 			console.log(principal);
 			if (principal) {
 				setPrinpId(principal);
-				setTimeout(() => {
-					navigate('/home-claim');
-				}, 1500)
+				getUserInfo();
 			}
 		} catch (e) {
 			console.log(e);
@@ -44,6 +55,10 @@ function LoginGame(props) {
 		logout();
 		console.log('disconnect');
 	};
+
+	useEffect(() => {
+		getUserInfo();
+	}, [superheroes, principal]);
 
 	return (
 		<Container style={{ backgroundImage: `url(/images/background.png)` }}>

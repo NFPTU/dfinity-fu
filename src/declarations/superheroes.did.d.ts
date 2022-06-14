@@ -17,25 +17,28 @@ export interface AntKingdoms {
   'claimWorkerEgg' : (arg_0: TokenIndex__1) => Promise<Result>,
   'claiming' : () => Promise<Result>,
   'extensions' : () => Promise<Array<Extension>>,
-  'getDataByLandId' : (arg_0: TokenIndex__1) => Promise<Result_7>,
+  'getDataByLandId' : (arg_0: TokenIndex__1) => Promise<Result_9>,
   'getTokensMetadata' : () => Promise<Array<MetadataExt>>,
-  'getUserAvailableWorker' : (arg_0: AccountIdentifier__1) => Promise<Result_6>,
+  'getUserAvailableWorker' : (arg_0: AccountIdentifier__1) => Promise<Result_8>,
   'getUserInfo' : (arg_0: AccountIdentifier__1) => Promise<UserInfoExt>,
-  'getUserTokens' : (arg_0: AccountIdentifier__1) => Promise<Result_6>,
-  'metadata' : (arg_0: TokenIdentifier__1) => Promise<Result_5>,
-  'numberOfTokenHolders' : (arg_0: TokenIdentifier__1) => Promise<Result_1>,
+  'getUserTokens' : (arg_0: AccountIdentifier__1) => Promise<Result_8>,
+  'metadata' : (arg_0: TokenIdentifier__1) => Promise<Result_7>,
+  'numberOfTokenHolders' : (arg_0: TokenIdentifier__1) => Promise<Result_2>,
   'numberOfTokens' : () => Promise<bigint>,
-  'registry' : (arg_0: TokenIdentifier__1) => Promise<Result_4>,
+  'registry' : (arg_0: TokenIdentifier__1) => Promise<Result_6>,
+  'setLevelMetadata' : (arg_0: Array<LevelData>) => Promise<Result_5>,
   'setTokensMetadata' : (arg_0: Array<MetadataExt>) => Promise<Result>,
   'stakeNestInLand' : (arg_0: TokenIndex__1, arg_1: TokenIndex__1) => Promise<
-      Result_3
+      Result_4
     >,
   'stakeQueenInNest' : (arg_0: TokenIndex__1, arg_1: TokenIndex__1) => Promise<
-      Result_3
+      Result_4
     >,
-  'supply' : (arg_0: TokenIdentifier__1) => Promise<Result_2>,
+  'supply' : (arg_0: TokenIdentifier__1) => Promise<Result_3>,
   'transfer' : (arg_0: TransferRequest) => Promise<TransferResponse>,
-  'updateUser' : (arg_0: string) => Promise<Result_1>,
+  'updateUser' : (arg_0: string) => Promise<Result_2>,
+  'upgradeLevelNest' : (arg_0: TokenIndex__1) => Promise<Result_1>,
+  'upgradeLevelQueen' : (arg_0: TokenIndex__1) => Promise<Result_1>,
   'workerFarmInLand' : (
       arg_0: WorkerFarmRequest,
       arg_1: TokenIndex__1,
@@ -62,6 +65,13 @@ export type CommonError = { 'InvalidToken' : TokenIdentifier } |
   { 'Other' : string };
 export type CommonError__1 = { 'InvalidToken' : TokenIdentifier } |
   { 'Other' : string };
+export interface CostInfo {
+  'nextLevel' : { 'nest' : { 'limitAnt' : bigint } } |
+    { 'queen' : { 'foodPerWorker' : number, 'breedWorkerTime' : Time } } |
+    { 'worker' : { 'farmPerTime' : Resource } },
+  'costResource' : Resource,
+  'level' : bigint,
+}
 export type DetailNFT = {
     'land' : {
       'resource' : Resource,
@@ -74,6 +84,7 @@ export type DetailNFT = {
     'nest' : {
       'level' : bigint,
       'inLand' : [] | [TokenIndex],
+      'limitAnt' : bigint,
       'queenIn' : [] | [TokenIndex],
     }
   } |
@@ -97,6 +108,8 @@ export type DetailNFT = {
     }
   };
 export type Extension = string;
+export interface InfoLevel { 'info' : Array<CostInfo>, 'rarity' : string }
+export interface LevelData { 'info' : Array<InfoLevel>, 'name' : string }
 export type Memo = Array<number>;
 export interface MetadataExt {
   'tokenId' : [] | [TokenIndex],
@@ -114,19 +127,23 @@ export interface Resource {
 }
 export type Result = { 'ok' : boolean } |
   { 'err' : string };
-export type Result_1 = { 'ok' : bigint } |
-  { 'err' : CommonError };
-export type Result_2 = { 'ok' : Balance__1 } |
-  { 'err' : CommonError };
-export type Result_3 = { 'ok' : string } |
+export type Result_1 = { 'ok' : MetadataExt } |
   { 'err' : string };
-export type Result_4 = { 'ok' : Array<[AccountIdentifier__1, Balance__1]> } |
+export type Result_2 = { 'ok' : bigint } |
   { 'err' : CommonError };
-export type Result_5 = { 'ok' : MetadataExt } |
+export type Result_3 = { 'ok' : Balance__1 } |
   { 'err' : CommonError };
-export type Result_6 = { 'ok' : Array<MetadataExt> } |
+export type Result_4 = { 'ok' : string } |
+  { 'err' : string };
+export type Result_5 = { 'ok' : Array<LevelData> } |
+  { 'err' : string };
+export type Result_6 = { 'ok' : Array<[AccountIdentifier__1, Balance__1]> } |
   { 'err' : CommonError };
-export type Result_7 = { 'ok' : Array<MetadataExt> } |
+export type Result_7 = { 'ok' : MetadataExt } |
+  { 'err' : CommonError };
+export type Result_8 = { 'ok' : Array<MetadataExt> } |
+  { 'err' : CommonError };
+export type Result_9 = { 'ok' : Array<MetadataExt> } |
   { 'err' : string };
 export type SubAccount = Array<number>;
 export type Time = bigint;
