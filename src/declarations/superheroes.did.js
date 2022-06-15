@@ -38,22 +38,29 @@ export const idlFactory = ({ IDL }) => {
     'workersFarmIds' : IDL.Vec(TokenIndex),
   });
   const DetailNFT = IDL.Variant({
+    'army' : IDL.Record({
+      'antState' : IDL.Nat,
+      'kingdomId' : TokenIndex,
+      'queenId' : TokenIndex,
+    }),
     'land' : IDL.Record({
       'resource' : Resource,
       'claimableResource' : IDL.Vec(ClaimResouceInfo),
       'info' : IDL.Record({ 'farmingTime' : Time }),
       'nestStaked' : IDL.Opt(TokenIndex),
+      'inKingdom' : TokenIndex,
     }),
     'nest' : IDL.Record({
       'level' : IDL.Nat,
+      'limit' : IDL.Nat,
       'inLand' : IDL.Opt(TokenIndex),
-      'limitAnt' : IDL.Nat,
       'queenIn' : IDL.Opt(TokenIndex),
     }),
     'queen' : IDL.Record({
       'info' : IDL.Record({
-        'foodPerWorker' : IDL.Float64,
+        'resourcePerWorker' : Resource,
         'breedWorkerTime' : Time,
+        'resourcePerArmy' : Resource,
       }),
       'level' : IDL.Nat,
       'inNest' : IDL.Opt(TokenIndex),
@@ -63,11 +70,11 @@ export const idlFactory = ({ IDL }) => {
       'antState' : IDL.Nat,
       'farmTimestamp' : Time,
       'info' : IDL.Record({ 'farmingTime' : Time, 'farmPerTime' : Resource }),
-      'level' : IDL.Nat,
       'inNest' : IDL.Opt(TokenIndex),
       'queenId' : IDL.Opt(TokenIndex),
       'breedTimestamp' : Time,
     }),
+    'kingdom' : IDL.Record({ 'landId' : IDL.Vec(TokenIndex) }),
   });
   const AttributeMeta = IDL.Record({
     'max' : IDL.Opt(IDL.Text),
@@ -95,7 +102,12 @@ export const idlFactory = ({ IDL }) => {
     'ok' : IDL.Vec(MetadataExt),
     'err' : CommonError,
   });
-  const UserState = IDL.Record({ 'resource' : Resource });
+  const UserState = IDL.Record({
+    'resource' : Resource,
+    'limitAnt' : IDL.Nat,
+    'kingdomId' : TokenIndex,
+    'currentAnt' : IDL.Nat,
+  });
   const UserInfoExt = IDL.Record({
     'id' : IDL.Text,
     'userState' : UserState,
@@ -111,10 +123,12 @@ export const idlFactory = ({ IDL }) => {
   });
   const CostInfo = IDL.Record({
     'nextLevel' : IDL.Variant({
-      'nest' : IDL.Record({ 'limitAnt' : IDL.Nat }),
+      'nest' : IDL.Record({ 'limit' : IDL.Nat }),
       'queen' : IDL.Record({
+        'resourcePerWorker' : Resource,
         'foodPerWorker' : IDL.Float64,
         'breedWorkerTime' : Time,
+        'resourcePerArmy' : Resource,
       }),
       'worker' : IDL.Record({ 'farmPerTime' : Resource }),
     }),
@@ -178,6 +192,7 @@ export const idlFactory = ({ IDL }) => {
       ),
     'availableCycles' : IDL.Func([], [IDL.Nat], ['query']),
     'balance' : IDL.Func([BalanceRequest], [BalanceResponse], ['query']),
+    'breedAntArmy' : IDL.Func([TokenIndex__1], [Result], []),
     'breedAntWorkder' : IDL.Func([TokenIndex__1], [Result], []),
     'changeAdmin' : IDL.Func([IDL.Principal], [], []),
     'claimResourceInLand' : IDL.Func(
@@ -207,6 +222,11 @@ export const idlFactory = ({ IDL }) => {
     'registry' : IDL.Func([TokenIdentifier__1], [Result_6], ['query']),
     'setLevelMetadata' : IDL.Func([IDL.Vec(LevelData)], [Result_5], []),
     'setTokensMetadata' : IDL.Func([IDL.Vec(MetadataExt)], [Result], []),
+    'stakeLandToKingdom' : IDL.Func(
+        [TokenIndex__1, TokenIndex__1],
+        [Result],
+        [],
+      ),
     'stakeNestInLand' : IDL.Func(
         [TokenIndex__1, TokenIndex__1],
         [Result_4],

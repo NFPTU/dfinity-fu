@@ -9,10 +9,11 @@ import {
 import { useLocation } from 'react-router-dom';
 import Resource from './resource';
 import { useCanister, useConnect } from '@connect2ic/react';
+import { withContext } from '../../hooks';
 
-function GameNavbar() {
+function GameNavbar(props) {
+	const {resource, setResource} = props;
 	const [navbarTitle, setNavbarTitle] = useState('Ants Kingdoms');
-	const [resource, setResource] = useState({});
 
 	const [superheroes, { loading, error }] = useCanister('superheroes');
 	const {
@@ -34,18 +35,6 @@ function GameNavbar() {
 		}
 	}, [location]);
 
-	//Get user info (resource)
-	const getUserInfo = async () => {
-		const res = await superheroes.getUserInfo(principal?.toString());
-		console.log('user', res);
-		setResource(res?.userState?.resource);
-	};
-
-	useEffect(() => {
-		getUserInfo();
-	}, [superheroes, principal]);
-
-	console.log('resource', resource);
 
 	return (
 		<Container>
@@ -76,4 +65,4 @@ function GameNavbar() {
 	);
 }
 
-export default GameNavbar;
+export default withContext(GameNavbar);

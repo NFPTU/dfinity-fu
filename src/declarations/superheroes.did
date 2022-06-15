@@ -6,7 +6,13 @@ type WorkerFarmRequest =
    leaf: vec TokenIndex;
    soil: vec TokenIndex;
  };
-type UserState = record {resource: Resource;};
+type UserState = 
+ record {
+   currentAnt: nat;
+   kingdomId: TokenIndex;
+   limitAnt: nat;
+   resource: Resource;
+ };
 type UserInfoExt = 
  record {
    id: text;
@@ -131,9 +137,16 @@ type InfoLevel =
 type Extension = text;
 type DetailNFT = 
  variant {
+   army: record {
+           antState: nat;
+           kingdomId: TokenIndex;
+           queenId: TokenIndex;
+         };
+   kingdom: record {landId: vec TokenIndex;};
    land:
     record {
       claimableResource: vec ClaimResouceInfo;
+      inKingdom: TokenIndex;
       info: record {farmingTime: Time;};
       nestStaked: opt TokenIndex;
       resource: Resource;
@@ -142,17 +155,19 @@ type DetailNFT =
     record {
       inLand: opt TokenIndex;
       level: nat;
-      limitAnt: nat;
+      limit: nat;
       queenIn: opt TokenIndex;
     };
    queen:
     record {
       breedingWorkerId: TokenIndex;
       inNest: opt TokenIndex;
-      info: record {
-              breedWorkerTime: Time;
-              foodPerWorker: float64;
-            };
+      info:
+       record {
+         breedWorkerTime: Time;
+         resourcePerArmy: Resource;
+         resourcePerWorker: Resource;
+       };
       level: nat;
     };
    worker:
@@ -165,7 +180,6 @@ type DetailNFT =
               farmPerTime: Resource;
               farmingTime: Time;
             };
-      level: nat;
       queenId: opt TokenIndex;
     };
  };
@@ -175,11 +189,14 @@ type CostInfo =
    level: nat;
    nextLevel:
     variant {
-      nest: record {limitAnt: nat;};
-      queen: record {
-               breedWorkerTime: Time;
-               foodPerWorker: float64;
-             };
+      nest: record {limit: nat;};
+      queen:
+       record {
+         breedWorkerTime: Time;
+         foodPerWorker: float64;
+         resourcePerArmy: Resource;
+         resourcePerWorker: Resource;
+       };
       worker: record {farmPerTime: Resource;};
     };
  };
@@ -233,6 +250,7 @@ type AntKingdoms =
       }) query;
    availableCycles: () -> (nat) query;
    balance: (BalanceRequest) -> (BalanceResponse) query;
+   breedAntArmy: (TokenIndex__1) -> (Result);
    breedAntWorkder: (TokenIndex__1) -> (Result);
    changeAdmin: (principal) -> ();
    claimResourceInLand: (TokenIndex__1, TokenIndex__1) -> (Result);
@@ -250,6 +268,7 @@ type AntKingdoms =
    registry: (TokenIdentifier__1) -> (Result_6) query;
    setLevelMetadata: (vec LevelData) -> (Result_5);
    setTokensMetadata: (vec MetadataExt) -> (Result);
+   stakeLandToKingdom: (TokenIndex__1, TokenIndex__1) -> (Result);
    stakeNestInLand: (TokenIndex__1, TokenIndex__1) -> (Result_4);
    stakeQueenInNest: (TokenIndex__1, TokenIndex__1) -> (Result_4);
    supply: (TokenIdentifier__1) -> (Result_3) query;
