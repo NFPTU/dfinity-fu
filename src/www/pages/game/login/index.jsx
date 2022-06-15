@@ -57,7 +57,9 @@ function LoginGame(props) {
 	};
 
 	useEffect(() => {
-		getUserInfo();
+		if(superheroes && principal) {
+			getUserInfo();
+		}
 	}, [superheroes, principal]);
 
 	return (
