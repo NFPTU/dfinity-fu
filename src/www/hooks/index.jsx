@@ -8,6 +8,8 @@ import { useConnect } from '@connect2ic/react';
 export function Provider({ children }) {
 	const [prinpId, setprinpId] = useState(localStorage.getItem('prinpId'));
 	const { principal, isConnected } = useConnect();
+	const [resource, setResource] = useState({})
+
 
 	const setPrinpId = (value) => {
 		localStorage.setItem('prinpId', value);
@@ -19,10 +21,19 @@ export function Provider({ children }) {
 		localStorage.clear();
 	};
 
+	
+	//Get user info (resource)
+	const getUserInfo = async () => {
+		const res = await superheroes.getUserInfo(principal?.toString());
+		console.log('user', res);
+		setResource(res?.userState?.resource);
+	};
 	useEffect(() => {
 		console.log(isConnected, principal);
 		if(isConnected == false) {
 			logout()
+		} else {
+			getUserInfo();
 		}
 	}, [isConnected, principal]);
 

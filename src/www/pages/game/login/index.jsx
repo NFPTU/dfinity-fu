@@ -61,7 +61,7 @@ function LoginGame(props) {
 			getUserInfo();
 		}
 	}, [superheroes, principal]);
-
+ 
 	return (
 		<Container style={{ backgroundImage: `url(/images/background.png)` }}>
 			<ConnectDialog dark={false} />
