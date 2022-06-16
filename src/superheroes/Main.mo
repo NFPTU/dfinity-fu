@@ -21,7 +21,6 @@ import Hash "mo:base/Hash";
 import HashMap "mo:base/HashMap";
 import Int "mo:base/Int";
 import Iter "mo:base/Iter";
-import NAT "mo:base/Array";
 import Nat "mo:base/Nat";
 import Nat32 "mo:base/Nat32";
 import Prelude "mo:base/Prelude";
@@ -31,6 +30,7 @@ import Result "mo:base/Result";
 import Text "mo:base/Text";
 import Time "mo:base/Time";
 import TokenIndex "mo:base/Bool";
+import Random "mo:base/Random";
 import TrieSet "mo:base/TrieSet";
 import Types "./types";
 import User "./User";
@@ -938,7 +938,7 @@ shared(msg) actor class AntKingdoms(
   
   private let EXTENSIONS : [Extension] = ["@ext/common"];
 
-  private let NFT_CLAIMABLE : [Nat] = [0,2,3];
+  private let NFT_CLAIMABLE : [[Nat]] = [[0],[1,2,3,4,5],[6,7,8,9,10],[11,12,13,14,15], [16,17,18,19,20]];
 
 private let NFT_TYPE : [Text] =   ["Queen","Worker","Nest", "Land", "Kingdom"];
 private let NFT_RARITY : [Text] =   ["Common","Uncommon","Rare", "Epec", "Legendary"];
@@ -1490,28 +1490,29 @@ private let NFT_RARITY : [Text] =   ["Common","Uncommon","Rare", "Epec", "Legend
   public shared(msg) func upgradeLevelQueen(queenTokenId: TokenIndex): async Result.Result<MetadataExt, Text>  {
      if(checkTypeToken(queenTokenId,NFT_TYPE[0]) == true and _isOwnerOf(queenTokenId, Principal.toText(msg.caller)) == true) {
         var tokenData = switch(_metadata.get(queenTokenId)) {
-          case (?metadata)  {
-            var newDetail: DetailNFT = metadata.0.detail;
-            switch (metadata.0.detail) {
-              case (#queen(n)) {
-                let levelInfo = getLevelInfoByAnt(NFT_TYPE[0], NFT_RARITY[0], n.level-1);
-                  switch(levelInfo) {
-                    case (?info) {
-                      var isUpdate = updateUserResource(Principal.toText(msg.caller), info.costResource); 
-                      if(isUpdate == true) {
-                        switch (info.nextLevel) {
-                          case (#queen(nextLevel)) {
-                            newDetail := #queen({level=n.level +1 ; inNest = n.inNest; info={resourcePerWorker=nextLevel.resourcePerWorker;breedWorkerTime=nextLevel.breedWorkerTime;resourcePerArmy=nextLevel.resourcePerArmy;};breedingWorkerId=n.breedingWorkerId;});
-                          };
-                          case (_) {
+      case (?metadata)  {
+        var newDetail: DetailNFT = metadata.0.detail;
+        switch (metadata.0.detail) {
+          case (#queen(n)) {
+            let levelInfo = getLevelInfoByAnt(NFT_TYPE[0], NFT_RARITY[0], n.level-1);
+              switch(levelInfo) {
+                      case (?info) {
+                        var isUpdate = updateUserResource(Principal.toText(msg.caller), info.costResource); 
+                        if(isUpdate == true) {
+                            switch (info.nextLevel) {
+                              case (#queen(nextLevel)) {
+                                 newDetail := #queen({level=n.level +1 ; inNest = n.inNest; info={resourcePerWorker=nextLevel.resourcePerWorker;breedWorkerTime=nextLevel.breedWorkerTime;};breedingWorkerId=n.breedingWorkerId;});
+                              };
+                                case (_) {
 
+                            };
                           };
-                        };
-     
-                      } else {
+                        
+                        } else {
                         return #err("not enough resource!")
                       };
-                    };
+     
+                      };
                     case _ {
                       return #err("no ant detail found!")
                     };
@@ -1625,6 +1626,34 @@ private let NFT_RARITY : [Text] =   ["Common","Uncommon","Rare", "Epec", "Legend
   //           };
   //       }
   //   };
+
+  private func randomPercent(tokens: [Nat]): async  Nat {
+    if(Iter.size(Iter.fromArray(tokens)) < 2) {
+       return tokens[0]; 
+    };
+     let entropy = await Random.blob();
+     let f = Random.Finite(entropy);
+    var numberRandom:?Nat = f.range(100);
+    switch (numberRandom) {
+      case (?numberR) {
+        let number = numberR % 100;
+if(number < 40) {
+      return tokens[0];
+    } else if(number < 40+30) {
+      return tokens[1];
+    }else if(number < 40+30+15) {
+      return tokens[2];
+    }else if(number < 40+30+15 + 10) {
+return tokens[3];
+    }else  {
+return tokens[4];
+    };
+      };
+      case _ {
+         return tokens[0];
+      }
+    };
+  };
    
 
   public shared(msg) func claiming() : async Result.Result<Bool, Text> {
@@ -1635,9 +1664,10 @@ private let NFT_RARITY : [Text] =   ["Common","Uncommon","Rare", "Epec", "Legend
             };
             case _ {
                 for(id in Iter.fromArray(NFT_CLAIMABLE)) {
-
+                  let idRandom = await randomPercent(id);
+                  
                  let request: RegisterTokenRequest = {
-                  metadata = _unwrap(tokensMetadata.get(id));
+                  metadata = _unwrap(tokensMetadata.get(idRandom));
                     supply = 1;
                     owner = Principal.toText(msg.caller);
               };

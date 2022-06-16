@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 export const Container = styled.div`
-    background-image: url('https://play.farmersworld.io/static/media/paper.58c58dbc.png');
+    background-image: url('/images/background-board.png');
     background-size: contain;
     background-repeat: no-repeat;
     background-position: 50%;

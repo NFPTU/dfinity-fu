@@ -38,9 +38,7 @@ module {
         costResource: Resource;
         nextLevel : {
                 #queen : {
-                    foodPerWorker : Float;
                     breedWorkerTime: Time.Time;
-                    resourcePerArmy: Resource;
                     resourcePerWorker: Resource;
                 };
                 #nest : {
@@ -60,7 +58,6 @@ module {
             info : {
             breedWorkerTime: Time.Time;
             resourcePerWorker: Resource;
-            resourcePerArmy: Resource;
             }
         };
         #nest : {

@@ -8,6 +8,7 @@ export interface AntKingdoms {
     >,
   'availableCycles' : () => Promise<bigint>,
   'balance' : (arg_0: BalanceRequest) => Promise<BalanceResponse>,
+  'breedAntArmy' : (arg_0: TokenIndex__1) => Promise<Result>,
   'breedAntWorkder' : (arg_0: TokenIndex__1) => Promise<Result>,
   'changeAdmin' : (arg_0: Principal) => Promise<undefined>,
   'claimResourceInLand' : (
@@ -28,6 +29,10 @@ export interface AntKingdoms {
   'registry' : (arg_0: TokenIdentifier__1) => Promise<Result_6>,
   'setLevelMetadata' : (arg_0: Array<LevelData>) => Promise<Result_5>,
   'setTokensMetadata' : (arg_0: Array<MetadataExt>) => Promise<Result>,
+  'stakeLandToKingdom' : (
+      arg_0: TokenIndex__1,
+      arg_1: TokenIndex__1,
+    ) => Promise<Result>,
   'stakeNestInLand' : (arg_0: TokenIndex__1, arg_1: TokenIndex__1) => Promise<
       Result_4
     >,
@@ -66,31 +71,50 @@ export type CommonError = { 'InvalidToken' : TokenIdentifier } |
 export type CommonError__1 = { 'InvalidToken' : TokenIdentifier } |
   { 'Other' : string };
 export interface CostInfo {
-  'nextLevel' : { 'nest' : { 'limitAnt' : bigint } } |
-    { 'queen' : { 'foodPerWorker' : number, 'breedWorkerTime' : Time } } |
+  'nextLevel' : { 'nest' : { 'limit' : bigint } } |
+    {
+      'queen' : {
+        'resourcePerWorker' : Resource,
+        'foodPerWorker' : number,
+        'breedWorkerTime' : Time,
+        'resourcePerArmy' : Resource,
+      }
+    } |
     { 'worker' : { 'farmPerTime' : Resource } },
   'costResource' : Resource,
   'level' : bigint,
 }
 export type DetailNFT = {
+    'army' : {
+      'antState' : bigint,
+      'kingdomId' : TokenIndex,
+      'queenId' : TokenIndex,
+    }
+  } |
+  {
     'land' : {
       'resource' : Resource,
       'claimableResource' : Array<ClaimResouceInfo>,
       'info' : { 'farmingTime' : Time },
       'nestStaked' : [] | [TokenIndex],
+      'inKingdom' : TokenIndex,
     }
   } |
   {
     'nest' : {
       'level' : bigint,
+      'limit' : bigint,
       'inLand' : [] | [TokenIndex],
-      'limitAnt' : bigint,
       'queenIn' : [] | [TokenIndex],
     }
   } |
   {
     'queen' : {
-      'info' : { 'foodPerWorker' : number, 'breedWorkerTime' : Time },
+      'info' : {
+        'resourcePerWorker' : Resource,
+        'breedWorkerTime' : Time,
+        'resourcePerArmy' : Resource,
+      },
       'level' : bigint,
       'inNest' : [] | [TokenIndex],
       'breedingWorkerId' : TokenIndex,
@@ -101,12 +125,12 @@ export type DetailNFT = {
       'antState' : bigint,
       'farmTimestamp' : Time,
       'info' : { 'farmingTime' : Time, 'farmPerTime' : Resource },
-      'level' : bigint,
       'inNest' : [] | [TokenIndex],
       'queenId' : [] | [TokenIndex],
       'breedTimestamp' : Time,
     }
-  };
+  } |
+  { 'kingdom' : { 'landId' : Array<TokenIndex> } };
 export type Extension = string;
 export interface InfoLevel { 'info' : Array<CostInfo>, 'rarity' : string }
 export interface LevelData { 'info' : Array<InfoLevel>, 'name' : string }
@@ -177,7 +201,12 @@ export interface UserInfoExt {
   'name' : string,
   'tokens' : Array<TokenIndex>,
 }
-export interface UserState { 'resource' : Resource }
+export interface UserState {
+  'resource' : Resource,
+  'limitAnt' : bigint,
+  'kingdomId' : TokenIndex,
+  'currentAnt' : bigint,
+}
 export interface WorkerFarmRequest {
   'food' : Array<TokenIndex>,
   'gold' : Array<TokenIndex>,
