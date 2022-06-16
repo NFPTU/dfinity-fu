@@ -2,12 +2,12 @@ import styled from "styled-components";
 
 export const Container = styled.div`
     background-image: url('/images/background-board.png');
-    background-size: contain;
+    background-size: cover;
     background-repeat: no-repeat;
     background-position: 50%;
     position: relative;
     margin: -30px auto;
-    width: 70rem;
+    width: 67rem;
     transition: all .2s ease-in-out;
     -webkit-user-select: none;
     -ms-user-select: none;
@@ -15,14 +15,14 @@ export const Container = styled.div`
     z-index: 6;
     -webkit-animation-name: slideup;
     animation-name: slideup;
-    height: 44rem;
+    height: 62rem;
 `
 
 export const Wrapper = styled.div`
    position: absolute;
    display: flex;
    align-items: center; 
-   top: 47%;
+   top: 44%;
    left: 50%;
    transform: translate(-50%, -50%);
    width: 55rem;

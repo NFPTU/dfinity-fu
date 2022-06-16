@@ -60,7 +60,6 @@ export const idlFactory = ({ IDL }) => {
       'info' : IDL.Record({
         'resourcePerWorker' : Resource,
         'breedWorkerTime' : Time,
-        'resourcePerArmy' : Resource,
       }),
       'level' : IDL.Nat,
       'inNest' : IDL.Opt(TokenIndex),
@@ -126,9 +125,7 @@ export const idlFactory = ({ IDL }) => {
       'nest' : IDL.Record({ 'limit' : IDL.Nat }),
       'queen' : IDL.Record({
         'resourcePerWorker' : Resource,
-        'foodPerWorker' : IDL.Float64,
         'breedWorkerTime' : Time,
-        'resourcePerArmy' : Resource,
       }),
       'worker' : IDL.Record({ 'farmPerTime' : Resource }),
     }),

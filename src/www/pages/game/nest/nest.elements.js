@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 export const Container = styled.div`
     background-image: url('/images/background-board.png');
-    background-size: contain;
+    background-size: cover;
     background-repeat: no-repeat;
     background-position: 50%;
     position: relative;
@@ -15,14 +15,14 @@ export const Container = styled.div`
     z-index: 6;
     -webkit-animation-name: slideup;
     animation-name: slideup;
-    height: 42rem;
+    height: 60rem;
 `
 
 export const Wrapper = styled.div`
    position: absolute;
    display: flex;
    align-items: center; 
-   top: 47%;
+   top: 39%;
    left: 50%;
    transform: translate(-50%, -50%);
    width: 55rem;

@@ -6,7 +6,6 @@ type UserInfo/2 = UserInfo/1;
 actor {
   stable var _admin : Principal;
   stable var _metadataState : [(TokenIndex/2, (Metadata/2, Balance/1))];
-  stable var _nextFarmId : Nat32;
   stable var _nextTokenId : Nat32;
   stable var _registryState :
     [(TokenIndex/2, [(AccountIdentifier/3, Balance/1)])];

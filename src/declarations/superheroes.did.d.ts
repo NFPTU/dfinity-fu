@@ -72,14 +72,7 @@ export type CommonError__1 = { 'InvalidToken' : TokenIdentifier } |
   { 'Other' : string };
 export interface CostInfo {
   'nextLevel' : { 'nest' : { 'limit' : bigint } } |
-    {
-      'queen' : {
-        'resourcePerWorker' : Resource,
-        'foodPerWorker' : number,
-        'breedWorkerTime' : Time,
-        'resourcePerArmy' : Resource,
-      }
-    } |
+    { 'queen' : { 'resourcePerWorker' : Resource, 'breedWorkerTime' : Time } } |
     { 'worker' : { 'farmPerTime' : Resource } },
   'costResource' : Resource,
   'level' : bigint,
@@ -110,11 +103,7 @@ export type DetailNFT = {
   } |
   {
     'queen' : {
-      'info' : {
-        'resourcePerWorker' : Resource,
-        'breedWorkerTime' : Time,
-        'resourcePerArmy' : Resource,
-      },
+      'info' : { 'resourcePerWorker' : Resource, 'breedWorkerTime' : Time },
       'level' : bigint,
       'inNest' : [] | [TokenIndex],
       'breedingWorkerId' : TokenIndex,
