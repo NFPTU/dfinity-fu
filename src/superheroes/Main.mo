@@ -1490,28 +1490,29 @@ private let NFT_RARITY : [Text] =   ["Common","Uncommon","Rare", "Epec", "Legend
   public shared(msg) func upgradeLevelQueen(queenTokenId: TokenIndex): async Result.Result<MetadataExt, Text>  {
      if(checkTypeToken(queenTokenId,NFT_TYPE[0]) == true and _isOwnerOf(queenTokenId, Principal.toText(msg.caller)) == true) {
         var tokenData = switch(_metadata.get(queenTokenId)) {
-          case (?metadata)  {
-            var newDetail: DetailNFT = metadata.0.detail;
-            switch (metadata.0.detail) {
-              case (#queen(n)) {
-                let levelInfo = getLevelInfoByAnt(NFT_TYPE[0], NFT_RARITY[0], n.level-1);
-                  switch(levelInfo) {
-                    case (?info) {
-                      var isUpdate = updateUserResource(Principal.toText(msg.caller), info.costResource); 
-                      if(isUpdate == true) {
-                        switch (info.nextLevel) {
-                          case (#queen(nextLevel)) {
-                            newDetail := #queen({level=n.level +1 ; inNest = n.inNest; info={resourcePerWorker=nextLevel.resourcePerWorker;breedWorkerTime=nextLevel.breedWorkerTime;resourcePerArmy=nextLevel.resourcePerArmy;};breedingWorkerId=n.breedingWorkerId;});
-                          };
-                          case (_) {
+      case (?metadata)  {
+        var newDetail: DetailNFT = metadata.0.detail;
+        switch (metadata.0.detail) {
+          case (#queen(n)) {
+            let levelInfo = getLevelInfoByAnt(NFT_TYPE[0], NFT_RARITY[0], n.level-1);
+              switch(levelInfo) {
+                      case (?info) {
+                        var isUpdate = updateUserResource(Principal.toText(msg.caller), info.costResource); 
+                        if(isUpdate == true) {
+                            switch (info.nextLevel) {
+                              case (#queen(nextLevel)) {
+                                 newDetail := #queen({level=n.level +1 ; inNest = n.inNest; info={resourcePerWorker=nextLevel.resourcePerWorker;breedWorkerTime=nextLevel.breedWorkerTime;};breedingWorkerId=n.breedingWorkerId;});
+                              };
+                                case (_) {
 
+                            };
                           };
-                        };
-     
-                      } else {
+                        
+                        } else {
                         return #err("not enough resource!")
                       };
-                    };
+     
+                      };
                     case _ {
                       return #err("no ant detail found!")
                     };
