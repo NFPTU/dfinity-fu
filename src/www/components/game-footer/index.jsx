@@ -7,6 +7,12 @@ function GameFooter() {
 
 	const items = [
 		{
+			id: 6,
+			imgUrl: '/images/footer/breed.png',
+			title: 'Kingdom',
+			to: '/kingdom',
+		},
+		{
 			id: 1,
 			imgUrl: '/images/footer/home.png',
 			title: 'Home',
@@ -36,12 +42,7 @@ function GameFooter() {
 			title: 'Nest',
 			to: '/nest',
 		},
-		{
-			id: 6,
-			imgUrl: '/images/footer/breed.png',
-			title: 'Kingdom',
-			to: '/kingdom',
-		},
+		
 	];
 
 	return (

@@ -1663,6 +1663,7 @@ return tokens[4];
               throw Error.reject("userClaimed");
             };
             case _ {
+              var kingdomId: TokenIndex = 0;
                 for(id in Iter.fromArray(NFT_CLAIMABLE)) {
                   let idRandom = await randomPercent(id);
                   
@@ -1672,10 +1673,13 @@ return tokens[4];
                     owner = Principal.toText(msg.caller);
               };
               let tokenId = registerToken(request);
+              if(kingdomId !=0) {
+                kingdomId := tokenId;
+              }
                 };
                 switch(users.get(Principal.toText(msg.caller))) {
             case (?user) {
-                user.userState := {resource = {soil=500; leaf= 500; gold=50;food= 200;} ; limitAnt= 10;kingdomId=user.userState.kingdomId;currentAnt=user.userState.currentAnt};
+                user.userState := {resource = {soil=500; leaf= 500; gold=50;food= 200;} ; limitAnt= 10;kingdomId=kingdomId;currentAnt=user.userState.currentAnt};
                 users.put(Principal.toText(msg.caller), user);
             };
             case (_) {

@@ -10,8 +10,10 @@ import {
 	TextBtn,
 	ImgBtn,
 } from './home-claim';
+import { withContext } from '../../../hooks';
 
-function Homeclaim() {
+function Homeclaim(props) {
+	const {getUserInfo} = props
 	const [superheroes, { loading, error }] = useCanister('superheroes');
 	const navigate = useNavigate();
 
@@ -19,7 +21,7 @@ function Homeclaim() {
 		try {
 			const res = await superheroes?.claiming();
 			console.log(res);
-
+			getUserInfo()
 			if (res) {
 				dialogClaim();
 			}
@@ -62,4 +64,4 @@ function Homeclaim() {
 	);
 }
 
-export default Homeclaim;
+export default withContext(Homeclaim);

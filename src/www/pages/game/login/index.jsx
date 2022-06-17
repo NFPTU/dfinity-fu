@@ -57,10 +57,10 @@ function LoginGame(props) {
 	};
 
 	useEffect(() => {
-		if(superheroes && principal) {
+		if(superheroes && principal && isConnected) {
 			getUserInfo();
 		}
-	}, [superheroes, principal]);
+	}, [superheroes, principal, isConnected]);
  
 	return (
 		<Container style={{ backgroundImage: `url(/images/background.png)` }}>

@@ -3,17 +3,16 @@ import ReactDOM from 'react-dom';
 import { BrowserRouter as Router } from 'react-router-dom';
 import App from './App';
 import { Provider } from './hooks';
-import { defaultProviders } from '@connect2ic/core/providers';
+import { defaultProviders, InternetIdentity } from '@connect2ic/core/providers';
 import { Connect2ICProvider } from '@connect2ic/react';
 import { superheroes } from '../declarations';
 import { idlFactory, canisterId } from '../declarations';
 import { PlugWallet } from "@connect2ic/core/providers/plug-wallet"
-import { AstroX } from "@connect2ic/core/providers/astrox"
 
 // Styles for the ConnectDialog & Button
 const providers = [
 	// Either import them from @connect2ic/core
-	AstroX,
+	InternetIdentity,
 	PlugWallet,
 ];
 

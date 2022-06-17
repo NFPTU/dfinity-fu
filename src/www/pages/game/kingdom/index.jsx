@@ -25,19 +25,25 @@ import {
 import './kingdom.css';
 import CardLand from './components/card-land';
 import { useCanister, useConnect } from '@connect2ic/react';
+import PopupList from '../../../components/popup-list';
+import { withContext } from '../../../hooks';
 
-function Kingdom() {
+function Kingdom(props ) {
+	const {setOpenProcess} = props
 	const [listNest, setListNest] = useState([]);
+	const [listLand, setListLand] = useState([]);
 	const [cardSelected, setCardSelected] = useState();
 	const [cardSelectedId, setCardSelectedId] = useState();
+	const [open, setOpen] = useState(false);
 
 	const [superheroes, { loading, error }] = useCanister('superheroes');
 	const { principal } = useConnect();
 
 	const onGetData = async () => {
 		const resp = await superheroes?.getUserTokens(principal?.toString());
-		const listNest = resp?.ok.filter((el) => el.attributes[0].value === 'Nest');
-
+		console.log(resp);
+		const listNest = resp?.ok.filter((el) => el.attributes[0].value === 'Kingdom');
+		setListLand(resp?.ok.filter((el) => el.attributes[0].value === 'Land'));
 		setCardSelected(listNest[0]);
 		setListNest(listNest);
 	};
@@ -54,6 +60,16 @@ function Kingdom() {
 
 		setCardSelectedId(data?.tokenId[0])
 	};
+
+	const rendterBtn = (land) => {
+		return <Btn onClick={() => onStakeLand(land)}>Stake</Btn>
+	}
+
+	const onStakeLand =async (land) => {
+		setOpenProcess(true)
+		await superheroes.stakeLandToKingdom(land.tokenId[0],cardSelected.tokenId[0])
+		setOpenProcess(false)
+	}
 
 	useEffect(() => {
 		if (principal && superheroes) {
@@ -76,7 +92,7 @@ function Kingdom() {
 					</Left>
 
 					<Right>
-						<Info>
+						{/* <Info>
 							<InfoTop>
 								<Type>Kingdom</Type>
 								<Level>Limit: 30</Level>
@@ -94,14 +110,14 @@ function Kingdom() {
 									<InfoBodyRightItem>20</InfoBodyRightItem>
 								</InfoBodyRight>
 							</InfoBody>
-						</Info>
+						</Info> */}
 
 						<ListLand>
 							<ListLandTitle>List All Land</ListLandTitle>
 							<ListLandWrapper>
-								{listNest.map((el, index) => {
+								{listLand.map((el, index) => {
 									const tokenId = el?.tokenId[0]
-
+									if(!el?.detail?.land?.inKingdom) return 
 									return (
 										<CardLand
 											key={index}
@@ -116,13 +132,29 @@ function Kingdom() {
 						</ListLand>
 
 						<BtnList>
-							<Btn>Expand</Btn>
+							<Btn onClick={() => setOpen(true)}>Expand</Btn>
 						</BtnList>
 					</Right>
 				</Wrapper>
+				<PopupList open={open} setOpen={setOpen}>
+				{listLand.map((el, index) => {
+									const tokenId = el?.tokenId[0]
+									if(el?.detail?.land?.inKingdom) return 
+									return (
+										<CardLand
+											key={index}
+											data={el}
+											handleClickMiniCard={handleClickMiniCard}
+											active={tokenId === cardSelectedId ? true : false}
+											footer={() => rendterBtn(el)}
+											alt=''
+										/>
+									);
+								})}
+				</PopupList>
 			</Container>
 		</>
 	);
 }
 
-export default Kingdom;
+export default withContext(Kingdom);

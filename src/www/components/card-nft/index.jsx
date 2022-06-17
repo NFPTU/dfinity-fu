@@ -28,9 +28,9 @@ function NewCard(props) {
 
 	//Set url to image rarity card: 
 	const handleRarityType = () => {
-		const ra = rarity_type.find((item) => item.type === rarity)
+		const ra = rarity_type?.find((item) => item.type === rarity)
 
-		setRarityImg(ra.src)
+		setRarityImg(ra?.src)
 	}
 
 	useEffect(() => {
@@ -53,9 +53,9 @@ function NewCard(props) {
 							<Level>
 								{attributes[2]?.trait_type} <span style={{ color: '#5a985d' }}>{attributes[2]?.value}</span>
 							</Level>
-							<Rarity>
+							{rarityImg && <Rarity>
 								<RarityImg src={rarityImg} alt='rarity' />
-							</Rarity>
+							</Rarity>}
 						</BodyWrapperTop>
 						<CardImg src={image} alt='' />
 					</BodyWrapper>

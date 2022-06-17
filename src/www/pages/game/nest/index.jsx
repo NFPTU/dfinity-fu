@@ -23,10 +23,13 @@ import {
 } from "./nest.elements";
 import "./nest.css";
 import { useCanister, useConnect } from '@connect2ic/react';
+import PopupList from "../../../components/popup-list";
+import CardLand from "../kingdom/components/card-land";
 
 function Nest() {
   const [listNest, setListNest] = useState([]);
   const [cardSelected, setCardSelected] = useState();
+  const [open, setOpen] = useState(false);
 
   const [superheroes, { loading, error }] = useCanister('superheroes');
 	const { principal } = useConnect();
@@ -38,6 +41,16 @@ function Nest() {
 		setCardSelected(listNest[0]);
 		setListNest(listNest);
 	};
+
+  const rendterBtn = (land) => {
+		return <Btn onClick={() => onStakeLand(land)}>Stake</Btn>
+	}
+
+	const onStakeLand =async (land) => {
+		setOpenProcess(true)
+		await superheroes.stakeLandToKingdom(land.tokenId[0],cardSelected.tokenId[0])
+		setOpenProcess(false)
+	}
 
   const onChangeCard = (item) => {
 		setCardSelected(item);
@@ -99,10 +112,24 @@ function Nest() {
 
             <BtnList>
               <Btn>Upgrade</Btn>
-              <Btn>Add Queen</Btn>
+              <Btn onClick={() => setOpen(true)}>Add Queen</Btn>
             </BtnList>
           </Right>
         </Wrapper>
+        <PopupList open={open} setOpen={setOpen}>
+				{listNest.map((el, index) => {
+									const tokenId = el?.tokenId[0]
+									if(el?.detail?.queen?.inKingdom) return 
+									return (
+										<CardLand
+											key={index}
+											data={el}
+											footer={() => rendterBtn(el)}
+											alt=''
+										/>
+									);
+								})}
+				</PopupList>
       </Container>
     </>
   );

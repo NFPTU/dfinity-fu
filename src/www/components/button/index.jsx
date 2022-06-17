@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-	ButtonCl ,
+	Btn ,
 } from './button.elements';
 
 function Button(props) {
@@ -9,9 +9,9 @@ function Button(props) {
 
 	return (
 		<>
-				<ButtonCl onClick={onClick}>
+				<Btn onClick={onClick}>
 					{name}
-				</ButtonCl>
+				</Btn>
 		</>
 	);
 }

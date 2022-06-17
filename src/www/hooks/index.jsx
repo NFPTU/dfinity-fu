@@ -4,12 +4,13 @@ import reducer, { initState } from './reducer';
 import { superheroes } from '../../declarations';
 import { customAxios } from '../utils/custom-axios';
 import { useConnect } from '@connect2ic/react';
+import ProcessModal from '../components/process-modal';
 
 export function Provider({ children }) {
 	const [prinpId, setprinpId] = useState(localStorage.getItem('prinpId'));
 	const { principal, isConnected } = useConnect();
 	const [resource, setResource] = useState({})
-
+	const [openProcess, setOpenProcess] = useState(false);
 
 	const setPrinpId = (value) => {
 		localStorage.setItem('prinpId', value);
@@ -41,8 +42,15 @@ export function Provider({ children }) {
 		prinpId,
 		setPrinpId,
 		logout,
+		getUserInfo,
+		resource,
+		openProcess,
+		setOpenProcess
 	};
-	return <Context.Provider value={value}>{children}</Context.Provider>;
+	return <Context.Provider value={value}>
+		{children}
+		<ProcessModal open={openProcess} setOpen={setOpenProcess} />
+	</Context.Provider>;
 }
 
 export function useUIContext() {
