@@ -1765,7 +1765,7 @@ return tokens[4];
                 if(user.userState.currentAnt > user.userState.limitAnt) {return #err("Limit not enough")};
                 var isUpdate = updateUserResource(Principal.toText(msg.caller), n.info.resourcePerWorker); 
                 if(isUpdate == false) {return #err("not enough food!")};
-                user.userState := {kingdomId=user.userState.kingdomId;resource = userRes; limitAnt = userLimitAnt;currentAnt=user.userState.currentAnt+1};
+                user.userState := {kingdomId=user.userState.kingdomId;resource = user.userState.resource; limitAnt = userLimitAnt;currentAnt=user.userState.currentAnt+1};
                 users.put(Principal.toText(msg.caller), user);
               };
          
@@ -1828,7 +1828,7 @@ return tokens[4];
                 if(user.userState.currentAnt > user.userState.limitAnt) {return #err("Limit not enough")};
                 var isUpdate = updateUserResource(Principal.toText(msg.caller), n.info.resourcePerWorker); 
                 if(isUpdate == false) {return #err("not enough food!")};
-                user.userState := {kingdomId=user.userState.kingdomId;resource = userRes; limitAnt = userLimitAnt;currentAnt=user.userState.currentAnt+1};
+                user.userState := {kingdomId=user.userState.kingdomId;resource = user.userState.resource; limitAnt = userLimitAnt;currentAnt=user.userState.currentAnt+1};
                 users.put(Principal.toText(msg.caller), user);
               };
          
