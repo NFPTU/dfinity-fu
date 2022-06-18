@@ -944,7 +944,7 @@ private let NFT_TYPE : [Text] =   ["Queen","Worker","Nest", "Land", "Kingdom"];
 private let NFT_RARITY : [Text] =   ["Common","Uncommon","Rare", "Epec", "Legendary"];
 // Ant state: 0:Idle , 1:Egg , 2: Farming
 //
-  private let ANT_STATE : [Nat] = [0,2,3];
+  private let ANT_STATE : [Nat] = [0,1,2];
 
   private let _minuteTime = 60 * 1_000_000_000;
   
@@ -1072,6 +1072,20 @@ private let NFT_RARITY : [Text] =   ["Common","Uncommon","Rare", "Epec", "Legend
         switch (metadata.0.detail) {
           case (#nest(n)) {
             newDetail := #nest({level=n.level; inLand= ?landTokenId;queenIn= n.queenIn; limit = n.limit});
+              switch (users.get(Principal.toText(msg.caller))) {
+                  case (?user) {
+                    let userRes  = user.userState.resource;
+                    let userLimit = user.userState.limitAnt;
+                    user.userState := {kingdomId=user.userState.kingdomId;
+                    resource = user.userState.resource; 
+                    limitAnt= userLimit + n.limit;currentAnt=user.userState.currentAnt};
+                    users.put(Principal.toText(msg.caller), user);
+                  };
+         
+                  case (_) {
+                    return #err("User Not Found")
+                  };
+                };
           };
           case (_) {
 
@@ -1666,7 +1680,7 @@ return tokens[4];
               var kingdomId: TokenIndex = 0;
                 for(id in Iter.fromArray(NFT_CLAIMABLE)) {
                   let idRandom = await randomPercent(id);
-                  
+                  D.print(Nat.toText(idRandom));
                  let request: RegisterTokenRequest = {
                   metadata = _unwrap(tokensMetadata.get(idRandom));
                     supply = 1;
@@ -1679,7 +1693,7 @@ return tokens[4];
                 };
                 switch(users.get(Principal.toText(msg.caller))) {
             case (?user) {
-                user.userState := {resource = {soil=500; leaf= 500; gold=50;food= 200;} ; limitAnt= 10;kingdomId=kingdomId;currentAnt=user.userState.currentAnt};
+                user.userState := {resource = {soil=500; leaf= 500; gold=50;food= 200;} ; limitAnt= user.userState.limitAnt;kingdomId=kingdomId;currentAnt=user.userState.currentAnt};
                 users.put(Principal.toText(msg.caller), user);
             };
             case (_) {
@@ -1762,7 +1776,7 @@ return tokens[4];
               case (?user) {
                 let userRes  = user.userState.resource;
                 let userLimitAnt = user.userState.limitAnt;
-                if(user.userState.currentAnt > user.userState.limitAnt) {return #err("Limit not enough")};
+                if(user.userState.currentAnt >= user.userState.limitAnt) {return #err("Limit not enough")};
                 var isUpdate = updateUserResource(Principal.toText(msg.caller), n.info.resourcePerWorker); 
                 if(isUpdate == false) {return #err("not enough food!")};
                 user.userState := {kingdomId=user.userState.kingdomId;resource = user.userState.resource; limitAnt = userLimitAnt;currentAnt=user.userState.currentAnt+1};
@@ -1880,13 +1894,17 @@ return tokens[4];
         var newQueenDetail: DetailNFT = metadataOfQueen.0.detail;
         switch (metadataOfQueen.0.detail) {
           case (#queen(n)) {
+             if(n.breedingWorkerId==0) {
+              return #err("Queen is not breeding!")
+            }; 
             let tokenId = n.breedingWorkerId;
             var workerData = switch(_metadata.get(tokenId)) {
               case (?metadata)  {
                 var newWorkerDetail: DetailNFT = metadata.0.detail;
                 switch (metadata.0.detail) {
                   case (#worker(w)) {
-                    if(Int.greater(w.breedTimestamp , Time.now()) and Nat.equal(w.antState, ANT_STATE[0])) {
+                    D.print(Int.toText(Time.now()) # "   " # Int.toText(w.breedTimestamp));
+                    if(w.breedTimestamp > Time.now()) {
                       return #err("Can't claim!");
                     } else {
                       newWorkerDetail := #worker({ inNest= n.inNest;queenId= ?queenTokenId; antState=ANT_STATE[0];breedTimestamp= w.breedTimestamp;farmTimestamp=w.farmTimestamp;info=w.info;});
