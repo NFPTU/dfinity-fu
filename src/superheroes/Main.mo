@@ -1755,11 +1755,14 @@ return tokens[4];
         var newQueenDetail: DetailNFT = metadata.0.detail;
         switch (metadata.0.detail) {
           case (#queen(n)) {
+                   if(n.breedingWorkerId!=0) {
+              return #err("Queen is breeding!")
+            };
             switch (users.get(Principal.toText(msg.caller))) {
               case (?user) {
                 let userRes  = user.userState.resource;
                 let userLimitAnt = user.userState.limitAnt;
-                if(user.userState.currentAnt <= user.userState.limitAnt) {return #err("Limit not enough")};
+                if(user.userState.currentAnt > user.userState.limitAnt) {return #err("Limit not enough")};
                 var isUpdate = updateUserResource(Principal.toText(msg.caller), n.info.resourcePerWorker); 
                 if(isUpdate == false) {return #err("not enough food!")};
                 user.userState := {kingdomId=user.userState.kingdomId;resource = userRes; limitAnt = userLimitAnt;currentAnt=user.userState.currentAnt+1};
@@ -1770,11 +1773,9 @@ return tokens[4];
                 return #err("User Not Found")
               };
             };
-            if(n.breedingWorkerId!=0) {
-              return #err("Queen is breeding!")
-            };
+     
             let request: RegisterTokenRequest = {
-              metadata = _unwrap(tokensMetadata.get(1));
+              metadata = _unwrap(tokensMetadata.get(6));
               supply = 1;
               owner = Principal.toText(msg.caller);
             };
@@ -1817,11 +1818,14 @@ return tokens[4];
         var newQueenDetail: DetailNFT = metadata.0.detail;
         switch (metadata.0.detail) {
           case (#queen(n)) {
+              if(n.breedingWorkerId!=0) {
+              return #err("Queen is breeding!")
+            }; 
             switch (users.get(Principal.toText(msg.caller))) {
               case (?user) {
                 let userRes  = user.userState.resource;
                 let userLimitAnt = user.userState.limitAnt;
-                if(user.userState.currentAnt <= user.userState.limitAnt) {return #err("Limit not enough")};
+                if(user.userState.currentAnt > user.userState.limitAnt) {return #err("Limit not enough")};
                 var isUpdate = updateUserResource(Principal.toText(msg.caller), n.info.resourcePerWorker); 
                 if(isUpdate == false) {return #err("not enough food!")};
                 user.userState := {kingdomId=user.userState.kingdomId;resource = userRes; limitAnt = userLimitAnt;currentAnt=user.userState.currentAnt+1};
@@ -1832,9 +1836,7 @@ return tokens[4];
                return #err("User Not Found")
               };
             };
-            if(n.breedingWorkerId!=0) {
-              return #err("Queen is breeding!")
-            }; 
+          
             let request: RegisterTokenRequest = {
                 metadata = _unwrap(tokensMetadata.get(1));
                 supply = 1;

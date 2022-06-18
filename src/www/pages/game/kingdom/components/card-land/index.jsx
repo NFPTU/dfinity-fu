@@ -26,9 +26,9 @@ function CardLand(props) {
         <LandItemImg src={image} alt="card mini" />
       </LandItemBody>
 
-      <LandItemFooter>
-        {footer}
-      </LandItemFooter>
+      {footer ? <LandItemFooter>
+        {footer()}
+      </LandItemFooter>: ''}
     </LandItem>
   );
 }

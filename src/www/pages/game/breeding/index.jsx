@@ -26,8 +26,10 @@ import { useCanister, useConnect } from '@connect2ic/react';
 import { getRemainingTime } from '../../../utils/utils';
 import Countdown from "react-countdown";
 import Swal from 'sweetalert2'
+import { withContext } from '../../../hooks';
 
-function Breeding() {
+function Breeding(props) {
+	const {setOpenProcess} = props;
 	const [data, setData] = useState([]);
 	const [queenNFT, setQueenNFT] = useState({});
 	const [listWorkerNFT, setListWorkerNFT] = useState([]);
@@ -128,7 +130,7 @@ function Breeding() {
 	const onBreedingWorker = async() => {
 		const listQ = getNFTByType('Queen');
 		const res = await superheroes.breedAntWorkder(listQ[0]?.tokenId[0])
-
+		console.log(res);
 		res && setBreedingWorker(res)
 	  }
 
@@ -143,6 +145,24 @@ function Breeding() {
 			e.preventDefault()
 		}
 	  }
+
+	  const onUpgrade = async(e) => {
+		const listQ = getNFTByType('Queen');
+		const res = await superheroes.upgradeLevelQueen(listQ[0].tokenId[0])
+	  }
+
+	  const onBreeding = async(e) => {
+		  console.log(queenNFT);
+		  setOpenProcess(true)
+		  if(!queenNFT?.detail?.queen?.breedingWorkerId) {
+			await onBreedingWorker()
+		  } else {
+			await onClaimWorker()
+		  }
+		await onGetData()
+		  setOpenProcess(false)
+	  }
+
 	//=================================================================
 
 	useEffect(() => {
@@ -207,8 +227,8 @@ function Breeding() {
 						</CountdownWrapper>
 
 						<BtnList>
-							<Btn onClick={dialogClaim}>Breeding</Btn>
-							<Btn  onClick={onClaimWorker}>Claim Worker Ant</Btn>
+							<Btn onClick={onBreeding}>{!queenNFT?.detail?.queen?.breedingWorkerId?'Breeding':'Claim'}</Btn>
+							<Btn  onClick={onUpgrade}>Upgrade</Btn>
 						</BtnList>
 					</Right>
 				</Wrapper>
@@ -217,4 +237,4 @@ function Breeding() {
 	);
 }
 
-export default Breeding;
+export default withContext(Breeding)

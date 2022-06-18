@@ -68,11 +68,7 @@ export default function PopupList(props) {
           Modal title
         </BootstrapDialogTitle>
 		<DialogContent dividers>{children}</DialogContent>
-        <DialogActions>
-          <Button autoFocus onClick={handleClose}>
-            Save changes
-          </Button>
-        </DialogActions>
+       
       </BootstrapDialog>
     </div>
   );

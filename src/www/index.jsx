@@ -3,16 +3,17 @@ import ReactDOM from 'react-dom';
 import { BrowserRouter as Router } from 'react-router-dom';
 import App from './App';
 import { Provider } from './hooks';
-import { defaultProviders, InternetIdentity } from '@connect2ic/core/providers';
+import { defaultProviders } from '@connect2ic/core/providers';
 import { Connect2ICProvider } from '@connect2ic/react';
-import { superheroes } from '../declarations';
-import { idlFactory, canisterId } from '../declarations';
+import { canisterId } from '../declarations';
 import { PlugWallet } from "@connect2ic/core/providers/plug-wallet"
+import { AstroX } from "@connect2ic/core/providers/astrox"
+import { idlFactory } from '../declarations/superheroes.did.js';
 
 // Styles for the ConnectDialog & Button
 const providers = [
 	// Either import them from @connect2ic/core
-	InternetIdentity,
+	AstroX,
 	PlugWallet,
 ];
 
@@ -27,11 +28,9 @@ ReactDOM.render(
 		<Connect2ICProvider
 			canisters={canisterDefinitions}
 			providers={providers}
-			dev={
-				window.location.origin.includes('localhost') ||
-				window.location.origin.includes('192.168')
-			}
-			host={host}>
+			
+			host={host}
+			autoConnect={true}>
 			<Provider>
 				<App />
 			</Provider>

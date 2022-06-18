@@ -16,17 +16,14 @@ function Admin() {
 	const [listNFt, setListNFt] = useState([]);
 
 	const onSubmit = async () => {
-		try {
-			console.log(process.env.SUPERHEROES_CANISTER_ID);
+			console.log(superheroes, error);
 			const newArr = metadata.map((el) => ({ nonfungible: el }));
 			console.log(metadata);
 			const res = await superheroes?.setTokensMetadata(metadata);
 			console.log(res);
 			const response = await superheroes?.getTokensMetadata();
 			console.log(response);
-		} catch (er) {
-			console.log(er);
-		}
+		
 	};
 
 	const onClaim = async () => {

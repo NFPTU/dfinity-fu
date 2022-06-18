@@ -69,6 +69,8 @@ function Kingdom(props ) {
 		setOpenProcess(true)
 		await superheroes.stakeLandToKingdom(land.tokenId[0],cardSelected.tokenId[0])
 		setOpenProcess(false)
+		setOpen(false)
+		onGetData()
 	}
 
 	useEffect(() => {
@@ -122,8 +124,6 @@ function Kingdom(props ) {
 										<CardLand
 											key={index}
 											data={el}
-											handleClickMiniCard={handleClickMiniCard}
-											active={tokenId === cardSelectedId ? true : false}
 											alt=''
 										/>
 									);
@@ -144,8 +144,6 @@ function Kingdom(props ) {
 										<CardLand
 											key={index}
 											data={el}
-											handleClickMiniCard={handleClickMiniCard}
-											active={tokenId === cardSelectedId ? true : false}
 											footer={() => rendterBtn(el)}
 											alt=''
 										/>
