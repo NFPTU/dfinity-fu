@@ -4,13 +4,13 @@ import {
 } from './button.elements';
 
 function Button(props) {
-	const { name, sizem, onClick } = props;
+	const { name, sizem, onClick, disabled, children } = props;
 
 
 	return (
 		<>
-				<Btn onClick={onClick}>
-					{name}
+				<Btn disabled={disabled} onClick={onClick}>
+					{name||children}
 				</Btn>
 		</>
 	);

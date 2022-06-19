@@ -132,7 +132,7 @@ function Kingdom(props ) {
 						</ListLand>
 
 						<BtnList>
-							<Btn onClick={() => setOpen(true)}>Expand</Btn>
+							<Btn onClick={() => setOpen(true)}>Expand Land</Btn>
 						</BtnList>
 					</Right>
 				</Wrapper>

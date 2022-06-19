@@ -10,31 +10,13 @@ function GameFooter() {
 			id: 6,
 			imgUrl: '/images/footer/breed.png',
 			title: 'Kingdom',
-			to: '/kingdom',
-		},
-		{
-			id: 1,
-			imgUrl: '/images/footer/home.png',
-			title: 'Home',
-			to: '/home-claim',
-		},
-		{
-			id: 2,
-			imgUrl: '/images/footer/inventory.png',
-			title: 'Inventory',
-			to: '/inventory',
-		},
-		{
-			id: 3,
-			imgUrl: '/images/footer/breed.png',
-			title: 'Breeding',
-			to: '/breeding',
+			to: '',
 		},
 		{
 			id: 4,
 			imgUrl: '/images/footer/breed.png',
-			title: 'Farming',
-			to: '/farming',
+			title: 'Land',
+			to: '/land',
 		},
 		{
 			id: 5,
@@ -42,6 +24,13 @@ function GameFooter() {
 			title: 'Nest',
 			to: '/nest',
 		},
+		{
+			id: 3,
+			imgUrl: '/images/footer/breed.png',
+			title: 'Queen',
+			to: '/queen',
+		},
+		
 		
 	];
 

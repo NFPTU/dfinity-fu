@@ -10,7 +10,7 @@ export function Provider({ children }) {
 	const [prinpId, setprinpId] = useState(localStorage.getItem('prinpId'));
 	const { principal, isConnected } = useConnect();
 	const [resource, setResource] = useState({})
-	const [openProcess, setOpenProcess] = useState(false);
+	const [openProcess, setopenProcess] = useState(false);
 
 	const setPrinpId = (value) => {
 		localStorage.setItem('prinpId', value);
@@ -29,6 +29,14 @@ export function Provider({ children }) {
 		console.log('user', res);
 		setResource(res?.userState?.resource);
 	};
+	
+	const setOpenProcess = async (value) => {
+		if(!value) {
+			await getUserInfo()
+		}
+		setopenProcess(value)
+	}
+
 	useEffect(() => {
 		console.log(isConnected, principal);
 		if(isConnected == false) {

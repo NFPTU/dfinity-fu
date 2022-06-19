@@ -67,7 +67,6 @@ export const CardImg = styled.img`
 export const CardWrapper = styled.div`
     height: 380px;
     width: 280px;
-    margin-left: 70px;
 `
 
 export const Right = styled.div`
@@ -235,7 +234,7 @@ export const ResourceItem = styled.div`
 `
 
 export const ResourceImg = styled.img`
-
+    width: 40px;
 `
 
 export const ResourceQuantity = styled.div`

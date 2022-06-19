@@ -17,10 +17,10 @@ import {
 } from './card.elements';
 import { rarity_type } from './rarity_type'
 
-function NewCard(props) {
+function CardNft(props) {
 	const [rarityImg, setRarityImg] = useState('')
 
-	const { width, height, data } = props;
+	const { width, height, data , footer} = props;
 
 	const { attributes, description, detail, image, name, tokenId } = data;
 
@@ -36,8 +36,6 @@ function NewCard(props) {
 	useEffect(() => {
 		handleRarityType()
 	}, [rarity, rarity_type])
-
-	console.log('rarityImg', rarityImg)
 
 	return (
 		<CardContainer width={width} height={height}>
@@ -61,12 +59,12 @@ function NewCard(props) {
 					</BodyWrapper>
 				</Body>
 
-				<Footer>
-					<Name>{name}</Name>
-				</Footer>
+				{footer ? <Footer>
+				{footer()}
+				</Footer>: ''}
 			</CardWrapper>
 		</CardContainer>
 	);
 }
 
-export default NewCard;
+export default CardNft;

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {} from './home.elements';
+import { } from './home.elements';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
@@ -131,7 +131,21 @@ function Farming() {
 		);
 	};
 
-  console.log('cardSelected', cardSelected)
+	const onStakeNestInLand = async () => {
+		try {
+			const listNest = getNFTByType('Nest');
+			const listLand = getNFTByType('Land');
+			console.log('nest', listNest);
+			console.log('land', listLand);
+			const res = await superheroes?.stakeNestInLand(
+				listNest[0]?.tokenId[0],
+				listLand[0]?.tokenId[0]
+			);
+			console.log('res', res);
+		} catch (er) {
+			console.log(er);
+		}
+	};
 
 	return (
 		<Container>
@@ -152,6 +166,7 @@ function Farming() {
 						resourceItem(el)
 					)}
 					<Button name={'Farm'} onClick={onClickFarm} />
+					<Button name={'Dig Nest'} onClick={onStakeNestInLand} />
 				</Grid>
 			</Grid>
 			<Dialog onClose={handleClose} open={showFarmDialog}>
@@ -165,7 +180,7 @@ function Farming() {
 								handleSliderChange={(event, newValue) => {
 									onChangeSlide('food', newValue);
 								}}
-								img={'/images/navbar/icons/meet.png'}
+								img={'/images/navbar/icons/food.png'}
 							/>
 							<SliderItem
 								min={0}

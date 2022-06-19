@@ -917,8 +917,8 @@ export const levelData = [
 						nextLevel: {
 							queen: {
 								'resourcePerWorker': {
-									gold: 0,
-									leaf: 0,
+									gold: 2,
+									leaf: 25,
 									soil: 0,
 									food: 30,
 								},
@@ -999,6 +999,103 @@ export const levelData = [
 									food: 22,
 								},
 								'breedWorkerTime': 52 * second,
+							}
+						}
+					}
+				],
+			},
+			{
+				rarity: "Uncommon",
+				data: [
+					{
+						level: 1, costResource: {
+							gold: 15,
+							leaf: 35,
+							food: 45,
+							soil: 0,
+						},
+						nextLevel: {
+							queen: {
+								'resourcePerWorker': {
+									gold: 0,
+									leaf: 0,
+									soil: 0,
+									food: 30,
+								},
+								'breedWorkerTime': 60 * second,
+							}
+						}
+					}
+				],
+			},
+			{
+				rarity: "Rare",
+				data: [
+					{
+						level: 1, costResource: {
+							gold: 15,
+							leaf: 35,
+							food: 45,
+							soil: 0,
+						},
+						nextLevel: {
+							queen: {
+								'resourcePerWorker': {
+									gold: 0,
+									leaf: 0,
+									soil: 0,
+									food: 30,
+								},
+								'breedWorkerTime': 60 * second,
+							}
+						}
+					}
+				],
+			}
+			,
+			{
+				rarity: "Epic",
+				data: [
+					{
+						level: 1, costResource: {
+							gold: 15,
+							leaf: 35,
+							food: 45,
+							soil: 0,
+						},
+						nextLevel: {
+							queen: {
+								'resourcePerWorker': {
+									gold: 0,
+									leaf: 0,
+									soil: 0,
+									food: 30,
+								},
+								'breedWorkerTime': 60 * second,
+							}
+						}
+					}
+				],
+			},
+			{
+				rarity: "Legendary",
+				data: [
+					{
+						level: 1, costResource: {
+							gold: 15,
+							leaf: 35,
+							food: 45,
+							soil: 0,
+						},
+						nextLevel: {
+							queen: {
+								'resourcePerWorker': {
+									gold: 0,
+									leaf: 0,
+									soil: 0,
+									food: 30,
+								},
+								'breedWorkerTime': 60 * second,
 							}
 						}
 					}

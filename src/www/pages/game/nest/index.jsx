@@ -25,44 +25,60 @@ import "./nest.css";
 import { useCanister, useConnect } from '@connect2ic/react';
 import PopupList from "../../../components/popup-list";
 import CardLand from "../kingdom/components/card-land";
+import { withContext } from "../../../hooks";
+import CardNft from "../../../components/card-nft";
 
-function Nest() {
+function Nest(props) {
+  const { setOpenProcess } = props
+
+  const [listNFt, setListNFt] = useState([]);
   const [listNest, setListNest] = useState([]);
   const [cardSelected, setCardSelected] = useState();
   const [open, setOpen] = useState(false);
 
   const [superheroes, { loading, error }] = useCanister('superheroes');
-	const { principal } = useConnect();
+  const { principal } = useConnect();
 
   const onGetData = async () => {
-		const resp = await superheroes?.getUserTokens(principal?.toString());
-		const listNest = resp?.ok.filter((el) => el.attributes[0].value === 'Nest');
-
-		setCardSelected(listNest[0]);
-		setListNest(listNest);
-	};
+    const resp = await superheroes?.getUserTokens(principal?.toString());
+    const listNest = resp?.ok.filter((el) => el.attributes[0].value === 'Nest');
+    console.log(resp?.ok);
+    setListNFt(resp?.ok)
+    setCardSelected(listNest[0]);
+    setListNest(listNest);
+  };
 
   const rendterBtn = (land) => {
-		return <Btn onClick={() => onStakeLand(land)}>Stake</Btn>
-	}
+    return <Btn onClick={() => onStakeQueenInNest(land)}>Stake</Btn>
+  }
 
-	const onStakeLand =async (land) => {
-		setOpenProcess(true)
-		await superheroes.stakeLandToKingdom(land.tokenId[0],cardSelected.tokenId[0])
-		setOpenProcess(false)
-	}
+  const onStakeQueenInNest = async (queen) => {
+    try {
+      setOpenProcess(true)
+      const res = await superheroes?.stakeQueenInNest(
+        queen?.tokenId[0],
+        cardSelected?.tokenId[0],
+      );
+      console.log(res);
+    } catch (er) {
+      console.log(er);
+    }
+    setOpenProcess(false)
+  };
 
   const onChangeCard = (item) => {
-		setCardSelected(item);
+    setCardSelected(item);
+  };
 
-		console.log('cardSelected when click mini card:', cardSelected);
-	};
+  const getNFTByType = (type) => {
+    return listNFt.filter((el) => el.attributes[0].value === type);
+  };
 
   useEffect(() => {
-		if (principal && superheroes) {
-			onGetData();
-		}
-	}, [principal, superheroes]);
+    if (principal && superheroes) {
+      onGetData();
+    }
+  }, [principal, superheroes]);
 
   return (
     <>
@@ -70,17 +86,17 @@ function Nest() {
         <Wrapper>
           <Left>
             <LeftWrapper>
-              <ListMiniCard>
+              {/* <ListMiniCard>
                 {listNest.map((el) => (
                   <CardImg
-                  onClick={() => onChangeCard(el)}
-									src={el.image}
-									alt=''
+                    onClick={() => onChangeCard(el)}
+                    src={el.image}
+                    alt=''
                   />
                 ))}
-              </ListMiniCard>
+              </ListMiniCard> */}
               <CardWrapper>
-              {cardSelected && <Card data={cardSelected} width={280} height={380}/>}
+                {cardSelected && <Card data={cardSelected} width={280} height={380} />}
               </CardWrapper>
             </LeftWrapper>
           </Left>
@@ -89,23 +105,17 @@ function Nest() {
             <Info>
               <InfoTop>
                 <Type>{cardSelected?.attributes[0]?.value || 'Nest'}</Type>
-                <Level>{cardSelected?.attributes[2]?.trait_type || 'Level'}: {cardSelected?.attributes[2]?.value || 0}</Level>
+                <Level>{'Level'}: {(cardSelected?.detail?.nest?.level && Number(cardSelected?.detail?.nest?.level)) || 1}</Level>
               </InfoTop>
               <InfoBody>
                 <InfoBodyLeft>
-                  <InfoBodyLeftItem>Limit:</InfoBodyLeftItem>
-                  <InfoBodyLeftItem>Description:</InfoBodyLeftItem>
-                  <InfoBodyLeftItem>In Land:</InfoBodyLeftItem>
-                  <InfoBodyLeftItem>Queen In: </InfoBodyLeftItem>
-                  <InfoBodyLeftItem>Undefined:</InfoBodyLeftItem>
+                  <InfoBodyLeftItem>Rarity:</InfoBodyLeftItem>
+                  <InfoBodyLeftItem>Limit Ant:</InfoBodyLeftItem>
                 </InfoBodyLeft>
 
                 <InfoBodyRight>
-                  <InfoBodyRightItem>{cardSelected?.attributes[3]?.value}</InfoBodyRightItem>
-                  <InfoBodyRightItem>{cardSelected?.description}</InfoBodyRightItem>
-                  <InfoBodyRightItem>20</InfoBodyRightItem>
-                  <InfoBodyRightItem>12 hours</InfoBodyRightItem>
-                  <InfoBodyRightItem>Undefined</InfoBodyRightItem>
+                  <InfoBodyRightItem>{cardSelected?.attributes[1]?.value}</InfoBodyRightItem>
+                  <InfoBodyRightItem>{cardSelected?.detail?.nest?.limit && Number(cardSelected?.detail?.nest?.limit)}</InfoBodyRightItem>
                 </InfoBodyRight>
               </InfoBody>
             </Info>
@@ -117,22 +127,21 @@ function Nest() {
           </Right>
         </Wrapper>
         <PopupList open={open} setOpen={setOpen}>
-				{listNest.map((el, index) => {
-									const tokenId = el?.tokenId[0]
-									if(el?.detail?.queen?.inKingdom) return 
-									return (
-										<CardLand
-											key={index}
-											data={el}
-											footer={() => rendterBtn(el)}
-											alt=''
-										/>
-									);
-								})}
-				</PopupList>
+          {getNFTByType('Queen').map((el, index) => {
+            if (el?.detail?.queen?.inNest[0]) return
+            return (
+              <CardNft
+                key={index}
+                data={el}
+                footer={() => rendterBtn(el)}
+                alt=''
+              />
+            );
+          })}
+        </PopupList>
       </Container>
     </>
   );
 }
 
-export default Nest;
+export default withContext(Nest);

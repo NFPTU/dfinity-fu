@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { metadata } from './nft';
 import { useCanister, useConnect } from '@connect2ic/react';
+import { superheroes } from '../../../declarations';
 
 function Admin() {
-	const [superheroes, { loading, error }] = useCanister('superheroes');
 	const {
-		principal,
 		isConnected,
 		disconnect,
 		activeProvider,
@@ -14,9 +13,9 @@ function Admin() {
 		isConnecting,
 	} = useConnect();
 	const [listNFt, setListNFt] = useState([]);
-
+	const principal = '2vxsx-fae'
 	const onSubmit = async () => {
-			console.log(superheroes, error);
+			console.log(superheroes);
 			const newArr = metadata.map((el) => ({ nonfungible: el }));
 			console.log(metadata);
 			const res = await superheroes?.setTokensMetadata(metadata);
@@ -93,8 +92,8 @@ function Admin() {
 	};
 
 	const onClaimWorker = async () => {
-		const listQ = getNFTByType('Worker');
-		const res = await superheroes.claimWorkerEgg(listQ[0].tokenId[0]);
+		const listQ = getNFTByType('Queen');
+		const res = await superheroes.claimWorkerEgg(listQ[listQ.length-1].tokenId[0]);
 		console.log('onClaimWorker', res);
 	};
 

@@ -53,7 +53,7 @@ function GameNavbar(props) {
 					<Title>Ants Kingdoms</Title>
 				</TitleWrapper>
 				<Resource
-					img={'/images/navbar/icons/meet.png'}
+					img={'/images/navbar/icons/food.png'}
 					resource={resource?.food}
 				/>
 				<Resource

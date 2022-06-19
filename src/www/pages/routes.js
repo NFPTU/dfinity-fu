@@ -21,7 +21,7 @@ const Kingdom = lazy(() => import("./game/kingdom"))
 
 const routes = [
     {
-        path: "/breeding",
+        path: "/queen",
         exact: true,
         public: true,
         component: Breeding,
@@ -49,7 +49,7 @@ const routes = [
         layout: GameLayout
     },
     {
-        path: "/farming",
+        path: "/land",
         exact: true,
         public: true,
         component: Farming,
