@@ -32,7 +32,7 @@ export const Wrapper = styled.div`
 export const Left = styled.div`
    width: 280px;
    height: 100%;
-   margin-right: 100px;
+   margin-left: 50px;
 `
 
 export const Right = styled.div`

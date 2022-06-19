@@ -25,7 +25,7 @@ function CardNft(props) {
 
 	const { attributes, description, detail, image, name, tokenId } = data;
 
-	const rarity = attributes[1]?.value
+	const rarity = attributes && attributes[1]?.value
 
 	//Set url to image rarity card: 
 	const handleRarityType = () => {
@@ -38,13 +38,11 @@ function CardNft(props) {
 		handleRarityType()
 	}, [rarity, rarity_type])
 
-	
-
 	return (
 		<CardContainer width={width} height={height} size={size}>
 			<CardWrapper>
 				<Top>
-					<Type>{attributes[0]?.value}</Type>
+					<Type>{attributes && attributes[0]?.value}</Type>
 					<Id>{name}</Id>
 				</Top>
 
@@ -56,7 +54,7 @@ function CardNft(props) {
 							</Rarity>}
 						</BodyWrapperTop>
 						<CardImgWrapper>
-							<CardImg src={image} alt='' height={heightImg} size={size}/>
+							<CardImg className="card-img" src={image} alt='' height={heightImg} size={size}/>
 						</CardImgWrapper>
 					</BodyWrapper>
 				</Body>

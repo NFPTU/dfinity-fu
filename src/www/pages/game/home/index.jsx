@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
 import { useCanister, useConnect } from '@connect2ic/react';
@@ -9,25 +9,36 @@ import {
 	BoxClaim,
 	TextBtn,
 	ImgBtn,
+	CardWrap
 } from './home-claim';
 import { withContext } from '../../../hooks';
+import CardNft from '../../../components/card-nft';
+import PopupList from '../../../components/popup-list';
 
 function Homeclaim(props) {
-	const {getUserInfo} = props
+	const { getUserInfo, prinpId } = props
 	const [superheroes, { loading, error }] = useCanister('superheroes');
 	const navigate = useNavigate();
+	const [open, setOpen] = useState(false);
+	const [listNFt, setListNFt] = useState([]);
 
 	const onClaim = async () => {
 		try {
-			const res = await superheroes?.claiming();
-			console.log(res);
+			// const res = await superheroes?.claiming();
+			// console.log(res);
 			getUserInfo()
-			if (res) {
-				dialogClaim();
-			}
+			await onGetData()
+			setOpen(true)
 		} catch (er) {
 			console.log(er);
 		}
+	};
+
+	const onGetData = async () => {
+		const resp = await superheroes?.getUserTokens(prinpId?.toString());
+		console.log(resp);
+		setListNFt(resp?.ok)
+
 	};
 
 	const dialogClaim = async () => {
@@ -42,7 +53,7 @@ function Homeclaim(props) {
 			if (result.isConfirmed) {
 				Swal.fire('Saved!', '', 'success').then((result) => {
 					if (result.isConfirmed) {
-						navigate('/inventory');
+						navigate('/');
 					}
 				});
 			} else if (result.isDenied) {
@@ -50,6 +61,7 @@ function Homeclaim(props) {
 			}
 		});
 	};
+
 	return (
 		<>
 			<Container>
@@ -59,6 +71,22 @@ function Homeclaim(props) {
 						<TextBtn>Claim</TextBtn>
 					</BoxClaim>
 				</BoxClaimBorder>
+				<PopupList open={open} setOpen={setOpen} maxWidth={'lg'}
+					handleClosePopup={() => navigate('/')}
+				>
+					{listNFt.map((el, index) => {
+						if (el?.detail?.nest?.inLand[0]) return
+						return (
+							<CardWrap>
+								<CardNft
+									key={index}
+									data={el}
+									alt=''
+								/>
+							</CardWrap>
+						);
+					})}
+				</PopupList>
 			</Container>
 		</>
 	);

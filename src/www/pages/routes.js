@@ -70,7 +70,7 @@ const routes = [
         layout: GameLayout
     },
     {
-        path: "/",
+        path: "/login",
         exact: true,
         public: true,
         component: LoginGame,

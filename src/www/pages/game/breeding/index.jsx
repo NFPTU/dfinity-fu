@@ -27,11 +27,12 @@ import { getRemainingTime, toHHMMSS } from '../../../utils/utils';
 import Countdown from "react-countdown";
 import Swal from 'sweetalert2'
 import { withContext } from '../../../hooks';
+import CardNft from '../../../components/card-nft';
 
 function Breeding(props) {
 	const {setOpenProcess} = props;
 	const [data, setData] = useState([]);
-	const [queenNFT, setQueenNFT] = useState();
+	const [queenNFT, setQueenNFT] = useState({});
 	const [listWorkerNFT, setListWorkerNFT] = useState([]);
 	const [worker, setWorker] = useState();
 
@@ -111,6 +112,7 @@ function Breeding(props) {
 	//Get Queen NFT:
 	const getQueenNFT = () => {
 		const queen = getNFTByType('Queen')
+		console.log(queen);
 		setWorker(getNFTById(queen[0]?.detail?.queen?.breedingWorkerId))
 		setQueenNFT(queen && queen[0]);
 	};
@@ -178,7 +180,7 @@ function Breeding(props) {
 			<Container>
 				<Wrapper>
 					<Left>
-						<Card data={queenNFT} />
+						{queenNFT &&<CardNft data={queenNFT} />}
 					</Left>
 
 					<Right>
@@ -195,7 +197,7 @@ function Breeding(props) {
 								</InfoBodyLeft>
 
 								<InfoBodyRight>
-									<InfoBodyRightItem>{queenNFT?.attributes[1]?.value || 'Uncommon'}</InfoBodyRightItem>
+									<InfoBodyRightItem>{(queenNFT?.attributes && queenNFT?.attributes[1]?.value) || 'Uncommon'}</InfoBodyRightItem>
 									<InfoBodyRightItem>{queenNFT?.detail?.queen?.info?.resourcePerWorker?.food}</InfoBodyRightItem>
 									<InfoBodyRightItem>{queenNFT?.detail?.queen?.info?.breedWorkerTime ? toHHMMSS(queenNFT?.detail?.queen?.info?.breedWorkerTime): 0}</InfoBodyRightItem>
 								</InfoBodyRight>

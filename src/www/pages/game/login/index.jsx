@@ -31,7 +31,9 @@ function LoginGame(props) {
 		try {
 			const res = await superheroes.getUserInfo(principal?.toString());
 			if (res) {
-				navigate('/inventory');
+				navigate('/');
+			} else {
+				navigate('/home-claim');
 			}
 		} catch (error) {
 			navigate('/home-claim');

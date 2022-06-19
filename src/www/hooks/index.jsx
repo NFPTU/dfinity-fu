@@ -5,12 +5,14 @@ import { superheroes } from '../../declarations';
 import { customAxios } from '../utils/custom-axios';
 import { useConnect } from '@connect2ic/react';
 import ProcessModal from '../components/process-modal';
+import { useNavigate  } from 'react-router-dom';
 
 export function Provider({ children }) {
 	const [prinpId, setprinpId] = useState(localStorage.getItem('prinpId'));
 	const { principal, isConnected } = useConnect();
 	const [resource, setResource] = useState({})
 	const [openProcess, setopenProcess] = useState(false);
+	const navigate = useNavigate();
 
 	const setPrinpId = (value) => {
 		localStorage.setItem('prinpId', value);
@@ -18,8 +20,10 @@ export function Provider({ children }) {
 	};
 
 	const logout = () => {
+		console.log('logout');
 		setprinpId();
 		localStorage.clear();
+		navigate('/login')
 	};
 
 	
@@ -38,13 +42,10 @@ export function Provider({ children }) {
 	}
 
 	useEffect(() => {
-		console.log(isConnected, principal);
-		if(isConnected == false) {
-			logout()
-		} else {
+		if(prinpId && principal) {
 			getUserInfo();
 		}
-	}, [isConnected, principal]);
+	}, [prinpId, principal]);
 
 	const value = {
 		prinpId,

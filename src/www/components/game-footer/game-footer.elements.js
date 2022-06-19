@@ -19,13 +19,15 @@ export const Item = styled.div`
     opacity: ${(props) => props.active ? '1' : '0.7'};
     transform: ${(props) => props.active === true ? 'scale(1.1)' : 'scale(1)'};
     transition: all 0.25s ease;
+    margin-right: 100px;
     &:hover {
       opacity: 1;
   }
 `;
 
 export const Image = styled.img`
-    width: 56%;
+  width: 60px;
+  margin-bottom: 5px;
 `;
 
 export const Title = styled.div`

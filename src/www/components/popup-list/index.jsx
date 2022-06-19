@@ -13,7 +13,7 @@ import Typography from '@mui/material/Typography';
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   '& .MuiDialogContent-root': {
     padding: theme.spacing(2),
-	width: '600px'
+    minWidth: '600px',
   },
   '& .MuiDialogActions-root': {
     padding: theme.spacing(1),
@@ -50,10 +50,11 @@ BootstrapDialogTitle.propTypes = {
 };
 
 export default function PopupList(props) {
-  const {open, setOpen, children} = props
+  const { open, setOpen, children, maxWidth, handleClosePopup } = props
 
   const handleClose = () => {
     setOpen(false);
+    handleClosePopup ? handleClosePopup() : ''
   };
 
   return (
@@ -62,12 +63,14 @@ export default function PopupList(props) {
         onClose={handleClose}
         aria-labelledby="customized-dialog-title"
         open={open}
-		onBackdropClick={() => {}}
+        onBackdropClick={() => { }}
+        fullWidth={true}
+        maxWidth={maxWidth}
       >
         <BootstrapDialogTitle id="customized-dialog-title" onClose={handleClose}>
         </BootstrapDialogTitle>
-		<DialogContent dividers>{children[0]?children: 'No item found!'}</DialogContent>
-       
+        <DialogContent dividers>{children[0] ? children : 'No item found!'}</DialogContent>
+
       </BootstrapDialog>
     </div>
   );
