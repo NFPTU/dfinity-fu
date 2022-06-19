@@ -21,7 +21,6 @@ export const Container = styled.div`
 export const Wrapper = styled.div`
    position: absolute;
    display: flex;
-   align-items: center; 
    top: 44%;
    left: 50%;
    transform: translate(-50%, -50%);
@@ -74,7 +73,6 @@ export const Right = styled.div`
     flex-direction: column;
     height: 500px;
     width: 550px;
-    background-color: rgba(233,225,214,.6);
     border-radius: 5px;
     padding: 10px 10px;
 `
@@ -236,7 +234,6 @@ export const ListLandWrapper = styled.div`
     width: 100%;
     height: 100%;
     padding: 10px;
-    background-color: orange;
     border-radius: 9px;
     display: flex;
     flex-wrap: wrap;

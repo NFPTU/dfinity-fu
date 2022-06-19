@@ -27,6 +27,7 @@ import CardLand from './components/card-land';
 import { useCanister, useConnect } from '@connect2ic/react';
 import PopupList from '../../../components/popup-list';
 import { withContext } from '../../../hooks';
+import CardNft from '../../../components/card-nft';
 
 function Kingdom(props ) {
 	const {setOpenProcess} = props
@@ -87,7 +88,7 @@ function Kingdom(props ) {
 						<LeftWrapper>
 							<CardWrapper>
 								{cardSelected && (
-									<Card data={cardSelected} width={260} height={360} />
+									<CardNft data={cardSelected} />
 								)}
 							</CardWrapper>
 						</LeftWrapper>
@@ -121,10 +122,11 @@ function Kingdom(props ) {
 									const tokenId = el?.tokenId[0]
 									if(!el?.detail?.land?.inKingdom) return 
 									return (
-										<CardLand
+										<CardNft
 											key={index}
 											data={el}
 											alt=''
+											size="small"
 										/>
 									);
 								})}
@@ -141,7 +143,7 @@ function Kingdom(props ) {
 									const tokenId = el?.tokenId[0]
 									if(el?.detail?.land?.inKingdom) return 
 									return (
-										<CardLand
+										<CardNft
 											key={index}
 											data={el}
 											footer={() => rendterBtn(el)}

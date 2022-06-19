@@ -10,7 +10,7 @@ function GameFooter() {
 			id: 6,
 			imgUrl: '/images/footer/breed.png',
 			title: 'Kingdom',
-			to: '',
+			to: '/',
 		},
 		{
 			id: 4,
@@ -30,8 +30,6 @@ function GameFooter() {
 			title: 'Queen',
 			to: '/queen',
 		},
-		
-		
 	];
 
 	return (

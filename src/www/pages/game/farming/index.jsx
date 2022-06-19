@@ -230,7 +230,7 @@ function Farming(props) {
 							))}
 						</ListMiniCard> */}
 						<CardWrapper>
-							{cardSelected && <CardNft data={cardSelected} width={280} height={380} />}
+							{cardSelected && <CardNft data={cardSelected} heightImg={160}/>}
 						</CardWrapper>
 					</LeftWrapper>
 				</Left>

@@ -14,13 +14,14 @@ import {
 	RarityImg,
 	Top,
 	Type,
+	CardImgWrapper
 } from './card.elements';
 import { rarity_type } from './rarity_type'
 
 function CardNft(props) {
 	const [rarityImg, setRarityImg] = useState('')
 
-	const { width, height, data , footer} = props;
+	const { width, height, data, footer, size, heightImg } = props;
 
 	const { attributes, description, detail, image, name, tokenId } = data;
 
@@ -37,8 +38,10 @@ function CardNft(props) {
 		handleRarityType()
 	}, [rarity, rarity_type])
 
+	
+
 	return (
-		<CardContainer width={width} height={height}>
+		<CardContainer width={width} height={height} size={size}>
 			<CardWrapper>
 				<Top>
 					<Type>{attributes[0]?.value}</Type>
@@ -48,20 +51,19 @@ function CardNft(props) {
 				<Body>
 					<BodyWrapper>
 						<BodyWrapperTop>
-							<Level>
-								{attributes[2]?.trait_type} <span style={{ color: '#5a985d' }}>{attributes[2]?.value}</span>
-							</Level>
-							{rarityImg && <Rarity>
+							{rarityImg && <Rarity size={size}>
 								<RarityImg src={rarityImg} alt='rarity' />
 							</Rarity>}
 						</BodyWrapperTop>
-						<CardImg src={image} alt='' />
+						<CardImgWrapper>
+							<CardImg src={image} alt='' height={heightImg} size={size}/>
+						</CardImgWrapper>
 					</BodyWrapper>
 				</Body>
 
 				{footer ? <Footer>
-				{footer()}
-				</Footer>: ''}
+					{footer()}
+				</Footer> : ''}
 			</CardWrapper>
 		</CardContainer>
 	);

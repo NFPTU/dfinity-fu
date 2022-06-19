@@ -63,7 +63,7 @@ const routes = [
         layout: GameLayout
     },
     {
-        path: "/kingdom",
+        path: "/",
         exact: true,
         public: true,
         component: Kingdom,

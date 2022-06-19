@@ -96,7 +96,7 @@ function Nest(props) {
                 ))}
               </ListMiniCard> */}
               <CardWrapper>
-                {cardSelected && <Card data={cardSelected} width={280} height={380} />}
+                {cardSelected && <Card data={cardSelected} />}
               </CardWrapper>
             </LeftWrapper>
           </Left>

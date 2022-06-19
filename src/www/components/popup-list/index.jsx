@@ -65,9 +65,8 @@ export default function PopupList(props) {
 		onBackdropClick={() => {}}
       >
         <BootstrapDialogTitle id="customized-dialog-title" onClose={handleClose}>
-          Modal title
         </BootstrapDialogTitle>
-		<DialogContent dividers>{children}</DialogContent>
+		<DialogContent dividers>{children[0]?children: 'No item found!'}</DialogContent>
        
       </BootstrapDialog>
     </div>
