@@ -24,8 +24,8 @@ function Homeclaim(props) {
 
 	const onClaim = async () => {
 		try {
-			// const res = await superheroes?.claiming();
-			// console.log(res);
+			const res = await superheroes?.claiming();
+			console.log(res);
 			getUserInfo()
 			await onGetData()
 			setOpen(true)

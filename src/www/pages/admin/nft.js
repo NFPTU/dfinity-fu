@@ -11,7 +11,7 @@ export const metadata = [
 		description: 'Ant Kingdom',
 		tokenId: [],
 		image:
-			'https://storageapi.fleek.co/c86ea07c-070d-40b0-bb7a-12a2d3c468f4-bucket/nft/queen.png',
+			'https://storageapi.fleek.co/c86ea07c-070d-40b0-bb7a-12a2d3c468f4-bucket/nft/kingdom.png',
 		attributes: [
 			{
 				trait_type: 'Type',

@@ -45,7 +45,7 @@ export const Title = styled.div`
 export const WalletAddress = styled.div`
     border: 3px solid black;
     border-radius: 20px;
-    padding: 7px 13px;
+    padding: 7px 9px;
     font-size: 17px;
     margin-bottom: 8px;
     width: 120px;
