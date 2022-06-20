@@ -29,13 +29,16 @@ function LoginGame(props) {
 
 	const getUserInfo = async () => {
 		try {
+			console.log(superheroes);
 			const res = await superheroes.getUserInfo(principal?.toString());
+			console.log('info', res);
 			if (res) {
 				navigate('/');
 			} else {
 				navigate('/home-claim');
 			}
 		} catch (error) {
+			console.log(error);
 			navigate('/home-claim');
 		}
 	};
@@ -45,7 +48,6 @@ function LoginGame(props) {
 			console.log(principal);
 			if (principal) {
 				setPrinpId(principal);
-				getUserInfo();
 			}
 		} catch (e) {
 			console.log(e);

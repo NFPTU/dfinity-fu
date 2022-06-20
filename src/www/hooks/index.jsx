@@ -42,9 +42,10 @@ export function Provider({ children }) {
 	}
 
 	useEffect(() => {
+		console.log(prinpId);
 		if(prinpId && principal) {
 			getUserInfo();
-		}
+		} 
 	}, [prinpId, principal]);
 
 	const value = {

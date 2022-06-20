@@ -64,6 +64,8 @@ function Nest(props) {
       console.log(er);
     }
     setOpenProcess(false)
+    onGetData()
+    setOpen(false)
   };
 
   const onChangeCard = (item) => {
