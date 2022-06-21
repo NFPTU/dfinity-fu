@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import Card from '../../../components/card-nft';
 import {
 	Btn,
 	BtnList,
@@ -38,7 +37,6 @@ import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
 import Container from '@mui/material/Container';
-import { useCanister, useConnect } from '@connect2ic/react';
 import Button from '../../../components/button';
 import Dialog from '@mui/material/Dialog';
 import Stack from '@mui/material/Stack';
@@ -46,9 +44,16 @@ import Slider from '@mui/material/Slider';
 import DialogContent from '@mui/material/DialogContent';
 import SliderItem from './components/slider';
 import Countdown from 'react-countdown';
-import { getRemainingTime } from '../../../utils/utils';
+import { getRemainingTime, toHHMMSS } from '../../../utils/utils';
+import { useCanister, useConnect } from '@connect2ic/react';
+import PopupList from '../../../components/popup-list';
+import { withContext } from '../../../hooks';
+import CardNft from '../../../components/card-nft';
 
-function Farming() {
+function Farming(props) {
+	const { setOpenProcess } = props;
+
+	const [listNFtLand, setlistNFtLand] = useState([]);
 	const [listNFt, setListNFt] = useState([]);
 	const [cardSelected, setCardSelected] = useState();
 	const [showFarmDialog, setShowFarmDialog] = useState();
@@ -62,13 +67,16 @@ function Farming() {
 	const [remainWorker, setRemainWorker] = useState([]);
 	const [superheroes, { loading, error }] = useCanister('superheroes');
 	const { principal } = useConnect();
+	const [open, setOpen] = useState(false);
 
 	const onGetData = async () => {
 		const resp = await superheroes?.getUserTokens(principal?.toString());
 		const listLand = resp?.ok.filter((el) => el.attributes[0].value === 'Land');
-		console.log(listLand);
+		console.log(resp, listLand[0]);
+		await onGetAvailWorker();
+		setListNFt(resp?.ok);
 		setCardSelected(listLand[0]);
-		setListNFt(listLand);
+		setlistNFtLand(listLand);
 	};
 
 	const onGetAvailWorker = async () => {
@@ -93,8 +101,7 @@ function Farming() {
 		console.log('cardSelected when click mini card:', cardSelected);
 	};
 
-	const onClickFarm = () => {
-		onGetAvailWorker();
+	const onClickFarm = async () => {
 		setShowFarmDialog(true);
 	};
 
@@ -116,13 +123,12 @@ function Farming() {
 	};
 
 	const onSubmitFarm = async () => {
-		console.log(superheroes);
+		setOpenProcess(true);
 		const resp = await superheroes?.workerFarmInLand(
 			sliceFarm(),
 			cardSelected.tokenId[0]
 		);
-		console.log(resp);
-		onGetData();
+		setOpenProcess(false);
 		setShowFarmDialog(false);
 	};
 
@@ -146,18 +152,58 @@ function Farming() {
 	};
 
 	const onClaimFarm = async (item) => {
-		console.log(item);
-		const resp = await superheroes?.claimResourceInLand(
-			cardSelected.tokenId[0],
-			item.id
-		);
-		onGetData();
-		console.log(resp);
+		try {
+			setOpenProcess(true);
+			const resp = await superheroes?.claimResourceInLand(
+				cardSelected.tokenId[0],
+				item.id
+			);
+			setOpenProcess(false);
+			setOpen(false);
+			window.location.reload();
+		} catch (err) {
+			console.log(err);
+			setOpenProcess(false);
+		}
+	};
+
+	const onStakeNestInLand = async (nest) => {
+		try {
+			setOpenProcess(true);
+			const res = await superheroes?.stakeNestInLand(
+				nest?.tokenId[0],
+				cardSelected.tokenId[0]
+			);
+			console.log('res', res);
+			setOpenProcess(false);
+			setOpen(false);
+			onGetData();
+		} catch (er) {
+			console.log(er);
+		}
+	};
+
+	const rendterBtn = (land) => {
+		return <Btn onClick={() => onStakeNestInLand(land)}>Dig</Btn>;
+	};
+
+	const getNFTByType = (type) => {
+		return listNFt.filter((el) => el.attributes[0].value === type);
 	};
 
 	const resourceItem = (item) => {
+		console.log(item);
 		return (
 			<>
+				<ListResource>
+					{Object.entries(item?.resource).map(([key, value]) => {
+						if (!value) return;
+						<ResourceItem>
+							<ResourceImg src={`/images/navbar/icons/${key}.png`} alt='' />
+							<ResourceQuantity>{value || 0}</ResourceQuantity>
+						</ResourceItem>;
+					})}
+				</ListResource>
 				<Countdown
 					date={Date.now() + getRemainingTime(item.claimTimeStamp) * 1000}
 				/>
@@ -166,24 +212,22 @@ function Farming() {
 		);
 	};
 
-	console.log('cardSelected farming beta', cardSelected);
-
 	return (
 		<Container>
 			<Wrapper>
 				<Left>
 					<LeftWrapper>
-						<ListMiniCard>
-							{listNFt.map((el) => (
+						{/* <ListMiniCard>
+							{listNFtLand.map((el) => (
 								<CardImg
 									onClick={() => onChangeCard(el)}
 									src={el.image}
 									alt=''
 								/>
 							))}
-						</ListMiniCard>
+						</ListMiniCard> */}
 						<CardWrapper>
-							{cardSelected && <Card data={cardSelected} width={280} height={380}/>}
+							{cardSelected && <CardNft data={cardSelected} heightImg={160} />}
 						</CardWrapper>
 					</LeftWrapper>
 				</Left>
@@ -192,15 +236,11 @@ function Farming() {
 					<Info>
 						<InfoTop>
 							<Type>{cardSelected?.attributes[0]?.value || 'Land'}</Type>
-							<Level>Limit: {cardSelected?.attributes[2]?.value || 0}</Level>
 						</InfoTop>
 						<InfoBody>
 							<InfoBodyLeft>
 								<InfoBodyLeftItem>Rarity:</InfoBodyLeftItem>
 								<InfoBodyLeftItem>Farming Time:</InfoBodyLeftItem>
-								<InfoBodyLeftItem>Food Per Worker:</InfoBodyLeftItem>
-								<InfoBodyLeftItem>Breed Worker Time:</InfoBodyLeftItem>
-								<InfoBodyLeftItem>Undefined:</InfoBodyLeftItem>
 							</InfoBodyLeft>
 
 							<InfoBodyRight>
@@ -208,11 +248,10 @@ function Farming() {
 									{cardSelected?.attributes[1]?.value || 'Uncommon'}
 								</InfoBodyRightItem>
 								<InfoBodyRightItem>
-									{Number(cardSelected?.detail?.land?.info?.farmingTime) || 0}
+									{cardSelected?.detail?.land?.info?.farmingTime
+										? toHHMMSS(cardSelected?.detail?.land?.info?.farmingTime)
+										: 0}
 								</InfoBodyRightItem>
-								<InfoBodyRightItem>20</InfoBodyRightItem>
-								<InfoBodyRightItem>12 hours</InfoBodyRightItem>
-								<InfoBodyRightItem>Undefined</InfoBodyRightItem>
 							</InfoBodyRight>
 						</InfoBody>
 					</Info>
@@ -221,37 +260,25 @@ function Farming() {
 						<ResourceTitle>Resource</ResourceTitle>
 						<ListResource>
 							<ResourceItem>
-								<ResourceImg
-									src='https://play.farmersworld.io/img/plain-gold-icon.png'
-									alt=''
-								/>
+								<ResourceImg src='/images/navbar/icons/gold.png' alt='' />
 								<ResourceQuantity>
 									{cardSelected?.detail?.land?.resource?.gold || 0}
 								</ResourceQuantity>
 							</ResourceItem>
 							<ResourceItem>
-								<ResourceImg
-									src='https://play.farmersworld.io/img/plain-gold-icon.png'
-									alt=''
-								/>
+								<ResourceImg src='/images/navbar/icons/soil.png' alt='' />
 								<ResourceQuantity>
 									{cardSelected?.detail?.land?.resource?.soil || 0}
 								</ResourceQuantity>
 							</ResourceItem>
 							<ResourceItem>
-								<ResourceImg
-									src='https://play.farmersworld.io/img/plain-gold-icon.png'
-									alt=''
-								/>
+								<ResourceImg src='/images/navbar/icons/food.png' alt='' />
 								<ResourceQuantity>
 									{cardSelected?.detail?.land?.resource?.food || 0}
 								</ResourceQuantity>
 							</ResourceItem>
 							<ResourceItem>
-								<ResourceImg
-									src='https://play.farmersworld.io/img/plain-gold-icon.png'
-									alt=''
-								/>
+								<ResourceImg src='/images/navbar/icons/leaf.png' alt='' />
 								<ResourceQuantity>
 									{cardSelected?.detail?.land?.resource?.leaf || 0}
 								</ResourceQuantity>
@@ -267,9 +294,14 @@ function Farming() {
 						);
 					})}
 
-					<BtnList>
-						<Btn onClick={onClickFarm}>Farm</Btn>
-					</BtnList>
+					{cardSelected?.detail?.land?.inKingdom ? (
+						<BtnList>
+							<Button onClick={onClickFarm}>Farm</Button>
+							<Button onClick={() => setOpen(true)}>Dig Nest</Button>
+						</BtnList>
+					) : (
+						''
+					)}
 
 					<Dialog onClose={handleClose} open={showFarmDialog}>
 						{listWorker?.length ? (
@@ -282,7 +314,7 @@ function Farming() {
 										handleSliderChange={(event, newValue) => {
 											onChangeSlide('food', newValue);
 										}}
-										img={'/images/navbar/icons/meet.png'}
+										img={'/images/navbar/icons/food.png'}
 									/>
 									<SliderItem
 										min={0}
@@ -321,8 +353,21 @@ function Farming() {
 					</Dialog>
 				</Right>
 			</Wrapper>
+			<PopupList open={open} setOpen={setOpen}>
+				{getNFTByType('Nest').map((el, index) => {
+					if (el?.detail?.nest?.inLand[0]) return;
+					return (
+						<CardNft
+							key={index}
+							data={el}
+							footer={() => rendterBtn(el)}
+							alt=''
+						/>
+					);
+				})}
+			</PopupList>
 		</Container>
 	);
 }
 
-export default Farming;
+export default withContext(Farming);

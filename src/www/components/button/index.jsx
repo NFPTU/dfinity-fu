@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import {
-	ButtonCl ,
+	Btn ,
 } from './button.elements';
 
 function Button(props) {
-	const { name, sizem, onClick } = props;
+	const { name, sizem, onClick, disabled, children } = props;
 
 
 	return (
 		<>
-				<ButtonCl onClick={onClick}>
-					{name}
-				</ButtonCl>
+				<Btn disabled={disabled} onClick={onClick}>
+					{name||children}
+				</Btn>
 		</>
 	);
 }

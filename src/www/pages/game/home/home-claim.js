@@ -54,3 +54,12 @@ export const TextBtn = styled.div`
     left: 50%;
     transform: translate(-50%, -50%);
 `
+
+export const CardWrap = styled.div`
+float:left;
+margin-right: 40px;
+margin-bottom: 40px;
+.card-img {
+    width: 100%;
+}
+`

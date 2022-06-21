@@ -6,7 +6,13 @@ type WorkerFarmRequest =
    leaf: vec TokenIndex;
    soil: vec TokenIndex;
  };
-type UserState = record {resource: Resource;};
+type UserState = 
+ record {
+   currentAnt: nat;
+   kingdomId: TokenIndex;
+   limitAnt: nat;
+   resource: Resource;
+ };
 type UserInfoExt = 
  record {
    id: text;
@@ -48,22 +54,22 @@ type TokenIdentifier__1 = text;
 type TokenIdentifier = text;
 type Time = int;
 type SubAccount = vec nat8;
-type Result_7 = 
+type Result_9 = 
  variant {
    err: text;
    ok: vec MetadataExt;
  };
-type Result_6 = 
+type Result_8 = 
  variant {
    err: CommonError;
    ok: vec MetadataExt;
  };
-type Result_5 = 
+type Result_7 = 
  variant {
    err: CommonError;
    ok: MetadataExt;
  };
-type Result_4 = 
+type Result_6 = 
  variant {
    err: CommonError;
    ok: vec record {
@@ -71,20 +77,30 @@ type Result_4 =
              Balance__1;
            };
  };
-type Result_3 = 
+type Result_5 = 
+ variant {
+   err: text;
+   ok: vec LevelData;
+ };
+type Result_4 = 
  variant {
    err: text;
    ok: text;
  };
-type Result_2 = 
+type Result_3 = 
  variant {
    err: CommonError;
    ok: Balance__1;
  };
-type Result_1 = 
+type Result_2 = 
  variant {
    err: CommonError;
    ok: nat;
+ };
+type Result_1 = 
+ variant {
+   err: text;
+   ok: MetadataExt;
  };
 type Result = 
  variant {
@@ -108,28 +124,47 @@ type MetadataExt =
    tokenId: opt TokenIndex;
  };
 type Memo = blob;
+type LevelData = 
+ record {
+   info: vec InfoLevel;
+   name: text;
+ };
+type InfoLevel = 
+ record {
+   info: vec CostInfo;
+   rarity: text;
+ };
 type Extension = text;
 type DetailNFT = 
  variant {
+   army: record {
+           antState: nat;
+           kingdomId: TokenIndex;
+           queenId: TokenIndex;
+         };
+   kingdom: record {landId: vec TokenIndex;};
    land:
     record {
       claimableResource: vec ClaimResouceInfo;
+      inKingdom: TokenIndex;
       info: record {farmingTime: Time;};
       nestStaked: opt TokenIndex;
       resource: Resource;
     };
-   nest: record {
-           inLand: opt TokenIndex;
-           level: nat;
-           queenIn: opt TokenIndex;
-         };
+   nest:
+    record {
+      inLand: opt TokenIndex;
+      level: nat;
+      limit: nat;
+      queenIn: opt TokenIndex;
+    };
    queen:
     record {
       breedingWorkerId: TokenIndex;
       inNest: opt TokenIndex;
       info: record {
               breedWorkerTime: Time;
-              foodPerWorker: float64;
+              resourcePerWorker: Resource;
             };
       level: nat;
     };
@@ -143,8 +178,21 @@ type DetailNFT =
               farmPerTime: Resource;
               farmingTime: Time;
             };
-      level: nat;
       queenId: opt TokenIndex;
+    };
+ };
+type CostInfo = 
+ record {
+   costResource: Resource;
+   level: nat;
+   nextLevel:
+    variant {
+      nest: record {limit: nat;};
+      queen: record {
+               breedWorkerTime: Time;
+               resourcePerWorker: Resource;
+             };
+      worker: record {farmPerTime: Resource;};
     };
  };
 type CommonError__1 = 
@@ -197,27 +245,32 @@ type AntKingdoms =
       }) query;
    availableCycles: () -> (nat) query;
    balance: (BalanceRequest) -> (BalanceResponse) query;
+   breedAntArmy: (TokenIndex__1) -> (Result);
    breedAntWorkder: (TokenIndex__1) -> (Result);
    changeAdmin: (principal) -> ();
    claimResourceInLand: (TokenIndex__1, TokenIndex__1) -> (Result);
    claimWorkerEgg: (TokenIndex__1) -> (Result);
    claiming: () -> (Result);
    extensions: () -> (vec Extension) query;
-   getDataByLandId: (TokenIndex__1) -> (Result_7);
+   getDataByLandId: (TokenIndex__1) -> (Result_9);
    getTokensMetadata: () -> (vec MetadataExt);
-   getUserAvailableWorker: (AccountIdentifier__1) -> (Result_6) query;
+   getUserAvailableWorker: (AccountIdentifier__1) -> (Result_8) query;
    getUserInfo: (AccountIdentifier__1) -> (UserInfoExt) query;
-   getUserTokens: (AccountIdentifier__1) -> (Result_6) query;
-   metadata: (TokenIdentifier__1) -> (Result_5) query;
-   numberOfTokenHolders: (TokenIdentifier__1) -> (Result_1) query;
+   getUserTokens: (AccountIdentifier__1) -> (Result_8) query;
+   metadata: (TokenIdentifier__1) -> (Result_7) query;
+   numberOfTokenHolders: (TokenIdentifier__1) -> (Result_2) query;
    numberOfTokens: () -> (nat) query;
-   registry: (TokenIdentifier__1) -> (Result_4) query;
+   registry: (TokenIdentifier__1) -> (Result_6) query;
+   setLevelMetadata: (vec LevelData) -> (Result_5);
    setTokensMetadata: (vec MetadataExt) -> (Result);
-   stakeNestInLand: (TokenIndex__1, TokenIndex__1) -> (Result_3);
-   stakeQueenInNest: (TokenIndex__1, TokenIndex__1) -> (Result_3);
-   supply: (TokenIdentifier__1) -> (Result_2) query;
+   stakeLandToKingdom: (TokenIndex__1, TokenIndex__1) -> (Result);
+   stakeNestInLand: (TokenIndex__1, TokenIndex__1) -> (Result_4);
+   stakeQueenInNest: (TokenIndex__1, TokenIndex__1) -> (Result_4);
+   supply: (TokenIdentifier__1) -> (Result_3) query;
    transfer: (TransferRequest) -> (TransferResponse);
-   updateUser: (text) -> (Result_1);
+   updateUser: (text) -> (Result_2);
+   upgradeLevelNest: (TokenIndex__1) -> (Result_1);
+   upgradeLevelQueen: (TokenIndex__1) -> (Result_1);
    workerFarmInLand: (WorkerFarmRequest, TokenIndex__1) -> (Result);
  };
 type AccountIdentifier__1 = text;

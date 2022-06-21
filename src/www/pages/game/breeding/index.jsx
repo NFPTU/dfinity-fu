@@ -23,24 +23,23 @@ import {
 	Wrapper,
 } from './breeding.elements';
 import { useCanister, useConnect } from '@connect2ic/react';
-import { getRemainingTime } from '../../../utils/utils';
+import { getRemainingTime, toHHMMSS } from '../../../utils/utils';
 import Countdown from "react-countdown";
 import Swal from 'sweetalert2'
+import { withContext } from '../../../hooks';
+import CardNft from '../../../components/card-nft';
 
-function Breeding() {
+function Breeding(props) {
+	const {setOpenProcess} = props;
 	const [data, setData] = useState([]);
 	const [queenNFT, setQueenNFT] = useState({});
 	const [listWorkerNFT, setListWorkerNFT] = useState([]);
-	const [breedTimestamp, setBreedTimestamp] = useState();
-
-	const [breedingWorker, setBreedingWorker] = useState();
-	const [endCountDown, setEndCountDown] = useState(false);
+	const [worker, setWorker] = useState();
 
 	const [superheroes, { loading, error }] = useCanister('superheroes');
 	const { principal, isConnected, disconnect } = useConnect();
 	
 	//Get last worker in list of worker NFT:
-	const lastWorker = listWorkerNFT && listWorkerNFT[listWorkerNFT.length - 1]
 
 	// ======================== DIALOG SWEETALERT 2 =================================
 	//show dialog stake when choose:
@@ -92,7 +91,7 @@ function Breeding() {
 		// console.log(superheroes, principal?.toString());
 		// const response = await superheroes?.getTokensMetadata();
 		const resp = await superheroes?.getUserTokens(principal?.toString());
-
+		console.log(resp);
 		setData(resp?.ok);
 	};
 
@@ -104,10 +103,17 @@ function Breeding() {
 		return listNFT
 	};
 
+	const getNFTById = (id) => {
+		const listNFT = data?.find(el => el.tokenId[0] == id)
+		console.log(listNFT);
+		return listNFT
+	};
+
 	//Get Queen NFT:
 	const getQueenNFT = () => {
 		const queen = getNFTByType('Queen')
 		console.log(queen);
+		setWorker(getNFTById(queen[0]?.detail?.queen?.breedingWorkerId))
 		setQueenNFT(queen && queen[0]);
 	};
 
@@ -128,21 +134,34 @@ function Breeding() {
 	const onBreedingWorker = async() => {
 		const listQ = getNFTByType('Queen');
 		const res = await superheroes.breedAntWorkder(listQ[0]?.tokenId[0])
-
-		res && setBreedingWorker(res)
+		console.log(res);
 	  }
 
 	  const onClaimWorker = async(e) => {
-		const listQ = getNFTByType('Queen');
-		const res = await superheroes.claimWorkerEgg(listQ[0].tokenId[0])
-		console.log('onClaimWorker' ,res);
-		if(endCountDown){
-			console.log('handle claim worker...')
-		}
-		else if(endCountDown) {
-			e.preventDefault()
-		}
+		console.log(queenNFT, worker);
+		  if(worker?.detail?.worker?.breedTimestamp && !getRemainingTime(worker?.detail?.worker?.breedTimestamp)) {
+			const res = await superheroes.claimWorkerEgg(queenNFT?.tokenId[0])
+			console.log('onClaimWorker' ,res);
+			await onGetData()
+		  }
 	  }
+
+	  const onUpgrade = async(e) => {
+		const listQ = getNFTByType('Queen');
+		const res = await superheroes.upgradeLevelQueen(listQ[0].tokenId[0])
+	  }
+
+	  const onBreeding = async(e) => {
+		  setOpenProcess(true)
+		  if(!queenNFT?.detail?.queen?.breedingWorkerId) {
+			await onBreedingWorker()
+		  } else {
+			await onClaimWorker()
+		  }
+		await onGetData()
+		  setOpenProcess(false)
+	  }
+
 	//=================================================================
 
 	useEffect(() => {
@@ -150,46 +169,37 @@ function Breeding() {
 	}, [superheroes, principal]);
 
 	useEffect(() => {
-		getQueenNFT();
-		getListWorkerNFT();
+		if(data) {
+			getQueenNFT();
+			getListWorkerNFT();
+		}
 	}, [data]);
-
-	useEffect(() => {
-		const breedTime =  lastWorker?.detail?.worker?.breedTimestamp
-
-		setBreedTimestamp(breedTime)
-	}, [lastWorker, breedingWorker])
-
 
 	return (
 		<>
 			<Container>
 				<Wrapper>
 					<Left>
-						<Card data={queenNFT} />
+						{queenNFT &&<CardNft data={queenNFT} />}
 					</Left>
 
 					<Right>
 						<Info>
 							<InfoTop>
 								<Type>Queen</Type>
-								<Level>LV: 1</Level>
+								<Level>{'Level'}: {(queenNFT?.detail?.queen?.level && Number(queenNFT?.detail?.queen?.level)) || 1}</Level>
 							</InfoTop>
 							<InfoBody>
 								<InfoBodyLeft>
 									<InfoBodyLeftItem>Rarity:</InfoBodyLeftItem>
-									<InfoBodyLeftItem>In Nest:</InfoBodyLeftItem>
 									<InfoBodyLeftItem>Food Per Worker:</InfoBodyLeftItem>
 									<InfoBodyLeftItem>Breed Worker Time:</InfoBodyLeftItem>
-									<InfoBodyLeftItem>Undefined:</InfoBodyLeftItem>
 								</InfoBodyLeft>
 
 								<InfoBodyRight>
-									<InfoBodyRightItem>Common</InfoBodyRightItem>
-									<InfoBodyRightItem>10</InfoBodyRightItem>
-									<InfoBodyRightItem>20</InfoBodyRightItem>
-									<InfoBodyRightItem>12 hours</InfoBodyRightItem>
-									<InfoBodyRightItem>Undefined</InfoBodyRightItem>
+									<InfoBodyRightItem>{(queenNFT?.attributes && queenNFT?.attributes[1]?.value) || 'Uncommon'}</InfoBodyRightItem>
+									<InfoBodyRightItem>{queenNFT?.detail?.queen?.info?.resourcePerWorker?.food}</InfoBodyRightItem>
+									<InfoBodyRightItem>{queenNFT?.detail?.queen?.info?.breedWorkerTime ? toHHMMSS(queenNFT?.detail?.queen?.info?.breedWorkerTime): 0}</InfoBodyRightItem>
 								</InfoBodyRight>
 							</InfoBody>
 						</Info>
@@ -197,18 +207,17 @@ function Breeding() {
 						<CountdownWrapper>
 							<CountdownInside>
 								{
-									breedTimestamp && (
+									worker?.detail?.worker?.breedTimestamp && (
 										<Countdown 
-										onComplete={handleCompleteCountDown}
-										date={Date.now() + (getRemainingTime(lastWorker?.detail?.worker?.breedTimestamp) * 1000)}/>	
+										date={Date.now() + (getRemainingTime(worker?.detail?.worker?.breedTimestamp) * 1000)}/>	
 									)
 								}
 							</CountdownInside>
 						</CountdownWrapper>
 
 						<BtnList>
-							<Btn onClick={dialogClaim}>Breeding</Btn>
-							<Btn  onClick={onClaimWorker}>Claim Worker Ant</Btn>
+							<Btn onClick={onBreeding}>{!queenNFT?.detail?.queen?.breedingWorkerId?'Breeding':'Claim'}</Btn>
+							<Btn  onClick={onUpgrade}>Upgrade</Btn>
 						</BtnList>
 					</Right>
 				</Wrapper>
@@ -217,4 +226,4 @@ function Breeding() {
 	);
 }
 
-export default Breeding;
+export default withContext(Breeding)

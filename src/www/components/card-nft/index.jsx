@@ -14,59 +14,57 @@ import {
 	RarityImg,
 	Top,
 	Type,
+	CardImgWrapper
 } from './card.elements';
 import { rarity_type } from './rarity_type'
 
-function NewCard(props) {
+function CardNft(props) {
 	const [rarityImg, setRarityImg] = useState('')
 
-	const { width, height, data } = props;
+	const { width, height, data, footer, size, heightImg } = props;
 
 	const { attributes, description, detail, image, name, tokenId } = data;
 
-	const rarity = attributes[1]?.value
+	const rarity = attributes && attributes[1]?.value
 
 	//Set url to image rarity card: 
 	const handleRarityType = () => {
-		const ra = rarity_type.find((item) => item.type === rarity)
+		const ra = rarity_type?.find((item) => item.type === rarity)
 
-		setRarityImg(ra.src)
+		setRarityImg(ra?.src)
 	}
 
 	useEffect(() => {
 		handleRarityType()
 	}, [rarity, rarity_type])
 
-	console.log('rarityImg', rarityImg)
-
 	return (
-		<CardContainer width={width} height={height}>
+		<CardContainer width={width} height={height} size={size}>
 			<CardWrapper>
 				<Top>
-					<Type>{attributes[0]?.value}</Type>
+					<Type>{attributes && attributes[0]?.value}</Type>
 					<Id>{name}</Id>
 				</Top>
 
 				<Body>
 					<BodyWrapper>
 						<BodyWrapperTop>
-							<Level>
-								{attributes[2]?.trait_type} <span style={{ color: '#5a985d' }}>{attributes[2]?.value}</span>
-							</Level>
-							<Rarity>
+							{rarityImg && <Rarity size={size}>
 								<RarityImg src={rarityImg} alt='rarity' />
-							</Rarity>
+							</Rarity>}
 						</BodyWrapperTop>
-						<CardImg src={image} alt='' />
+						<CardImgWrapper>
+							<CardImg className="card-img" src={image} alt='' height={heightImg} size={size}/>
+						</CardImgWrapper>
 					</BodyWrapper>
 				</Body>
 
-				<Footer>
-					<Name>{name}</Name>
-				</Footer>
+				{footer ? <Footer>
+					{footer()}
+				</Footer> : ''}
 			</CardWrapper>
 		</CardContainer>
 	);
 }
 
-export default NewCard;
+export default CardNft;

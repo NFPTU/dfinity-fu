@@ -29,11 +29,16 @@ function LoginGame(props) {
 
 	const getUserInfo = async () => {
 		try {
+			console.log(superheroes);
 			const res = await superheroes.getUserInfo(principal?.toString());
+			console.log('info', res);
 			if (res) {
-				navigate('/inventory');
+				navigate('/');
+			} else {
+				navigate('/home-claim');
 			}
 		} catch (error) {
+			console.log(error);
 			navigate('/home-claim');
 		}
 	};
@@ -43,7 +48,6 @@ function LoginGame(props) {
 			console.log(principal);
 			if (principal) {
 				setPrinpId(principal);
-				getUserInfo();
 			}
 		} catch (e) {
 			console.log(e);
@@ -57,13 +61,13 @@ function LoginGame(props) {
 	};
 
 	useEffect(() => {
-		if(superheroes && principal) {
+		if(superheroes && principal && isConnected) {
 			getUserInfo();
 		}
-	}, [superheroes, principal]);
+	}, [superheroes, principal, isConnected]);
  
 	return (
-		<Container style={{ backgroundImage: `url(/images/background.png)` }}>
+		<Container>
 			<ConnectDialog dark={false} />
 			<Wrapper>
 				<Title>Ants Kingdoms</Title>

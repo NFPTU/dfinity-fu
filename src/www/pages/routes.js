@@ -18,10 +18,12 @@ const Breeding = lazy(() => import("./game/breeding"))
 const Farming = lazy(() => import("./game/farming"))
 const Nest = lazy(() => import("./game/nest"))
 const Kingdom = lazy(() => import("./game/kingdom"))
+const Market = lazy(() => import("./game/market"))
+const Battle = lazy(() => import("./game/battle"))
 
 const routes = [
     {
-        path: "/breeding",
+        path: "/queen",
         exact: true,
         public: true,
         component: Breeding,
@@ -49,7 +51,7 @@ const routes = [
         layout: GameLayout
     },
     {
-        path: "/farming",
+        path: "/land",
         exact: true,
         public: true,
         component: Farming,
@@ -63,14 +65,28 @@ const routes = [
         layout: GameLayout
     },
     {
-        path: "/kingdom",
+        path: "/",
         exact: true,
         public: true,
         component: Kingdom,
         layout: GameLayout
     },
     {
-        path: "/",
+        path: "/market",
+        exact: true,
+        public: true,
+        component: Market,
+        layout: GameLayout
+    },
+    {
+        path: "/battle",
+        exact: true,
+        public: true,
+        component: Battle,
+        layout: GameLayout
+    },
+    {
+        path: "/login",
         exact: true,
         public: true,
         component: LoginGame,

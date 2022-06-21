@@ -11,7 +11,7 @@ export const metadata = [
 		description: 'Ant Kingdom',
 		tokenId: [],
 		image:
-			'https://storageapi.fleek.co/c86ea07c-070d-40b0-bb7a-12a2d3c468f4-bucket/nft/queen.png',
+			'https://storageapi.fleek.co/c86ea07c-070d-40b0-bb7a-12a2d3c468f4-bucket/nft/kingdom.png',
 		attributes: [
 			{
 				trait_type: 'Type',
@@ -693,7 +693,7 @@ export const metadata = [
 		description: 'Land',
 		tokenId: [],
 		image:
-			'https://storageapi.fleek.co/c86ea07c-070d-40b0-bb7a-12a2d3c468f4-bucket/nft/land.jpg',
+			'https://storageapi.fleek.co/c86ea07c-070d-40b0-bb7a-12a2d3c468f4-bucket/nft/land.png',
 		attributes: [
 			{
 				trait_type: 'Type',
@@ -735,7 +735,7 @@ export const metadata = [
 		description: 'Land',
 		tokenId: [],
 		image:
-			'https://storageapi.fleek.co/c86ea07c-070d-40b0-bb7a-12a2d3c468f4-bucket/nft/land.jpg',
+			'https://storageapi.fleek.co/c86ea07c-070d-40b0-bb7a-12a2d3c468f4-bucket/nft/land.png',
 		attributes: [
 			{
 				trait_type: 'Type',
@@ -777,7 +777,7 @@ export const metadata = [
 		description: 'Land',
 		tokenId: [],
 		image:
-			'https://storageapi.fleek.co/c86ea07c-070d-40b0-bb7a-12a2d3c468f4-bucket/nft/land.jpg',
+			'https://storageapi.fleek.co/c86ea07c-070d-40b0-bb7a-12a2d3c468f4-bucket/nft/land.png',
 		attributes: [
 			{
 				trait_type: 'Type',
@@ -819,7 +819,7 @@ export const metadata = [
 		description: 'Land',
 		tokenId: [],
 		image:
-			'https://storageapi.fleek.co/c86ea07c-070d-40b0-bb7a-12a2d3c468f4-bucket/nft/land.jpg',
+			'https://storageapi.fleek.co/c86ea07c-070d-40b0-bb7a-12a2d3c468f4-bucket/nft/land.png',
 		attributes: [
 			{
 				trait_type: 'Type',
@@ -861,7 +861,7 @@ export const metadata = [
 		description: 'Land',
 		tokenId: [],
 		image:
-			'https://storageapi.fleek.co/c86ea07c-070d-40b0-bb7a-12a2d3c468f4-bucket/nft/land.jpg',
+			'https://storageapi.fleek.co/c86ea07c-070d-40b0-bb7a-12a2d3c468f4-bucket/nft/land.png',
 		attributes: [
 			{
 				trait_type: 'Type',
@@ -999,6 +999,203 @@ export const levelData = [
 									food: 22,
 								},
 								'breedWorkerTime': 52 * second,
+							}
+						}
+					}
+				],
+			},
+			{
+				rarity: "Common",
+				data: [
+					{
+						level: 1, costResource: {
+							gold: 15,
+							leaf: 35,
+							food: 45,
+							soil: 0,
+						},
+						nextLevel: {
+							queen: {
+								'resourcePerWorker': {
+									gold: 0,
+									leaf: 0,
+									soil: 0,
+									food: 30,
+								},
+								'breedWorkerTime': 60 * second,
+							}
+						}
+					},
+					{
+						level: 2, costResource: {
+							gold: 10,
+							leaf: 30,
+							food: 40,
+							soil: 0,
+						},
+						nextLevel: {
+							queen: {
+								'resourcePerWorker': {
+									gold: 0,
+									leaf: 0,
+									soil: 0,
+									food: 28,
+								},
+								'breedWorkerTime': 58 * second,
+							}
+						}
+					},
+					{
+						level: 3, costResource: {
+							gold: 12,
+							leaf: 35,
+							food: 45,
+							soil: 0,
+						},
+						nextLevel: {
+							queen: {
+								'resourcePerWorker': {
+									gold: 0,
+									leaf: 0,
+									soil: 0,
+									food: 26,
+								},
+								'breedWorkerTime': 56 * second,
+							}
+						}
+					},
+					{
+						level: 4, costResource: {
+							gold: 14,
+							leaf: 40,
+							food: 50,
+							soil: 0,
+						},
+						nextLevel: {
+							queen: {
+								'resourcePerWorker': {
+									gold: 0,
+									leaf: 0,
+									soil: 0,
+									food: 24,
+								},
+								'breedWorkerTime': 54 * second,
+							}
+						}
+					},
+					{
+						level: 5, costResource: {
+							gold: 16,
+							leaf: 45,
+							food: 50,
+							soil: 0,
+						},
+						nextLevel: {
+							queen: {
+								'resourcePerWorker': {
+									gold: 0,
+									leaf: 0,
+									soil: 0,
+									food: 22,
+								},
+								'breedWorkerTime': 52 * second,
+							}
+						}
+					}
+				],
+			},
+			{
+				rarity: "Uncommon",
+				data: [
+					{
+						level: 1, costResource: {
+							gold: 15,
+							leaf: 35,
+							food: 45,
+							soil: 0,
+						},
+						nextLevel: {
+							queen: {
+								'resourcePerWorker': {
+									gold: 0,
+									leaf: 0,
+									soil: 0,
+									food: 30,
+								},
+								'breedWorkerTime': 60 * second,
+							}
+						}
+					}
+				],
+			},
+			{
+				rarity: "Rare",
+				data: [
+					{
+						level: 1, costResource: {
+							gold: 15,
+							leaf: 35,
+							food: 45,
+							soil: 0,
+						},
+						nextLevel: {
+							queen: {
+								'resourcePerWorker': {
+									gold: 0,
+									leaf: 0,
+									soil: 0,
+									food: 30,
+								},
+								'breedWorkerTime': 60 * second,
+							}
+						}
+					}
+				],
+			}
+			,
+			{
+				rarity: "Epic",
+				data: [
+					{
+						level: 1, costResource: {
+							gold: 15,
+							leaf: 35,
+							food: 45,
+							soil: 0,
+						},
+						nextLevel: {
+							queen: {
+								'resourcePerWorker': {
+									gold: 0,
+									leaf: 0,
+									soil: 0,
+									food: 30,
+								},
+								'breedWorkerTime': 60 * second,
+							}
+						}
+					}
+				],
+			},
+			{
+				rarity: "",
+				data: [
+					{
+						level: 1, costResource: {
+							gold: 15,
+							leaf: 35,
+							food: 45,
+							soil: 0,
+						},
+						nextLevel: {
+							queen: {
+								'resourcePerWorker': {
+									gold: 0,
+									leaf: 0,
+									soil: 0,
+									food: 30,
+								},
+								'breedWorkerTime': 60 * second,
 							}
 						}
 					}

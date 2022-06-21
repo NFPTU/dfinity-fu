@@ -7,7 +7,7 @@ export const rarity_type = [
     {
         id: 2,
         type: 'Uncommon',
-        src: '/images/card/rarity/all.png'
+        src: '/images/card/rarity/unco.png'
     },
     {
         id: 3,

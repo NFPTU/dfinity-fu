@@ -5,6 +5,7 @@ import {
 	Title,
 	TitleWrapper,
 	Wrapper,
+	WalletAddress
 } from './game-navbar.elements';
 import { useLocation } from 'react-router-dom';
 import Resource from './resource';
@@ -12,7 +13,7 @@ import { useCanister, useConnect } from '@connect2ic/react';
 import { withContext } from '../../hooks';
 
 function GameNavbar(props) {
-	const {resource, setResource} = props;
+	const { resource, setResource, prinpId, logout } = props;
 	const [navbarTitle, setNavbarTitle] = useState('Ants Kingdoms');
 
 	const [superheroes, { loading, error }] = useCanister('superheroes');
@@ -35,6 +36,10 @@ function GameNavbar(props) {
 		}
 	}, [location]);
 
+	const onDisconnect = () => {
+		disconnect();
+		logout();
+	};
 
 	return (
 		<Container>
@@ -53,13 +58,17 @@ function GameNavbar(props) {
 					<Title>Ants Kingdoms</Title>
 				</TitleWrapper>
 				<Resource
-					img={'/images/navbar/icons/meet.png'}
+					img={'/images/navbar/icons/food.png'}
 					resource={resource?.food}
 				/>
 				<Resource
 					img={'/images/navbar/icons/leaf.png'}
 					resource={resource?.leaf}
 				/>
+				<WalletAddress onClick={onDisconnect}>
+					{principal?.toString()?.slice(0, 3)} ...{' '}
+					{principal?.toString()?.slice(60, 63)}
+				</WalletAddress>
 			</Wrapper>
 		</Container>
 	);

@@ -7,28 +7,16 @@ function GameFooter() {
 
 	const items = [
 		{
-			id: 1,
-			imgUrl: '/images/footer/home.png',
-			title: 'Home',
-			to: '/home-claim',
-		},
-		{
-			id: 2,
-			imgUrl: '/images/footer/inventory.png',
-			title: 'Inventory',
-			to: '/inventory',
-		},
-		{
-			id: 3,
+			id: 6,
 			imgUrl: '/images/footer/breed.png',
-			title: 'Breeding',
-			to: '/breeding',
+			title: 'Kingdom',
+			to: '/',
 		},
 		{
 			id: 4,
 			imgUrl: '/images/footer/breed.png',
-			title: 'Farming',
-			to: '/farming',
+			title: 'Land',
+			to: '/land',
 		},
 		{
 			id: 5,
@@ -37,10 +25,22 @@ function GameFooter() {
 			to: '/nest',
 		},
 		{
-			id: 6,
+			id: 3,
 			imgUrl: '/images/footer/breed.png',
-			title: 'Kingdom',
-			to: '/kingdom',
+			title: 'Queen',
+			to: '/queen',
+		},
+		{
+			id: 7,
+			imgUrl: '/images/footer/breed.png',
+			title: 'Marketplace',
+			to: '/market',
+		},
+		{
+			id: 8,
+			imgUrl: '/images/footer/breed.png',
+			title: 'Battle',
+			to: '/battle',
 		},
 	];
 

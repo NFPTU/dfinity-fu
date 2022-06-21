@@ -1,18 +1,25 @@
 import styled from "styled-components";
 
 
-export const ButtonCl = styled.button`
-  margin-top: 5px;
-  width: 100px;
-  height: 30px;
-  border-radius: 10px;
-  border: 2px solid black;
-  font-size: 15px;
-  font-weight: 500;
-  transition: all 0.3s ease;
-
-  &:hover {
-    color: white;
-    background-color: black;
-  }
-`;
+export const Btn = styled.button`
+    background-image: url('https://play.farmersworld.io/static/media/plain-button.58a5875c.png');
+    font-family: "CookieRun-Black";
+    background-size: contain;
+    background-clip: padding-box;
+    width: 180px;
+    height: 40px;
+    background-repeat: no-repeat;
+    background-position: 50%;
+    font-style: normal;
+    font-weight: 700;
+    font-size: 18px;
+    text-align: center;
+    color: #fff;
+    cursor: pointer;
+    text-shadow: -3px 2px 2px #923935;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    //Disable button
+    /* filter: grayscale(1); */
+`

@@ -12,7 +12,7 @@ import {
 
 function CardLand(props) {
 
-  const { data, handleClickMiniCard, active } = props
+  const { data, handleClickMiniCard, active, footer } = props
 
   const { attributes, description, detail, image, name, tokenId } = data;
 
@@ -26,9 +26,9 @@ function CardLand(props) {
         <LandItemImg src={image} alt="card mini" />
       </LandItemBody>
 
-      <LandItemFooter>
-        <LandItemName>{name}</LandItemName>
-      </LandItemFooter>
+      {footer ? <LandItemFooter>
+        {footer()}
+      </LandItemFooter>: ''}
     </LandItem>
   );
 }
