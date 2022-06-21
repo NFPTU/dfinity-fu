@@ -72,7 +72,7 @@ function Farming(props) {
 	const onGetData = async () => {
 		const resp = await superheroes?.getUserTokens(principal?.toString());
 		const listLand = resp?.ok.filter((el) => el.attributes[0].value === 'Land');
-		console.log(resp);
+		console.log(resp, listLand[0]);
 		await onGetAvailWorker();
 		setListNFt(resp?.ok);
 		setCardSelected(listLand[0]);
@@ -160,7 +160,7 @@ function Farming(props) {
 			);
 			setOpenProcess(false);
 			setOpen(false);
-			onGetData();
+			window.location.reload();
 		} catch (err) {
 			console.log(err);
 			setOpenProcess(false);

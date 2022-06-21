@@ -16,7 +16,7 @@ import CardNft from '../../../components/card-nft';
 import PopupList from '../../../components/popup-list';
 
 function Homeclaim(props) {
-	const { getUserInfo, prinpId } = props
+	const { getUserInfo, prinpId, setopenProcess } = props
 	const [superheroes, { loading, error }] = useCanister('superheroes');
 	const navigate = useNavigate();
 	const [open, setOpen] = useState(false);
@@ -24,10 +24,12 @@ function Homeclaim(props) {
 
 	const onClaim = async () => {
 		try {
+			setopenProcess(true)
 			const res = await superheroes?.claiming();
 			console.log(res);
 			getUserInfo()
 			await onGetData()
+			setopenProcess(false)
 			setOpen(true)
 		} catch (er) {
 			console.log(er);

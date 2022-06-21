@@ -938,7 +938,7 @@ shared(msg) actor class AntKingdoms(
   
   private let EXTENSIONS : [Extension] = ["@ext/common"];
 
-  private let NFT_CLAIMABLE : [[Nat]] = [[0],[1,2,3,4,5],[6,7,8,9,10],[11,12,13,14,15], [16,17,18,19,20]];
+  private let NFT_CLAIMABLE : [[Nat]] = [[0],[1,2,3,4,5],[11,12,13,14,15], [16,17,18,19,20]];
 
 private let NFT_TYPE : [Text] =   ["Queen","Worker","Nest", "Land", "Kingdom"];
 private let NFT_RARITY : [Text] =   ["Common","Uncommon","Rare", "Epec", "Legendary"];
@@ -1008,6 +1008,7 @@ private let NFT_RARITY : [Text] =   ["Common","Uncommon","Rare", "Epec", "Legend
   };
 
   public shared(msg) func setTokensMetadata(listMeta: [MetadataExt]): async Result.Result<Bool, Text> {
+     assert(msg.caller == _admin);
      var i = 0;
     for(metadata in Iter.fromArray(listMeta)) {
       tokensMetadata.put(i, metadata);
@@ -1022,6 +1023,7 @@ private let NFT_RARITY : [Text] =   ["Common","Uncommon","Rare", "Epec", "Legend
   };
 
    public shared(msg) func getTokensMetadata(): async [MetadataExt] {
+      assert(msg.caller == _admin);
      Iter.toArray(Iter.map(tokensMetadata.entries(), func (i: (Nat, MetadataExt)): MetadataExt {i.1}))
    };
 

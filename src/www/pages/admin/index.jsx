@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { metadata, levelData } from './nft';
 import { useCanister, useConnect } from '@connect2ic/react';
-import { superheroes } from '../../../declarations';
 
 function Admin() {
 	const {
@@ -11,10 +10,10 @@ function Admin() {
 		isIdle,
 		connect,
 		isConnecting,
+		principal
 	} = useConnect();
 	const [listNFt, setListNFt] = useState([]);
-	const principal = '2vxsx-fae'
-
+	const [superheroes, { loading, error }] = useCanister('superheroes');
 	useEffect(() => {
 		const newLevel = levelData.map(el => {
 			

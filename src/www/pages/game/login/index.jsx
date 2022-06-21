@@ -67,7 +67,7 @@ function LoginGame(props) {
 	}, [superheroes, principal, isConnected]);
  
 	return (
-		<Container style={{ backgroundImage: `url(/images/background.png)` }}>
+		<Container>
 			<ConnectDialog dark={false} />
 			<Wrapper>
 				<Title>Ants Kingdoms</Title>

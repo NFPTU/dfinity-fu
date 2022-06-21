@@ -30,6 +30,18 @@ function GameFooter() {
 			title: 'Queen',
 			to: '/queen',
 		},
+		{
+			id: 7,
+			imgUrl: '/images/footer/breed.png',
+			title: 'Marketplace',
+			to: '/market',
+		},
+		{
+			id: 8,
+			imgUrl: '/images/footer/breed.png',
+			title: 'Battle',
+			to: '/battle',
+		},
 	];
 
 	return (
