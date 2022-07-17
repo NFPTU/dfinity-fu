@@ -1,0 +1,94 @@
+type UserInfoExt = 
+ record {
+   allowedBy: vec principal;
+   allowedTokens: vec nat;
+   operators: vec principal;
+   tokens: vec nat;
+ };
+type TxRecord = 
+ record {
+   caller: principal;
+   from: Record;
+   index: nat;
+   op: Operation;
+   timestamp: Time;
+   to: Record;
+   tokenIndex: opt nat;
+ };
+type TxReceipt = 
+ variant {
+   Err: Errors;
+   Ok: nat;
+ };
+type TokenMetadata__1 = record {tokenUri: text;};
+type TokenMetadata = record {tokenUri: text;};
+type TokenInfoExt = 
+ record {
+   index: nat;
+   metadata: opt TokenMetadata__1;
+   operator: opt principal;
+   owner: principal;
+   timestamp: Time;
+ };
+type Time = int;
+type Record = 
+ variant {
+   metadata: opt TokenMetadata__1;
+   user: principal;
+ };
+type Operation = 
+ variant {
+   approve;
+   approveAll;
+   burn;
+   createOrder;
+   mint: opt TokenMetadata__1;
+   revokeAll;
+   setMetadata;
+   transfer;
+   transferFrom;
+ };
+type MintResult = 
+ variant {
+   Err: Errors;
+   Ok: record {
+         nat;
+         nat;
+       };
+ };
+type Errors = 
+ variant {
+   InvalidOperator;
+   TokenNotExist;
+   Unauthorized;
+ };
+service : {
+  approve: (nat, principal) -> (TxReceipt);
+  balanceOf: (principal) -> (nat) query;
+  batchMint: (principal, vec opt TokenMetadata) -> (MintResult);
+  batchSetTokenMetadata: (vec record {
+                                nat;
+                                TokenMetadata;
+                              }) -> (TxReceipt);
+  batchTransferFrom: (principal, principal, vec nat) -> (TxReceipt);
+  burn: (nat) -> (TxReceipt);
+  getAllTokens: () -> (vec TokenInfoExt) query;
+  getOperator: (nat) -> (principal) query;
+  getTokenInfo: (nat) -> (TokenInfoExt) query;
+  getTransaction: (nat) -> (TxRecord) query;
+  getTransactions: (nat, nat) -> (vec TxRecord) query;
+  getUserInfo: (principal) -> (UserInfoExt) query;
+  getUserTokens: (principal) -> (vec TokenInfoExt) query;
+  getUserTransactionAmount: (principal) -> (nat) query;
+  getUserTransactions: (principal, nat, nat) -> (vec TxRecord) query;
+  historySize: () -> (nat) query;
+  isApprovedForAll: (principal, principal) -> (bool) query;
+  mint: (principal, opt TokenMetadata) -> (MintResult);
+  ownerOf: (nat) -> (principal) query;
+  setApprovalForAll: (principal, bool) -> (TxReceipt);
+  setOwner: (principal) -> (principal);
+  setTokenMetadata: (nat, TokenMetadata) -> (TxReceipt);
+  totalSupply: () -> (nat) query;
+  transfer: (principal, nat) -> (TxReceipt);
+  transferFrom: (principal, principal, nat) -> (TxReceipt);
+}

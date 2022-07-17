@@ -26,94 +26,107 @@ function initCanisterIds() {
             "No production canister_ids.json found. Continuing with local"
         );
     }
-
+    let prev = {}
     const network =
         process.env.DFX_NETWORK ||
         (process.env.NODE_ENV === "production" ? "ic" : "local");
 
     canisters = network === "local" ? localCanisters : prodCanisters;
-
     for (const canister in canisters) {
-        process.env[canister.toUpperCase() + "_CANISTER_ID"] =
+        prev[canister.toUpperCase() + "_CANISTER_ID"] =
             canisters[canister][network];
     }
-    process.env.SUPERHEROES_CANISTER_ID = superheroes_IC
+    return prev
 }
-initCanisterIds();
+const canisterEnvVariables = initCanisterIds();
+console.log(canisterEnvVariables);
 
 const isDevelopment = process.env.NODE_ENV !== "production";
+const frontendDirectory = "www";
 const asset_entry = path.join("src", "www", "index.html");
 
-module.exports = env => ({
-    target: "web",
-    mode: isDevelopment ? "development" : "production",
-    entry: {
-        // The frontend.entrypoint points to the HTML file for this build, so we need
-        // to replace the extension to `.js`.
-        index: path.join(__dirname, asset_entry).replace(/\.html$/, ".jsx"),
-    },
-    devtool: isDevelopment ? "source-map" : false,
-    optimization: {
-        minimize: !isDevelopment,
-        minimizer: [new TerserPlugin()],
-    },
-    resolve: {
-        extensions: [".js", ".ts", ".jsx", ".tsx"],
-        fallback: {
-            assert: require.resolve("assert/"),
-            buffer: require.resolve("buffer/"),
-            events: require.resolve("events/"),
-            stream: require.resolve("stream-browserify/"),
-            util: require.resolve("util/"),
+module.exports = env => {
+    console.log(env);
+    return ({
+        target: "web",
+        mode: isDevelopment ? "development" : "production",
+        entry: {
+            // The frontend.entrypoint points to the HTML file for this build, so we need
+            // to replace the extension to `.js`.
+            index: path.join(__dirname, asset_entry).replace(/\.html$/, ".jsx"),
         },
-    },
-    output: {
-        filename: "index.js",
-        path: path.join(__dirname, "dist", "www"),
-    },
-
-    // Depending in the language or framework you are using for
-    // front-end development, add module loaders to the default
-    // webpack configuration. For example, if you are using React
-    // modules and CSS as described in the "Adding a stylesheet"
-    // tutorial, uncomment the following lines:
-    module: {
-        rules: [
-            { test: /\.(ts|tsx|jsx)$/, loader: "ts-loader" },
-            { test: /\.(css|scss)$/, use: ["style-loader", "css-loader", "sass-loader"] }
-        ],
-    },
-    plugins: [
-        new HtmlWebpackPlugin({
-            template: path.join(__dirname, asset_entry),
-            cache: false,
-        }),
-        new webpack.EnvironmentPlugin(env.devM == "mo" ?{
-            NODE_ENV: "development",
-        } : {
-            NODE_ENV: "development",
-            SUPERHEROES_CANISTER_ID: superheroes_IC,
-
-        }),
-        new webpack.ProvidePlugin({
-            Buffer: [require.resolve("buffer/"), "Buffer"],
-            process: require.resolve("process/browser"),
-        }),
-    ],
-    // proxy /api to port 8000 during development
-    devServer: {
-        proxy: {
-            "/api": {
-                target: "https://ic0.app",
-                changeOrigin: true,
-                pathRewrite: {
-                    "^/api": "/api",
-                },
+        devtool: isDevelopment ? "source-map" : false,
+        optimization: {
+            minimize: !isDevelopment,
+            minimizer: [new TerserPlugin()],
+        },
+        resolve: {
+            extensions: [".js", ".ts", ".jsx", ".tsx"],
+            fallback: {
+                assert: require.resolve("assert/"),
+                buffer: require.resolve("buffer/"),
+                events: require.resolve("events/"),
+                stream: require.resolve("stream-browserify/"),
+                util: require.resolve("util/"),
             },
         },
-        hot: true,
-        watchFiles: path.resolve(__dirname, "./src/www"),
-        liveReload: true,
-        historyApiFallback: true,
-    },
-})
+        output: {
+            filename: "index.js",
+            path: path.join(__dirname, "dist", "www"),
+        },
+
+        // Depending in the language or framework you are using for
+        // front-end development, add module loaders to the default
+        // webpack configuration. For example, if you are using React
+        // modules and CSS as described in the "Adding a stylesheet"
+        // tutorial, uncomment the following lines:
+        module: {
+            rules: [
+                { test: /\.(ts|tsx|jsx)$/, loader: "ts-loader" },
+                { test: /\.(css|scss)$/, use: ["style-loader", "css-loader", "sass-loader"] },
+                { test: /\.(png|jpg|gif|svg|eot|ttf)$/, loader: 'url-loader' }
+            ],
+        },
+        plugins: [
+            new HtmlWebpackPlugin({
+                template: path.join(__dirname, asset_entry),
+                cache: false,
+            }),
+            // new CopyPlugin({
+            //     patterns: [
+            //         {
+            //             to: path.join(__dirname, "dist", frontendDirectory),
+            //         },
+            //     ],
+            // }),
+            new webpack.EnvironmentPlugin(env.devM == "mo" ? {
+                NODE_ENV: "development",
+                ...canisterEnvVariables
+            } : {
+                NODE_ENV: "development",
+                SUPERHEROES_CANISTER_ID: superheroes_IC,
+
+            }),
+            new webpack.ProvidePlugin({
+                Buffer: [require.resolve("buffer/"), "Buffer"],
+                process: require.resolve("process/browser"),
+            }),
+        ],
+        // proxy /api to port 8000 during development
+        devServer: {
+            proxy: {
+                "/api": {
+                    target: env.devM == "mo" ? "http://localhost:8000" : "https://ic0.app",
+                    changeOrigin: true,
+                    pathRewrite: {
+                        "^/api": "/api",
+                    },
+                },
+            },
+            hot: true,
+            watchFiles: path.resolve(__dirname, "./src/www"),
+            liveReload: true,
+            historyApiFallback: true,
+        },
+    })
+}
