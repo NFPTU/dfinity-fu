@@ -198,7 +198,7 @@ module {
          index: Nat;
          var price: Nat;
          owner: Principal;
-         tokenId: Nat;
+         tokenId: TokenIndex;
     };
 
 

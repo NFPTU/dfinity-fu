@@ -923,6 +923,7 @@ shared(msg) actor class AntKingdoms(
     type WorkerFarmRequest = Types.WorkerFarmRequest;
     type LevelData = Types.LevelData;
     type ResourceInt= Types.ResourceInt;
+     type OrderInfo= Types.OrderInfo;
 
   type RegisterTokenRequest = {
     metadata : MetadataExt;
@@ -933,6 +934,42 @@ shared(msg) actor class AntKingdoms(
   type ClaimRequest = {
     owner : AccountIdentifier;
   };
+     // DIP20 token actor
+	type DIP20Errors = {
+        #InsufficientBalance;
+        #InsufficientAllowance;
+        #LedgerTrap;
+        #AmountTooSmall;
+        #BlockUsed;
+        #ErrorOperationStyle;
+        #ErrorTo;
+        #Other;
+    };
+    type DIP20Metadata = {
+        logo : Text;
+        name : Text;
+        symbol : Text;
+        decimals : Nat8;
+        totalSupply : Nat;
+        owner : Principal;
+        fee : Nat;
+    };
+public type TxReceiptToken = {
+        #Ok: Nat;
+        #Err: DIP20Errors;
+    };
+   type TokenActor = actor {
+        allowance: shared (owner: Principal, spender: Principal) -> async Nat;
+        approve: shared (spender: Principal, value: Nat) -> async TxReceiptToken;
+        balanceOf: (owner: Principal) -> async Nat;
+        decimals: () -> async Nat8;
+        name: () -> async Text;
+        symbol: () -> async Text;
+        getMetadata: () -> async DIP20Metadata;
+        totalSupply: () -> async Nat;
+        transfer: shared (to: Principal, value: Nat) -> async TxReceiptToken;
+        transferFrom: shared (from: Principal, to: Principal, value: Nat) -> async TxReceiptToken;
+    };
 
   type TokenLedger = HashMap.HashMap<AccountIdentifier, Balance>;
   
@@ -986,6 +1023,10 @@ private let NFT_RARITY : [Text] =   ["Common","Uncommon","Rare", "Epec", "Legend
     users := HashMap.fromIter<AccountIdentifier, UserInfo>(usersEntries.vals(), 1, Text.equal, Text.hash);
     usersEntries := [];
   };
+
+   private stable var totalOrders_: Nat = 0;
+    private var orders = HashMap.HashMap<Nat, OrderInfo>(1, Nat.equal, Hash.hash);
+
 
   
     private func _isOwnerOf(tokenId: TokenIndex, who: AccountIdentifier) : Bool {
@@ -1181,6 +1222,56 @@ private let NFT_RARITY : [Text] =   ["Common","Uncommon","Rare", "Epec", "Legend
     _nextTokenId := _nextTokenId + 1;
     return tokenId;
   };
+
+  
+  public shared(msg) func createOrder(_tokenId: TokenIndex, _price: Nat) {
+        var owner: Principal = switch (_isOwnerOf(_tokenId,  Principal.toText(msg.caller))) {
+            case (?own) {
+                own;
+            };
+            case (_) {
+                return #Err(#TokenNotExist)
+            };
+        };
+        if(owner != msg.caller) {
+            return #Err(#Unauthorized);
+        };
+
+        var order: OrderInfo = {
+            index = totalOrders_;
+            owner = msg.caller;
+            var price = _price;
+            tokenId = _tokenId;
+        }
+        orders.put(totalOrders_, order);
+        totalOrders_ +=1;
+        return #Ok(txid);
+
+    };
+
+    
+    public shared(msg) func buy(amount: Nat): async Result.Result<Nat, Text> {
+        let info = switch(saleInfo) {
+            case(?i) { i };
+            case(_) { return #err("not in sale"); };
+        };
+        if(Time.now() < info.startTime or Time.now() > info.endTime) return #err("sale not started or already ended");
+        let userBalance = _balanceOf(msg.caller);
+        if(amount < info.minPerUser or userBalance + amount > info.maxPerUser) return #err("amount error");
+        let tokenActor: TokenActor = actor(Principal.toText(info.paymentToken));
+        switch(await tokenActor.transferFrom(msg.caller, Principal.fromActor(this), amount * info.price)) {
+            case(#Ok(id)) {
+                ignore _batchMint(msg.caller, amount);
+                info.amountLeft -= amount;
+                info.fundRaised += amount * info.price;
+                saleInfo := ?info;
+                return #ok(amount);
+            };
+            case(#Err(e)) {
+                return #err("payment failed");
+            };
+        };
+    };
 
   private func _addTokenTo(to: Text, tokenId: TokenIndex) {
     switch(users.get(to)) {
