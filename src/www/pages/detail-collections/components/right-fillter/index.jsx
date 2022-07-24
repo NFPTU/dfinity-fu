@@ -2,7 +2,6 @@ import React from 'react';
 import SearchIcon from '@mui/icons-material/Search';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
-import { Select } from 'antd';
 import CurrencyBitcoinIcon from '@mui/icons-material/CurrencyBitcoin';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import { Link } from 'react-router-dom';

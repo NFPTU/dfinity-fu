@@ -21,7 +21,19 @@ Verify the following before running this demo:
 *  You have stopped any Internet Computer or other network process that would
    create a port conflict on 8000.
 
-## Demo
+## Run for FE
+
+1. Build your front-end.
+
+   ```text
+   npm install
+   ```
+   
+ ```text
+   npm start
+   ```
+
+## Run for FE, Motoko
 
 1. Start a local internet computer.
 
@@ -36,7 +48,6 @@ Verify the following before running this demo:
    ```text
    dfx canister create --all
    ```
-dfx canister  install superheroes --argument="(\"Test logo\", \"Test NFT1\", \"NFT1\", \"This is a NFT demo test\", principal \"$(dfx identity get-principal)\")"
 
 
 dfx canister --network ic  install superheroes --argument="(principal \"$(dfx identity get-principal)\")"
@@ -58,7 +69,16 @@ dfx canister --network ic  install superheroes --argument="(principal \"$(dfx id
    dfx canister install --all
    ```
 dfx canister install --all --mode upgrade
-dfx canister  install superheroes --argument="(\"Test logo\", \"Test NFT1\", \"NFT1\", \"This is a NFT demo test\", principal \"$(dfx identity get-principal)\")" --mode upgrade
+dfx canister  install superheroes --argument="( principal \"$(dfx identity get-principal)\")" --mode upgrade
+dfx canister  install superheroes --argument="(principal \"$(dfx identity get-principal)\")"
+
+
+dfx canister --network ic  install superheroes --argument="(\"Test logo\", \"Test NFT1\", \"NFT1\", \"This is a NFT demo test\", principal \"$(dfx identity get-principal)\")"
+
+ ```text
+   npm start:dev
+   ```
+
 1. Take note of the URL at which the canister is accessible.
 
    ```text

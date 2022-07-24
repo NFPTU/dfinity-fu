@@ -112,6 +112,18 @@ export const IcpLogo = styled.img`
 export const OptionItem = styled.div`
     margin-right: 35px;
     cursor: pointer;
+    .connect-button {
+        padding: 7px 13px;
+        font-size: 14px;
+    }
+`
+
+export const ConnectBtnSt = styled.div`
+    height: 30px;
+    .connect-button {
+        padding: 7px 13px;
+        font-size: 14px;
+    }
 `
 
 

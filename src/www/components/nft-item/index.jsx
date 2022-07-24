@@ -30,7 +30,7 @@ function NftItem({ item }) {
 						<FilterImage>
 							<Mask></Mask>
 							<ViewProductBtn>
-								<Link to={`/nft/${item?.description}`} style={{textDecoration: 'none', color: '#fecc45'}}>
+								<Link to={`/nft/${Number(item?.index)}`} style={{textDecoration: 'none', color: '#fecc45'}}>
 								View NFT
 								</Link>
 							</ViewProductBtn>

@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react'
-import { Favorite,
-         Description,
-         Facebook,
-         AccountBalanceWallet,
-         Ballot,
-         ExpandLess,
-         ExpandMore
+import {
+    Favorite,
+    Description,
+    Facebook,
+    AccountBalanceWallet,
+    Ballot,
+    ExpandLess,
+    ExpandMore
 } from '@mui/icons-material';
-import { 
+import {
     BuyTitle,
     BuyWrapper,
     CollectionName,
@@ -55,11 +56,30 @@ import ItemActivity from './components/item-activity'
 import { useLocation } from 'react-router-dom';
 import { superheroes } from "../../../declarations";
 import { customAxios } from "../../utils/custom-axios";
+import { useCanister, useConnect } from '@connect2ic/react';
+import { Input } from 'antd';
+import { Principal } from '@dfinity/principal';
+import { toast } from 'react-toastify';
 
 function DetailNft() {
-    const [prinpId, setPrinpId] = useState();
+    const {
+        isConnected,
+        disconnect,
+        activeProvider,
+        isIdle,
+        connect,
+        isConnecting,
+        principal
+    } = useConnect();
+    const [superheroes, { loading, error }] = useCanister('superheroes');
     const [listAllNFt, setListAllNFt] = useState([]);
     const [nft, setNft] = useState()
+    const [value, setValue] = useState()
+
+    const handleInputChange = (value) => {
+        console.log(value);
+        setValue(value.target.value)
+    }
 
     const location = useLocation();
 
@@ -68,23 +88,18 @@ function DetailNft() {
     const [isToggleDetails, setIsToggleDetails] = useState(true)
 
     const handleToggle = (type) => {
-        if(type === 'details'){
+        if (type === 'details') {
             setIsToggleDetails(prev => !prev)
         }
     }
 
     useEffect(async () => {
-        const connected = await window.ic.plug.isConnected();
-        getListAll()
-       
-        if (connected) {
-            const principalId = await window?.ic?.plug?.agent?.getPrincipal();
-            setPrinpId(principalId);
-           
+        if (principal && superheroes) {
+            getListAll();
         }
-    }, []);
+    }, [principal, superheroes]);
 
-    const getListAll = async  () => {
+    const getListAll = async () => {
         const res = await superheroes.getAllTokens();
         const promise4all = Promise.all(
             res.map(function (el) {
@@ -92,128 +107,81 @@ function DetailNft() {
             })
         );
         const resu = await promise4all;
-      
-        setListAllNFt(resu);
+		const newlist = res.map((el, index) => {
+			return {...el, ...resu[index]}
+		})
+		console.log(newlist);
+        setListAllNFt(newlist);
     };
 
     const getNft = () => {
-        const nft = listAllNFt.find((item) => item.description === desc)
+        const nft = listAllNFt.find((item) => Number(item.index) == desc)
+        console.log(nft);
         setNft(nft)
     }
 
     useEffect(() => {
-        getNft()     
+        getNft()
     }, [listAllNFt])
 
-    
+    const onSendNFT = async () => {
+        const res = await superheroes.transfer(Principal.fromText(value), BigInt(desc))
+        console.log(res);
+        getListAll();
+        toast('Send NFT success!')
+    }
 
-  return (
-    <Container>
-        <TopWrapper>
-            <TopWrapperLeft>
-                <ImageContainer>
-                    <ImageTop>
-                        <Logo src="https://cryptologos.cc/logos/internet-computer-icp-logo.png" alt=""/>
-                        <HeartWrapper>
-                            <Favorite style={{cursor: 'pointer'}}/>
-                            <div style={{marginLeft: '5px'}}>1</div>
-                        </HeartWrapper>
-                    </ImageTop>
+    return (
+        <Container>
+            <TopWrapper>
+                <TopWrapperLeft>
+                    <ImageContainer>
+                        <ImageTop>
+                            <Logo src="https://cryptologos.cc/logos/internet-computer-icp-logo.png" alt="" />
+                            <HeartWrapper>
+                                <Favorite style={{ cursor: 'pointer' }} />
+                                <div style={{ marginLeft: '5px' }}>1</div>
+                            </HeartWrapper>
+                        </ImageTop>
 
-                    <Image src={nft?.image} alt=""/>
-                </ImageContainer>
+                        <Image src={nft?.image} alt="" />
+                    </ImageContainer>
+                </TopWrapperLeft>
 
-                <DescWrapper>
-                    <DescToggle>
-                        <Description style={{marginRight: '10px'}}/>
-                        Description
-                    </DescToggle>
-                    <DescScroll>
-                    <DescInfo>{nft?.description}</DescInfo>
-                    </DescScroll>
-                </DescWrapper>
+                <TopWrapperRight>
+                    <NftName>{nft?.name}</NftName>
 
-                <DetailsWrapper>
-                    <DetailsToggle onClick={() => handleToggle('details')}>
-                        <DetailsToggleLeft>
-                            <Ballot />
-                            <DetailsToggleLeftTitle>Details</DetailsToggleLeftTitle>
-                        </DetailsToggleLeft>
-                        {
-                            isToggleDetails 
-                            ? <ExpandMore style={{cursor: 'pointer'}} /> 
-                            : <ExpandLess style={{cursor: 'pointer'}} />
-                        }
-                    </DetailsToggle>
-                    <DetailsInfo isToggle={isToggleDetails}>
-                        <DetailsInfoLeft>
-                            <DetailsInfoLeftItem>Contract Address</DetailsInfoLeftItem>
-                            <DetailsInfoLeftItem>Token ID</DetailsInfoLeftItem>
-                            <DetailsInfoLeftItem>Token Standard</DetailsInfoLeftItem>
-                            <DetailsInfoLeftItem>Blockchain</DetailsInfoLeftItem>
-                            <DetailsInfoLeftItem>Creator Fees</DetailsInfoLeftItem>
-                        </DetailsInfoLeft>
+                    <OwnerWrapper>
+                        <OwnedBy>
+                            <OwnedByTitle>Owned by</OwnedByTitle>
+                            <OwnedByTitleName>{nft?.owner?.toString()}</OwnedByTitleName>
+                        </OwnedBy>
 
-                        <DetailsInfoRight>
-                            <DetailsInfoRightItem>0x123...567</DetailsInfoRightItem>
-                            <DetailsInfoRightItem>1478</DetailsInfoRightItem>
-                            <DetailsInfoRightItem>ERC-721</DetailsInfoRightItem>
-                            <DetailsInfoRightItem>ICP</DetailsInfoRightItem>
-                            <DetailsInfoRightItem>0%</DetailsInfoRightItem>
-                        </DetailsInfoRight>
-                    </DetailsInfo>
-                </DetailsWrapper>
-            </TopWrapperLeft>
+                    </OwnerWrapper>
 
-            <TopWrapperRight>
-                <CollectionWrapper>
-                    <CollectionName>Sweet Pool - Public</CollectionName>
-                    <IconWrapper>
-                        <IconItem flag={'right'}><Facebook /></IconItem>
-                        <IconItem><Facebook /></IconItem>
-                        <IconItem flag={'left'}><Facebook /></IconItem>
-                        <IconItem flag={'left'}><Facebook /></IconItem>
-                    </IconWrapper>
-                </CollectionWrapper>
+                    <PriceWrapper>
+                        <PriceDetail>
+                            <Input
+                                value={value}
+                                size="small"
+                                onChange={handleInputChange}
+                                placeholder='Principal'
+                            />
+                        </PriceDetail>
 
-                <NftName>{nft?.name}</NftName>
+                        <ButtonWrapper onClick={onSendNFT}>
+                            <BuyWrapper>
+                                <AccountBalanceWallet />
+                                <BuyTitle >Send NFT</BuyTitle>
+                            </BuyWrapper>
 
-                <OwnerWrapper>
-                    <OwnedBy>
-                        <OwnedByTitle>Owned by</OwnedByTitle>
-                        <OwnedByTitleName>DC45DF</OwnedByTitleName>
-                    </OwnedBy>
+                        </ButtonWrapper>
+                    </PriceWrapper>
 
-                    <FavoriteWrapper>
-                        <Favorite style={{cursor: 'pointer'}}/>
-                        <FavoriteName>1 favorite</FavoriteName>
-                    </FavoriteWrapper>
-                </OwnerWrapper>
-
-                <PriceWrapper>
-                    <PriceDetail>
-                        <LogoPrice src="https://cryptologos.cc/logos/internet-computer-icp-logo.png" alt=""/>
-                        <Price>2,305</Price>
-                    </PriceDetail>
-                    
-                    <ButtonWrapper>
-                    <BuyWrapper>
-                        <AccountBalanceWallet />
-                        <BuyTitle>Buy Now</BuyTitle>
-                    </BuyWrapper>
-
-                    <MakeOfferWrapper>
-                        <AccountBalanceWallet />
-                        <MakeOfferTitle>Make Offer</MakeOfferTitle>
-                    </MakeOfferWrapper>
-                    </ButtonWrapper>
-                </PriceWrapper>
-                
-                <ItemActivity />
-            </TopWrapperRight>
-        </TopWrapper>
-    </Container>
-  )
+                </TopWrapperRight>
+            </TopWrapper>
+        </Container>
+    )
 }
 
 export default DetailNft

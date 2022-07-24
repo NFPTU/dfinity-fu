@@ -26,15 +26,24 @@ import { withContext } from '../../hooks';
 
 const { Dragger } = Upload;
 const { Option } = Select;
+import { useCanister, useConnect } from '@connect2ic/react';
 
 const IPFS_LINK = 'https://dweb.link/ipfs/';
 
 function CreateNft(props) {
-
-	const {prinpId, setPrinpId} = props
+	const {
+		isConnected,
+		disconnect,
+		activeProvider,
+		isIdle,
+		connect,
+		isConnecting,
+		principal
+	} = useConnect();
 	const [fileImg, setFileImg] = useState(true);
 	const [listNFt, setListNFt] = useState([]);
 	const [listAllNFt, setListAllNFt] = useState([]);
+	const [superheroes, { loading, error }] = useCanister('superheroes');
 
 	function onChange(value) {
 		console.log(`selected ${value}`);
@@ -57,18 +66,10 @@ function CreateNft(props) {
 	};
 
 	useEffect(async () => {
-		const connected = await window.ic.plug.isConnected();
-		getListAll();
-		console.log(connected, 'connected');
-		if (connected) {
-			const principalId = await window.ic.plug.agent.getPrincipal();
-			setPrinpId(principalId);
-			console.log(principalId);
+		if(principal && superheroes) {
+			getLIst();
 		}
-	}, []);
-	useEffect(async () => {
-		getLIst();
-	}, [prinpId]);
+	}, [principal, superheroes]);
 
 	const getListAll = async () => {
 		console.log('SUPERHEROES_CANISTER_ID', process.env.SUPERHEROES_CANISTER_ID );
@@ -99,7 +100,7 @@ function CreateNft(props) {
 			{ type: 'text/plain' }
 		);
 		const metadataCID = await client.put([nFile]);
-		const res = await superheroes.mint(prinpId, [
+		const res = await superheroes.mint(Principal.fromText(principal), [
 			{ tokenUri: `${IPFS_LINK}${metadataCID}/${values?.name}.json` },
 		]);
 		toast('Minted NFT success!!!');
@@ -112,7 +113,7 @@ function CreateNft(props) {
 	};
 
 	const getLIst = async () => {
-		const res = await superheroes.getUserTokens(prinpId);
+		const res = await superheroes.getUserTokens(Principal.fromText(principal));
 		const promise4all = Promise.all(
 			res.map(function (el) {
 				return customAxios(el.metadata[0]?.tokenUri);
@@ -122,7 +123,6 @@ function CreateNft(props) {
 		setListNFt(resu);
 	};
 
-	console.log('listAllNFt', listAllNFt)
 
 	return (
 		<Container>

@@ -1,29 +1,117 @@
 import { lazy } from 'react'
 
+//Layouts:
+import MarketLayout from '../components/layout/market-layout'
+import GameLayout from '../components/layout/game-layout'
+
+//Pages
 const HomePage = lazy(() => import("./home"))
 const DetailCollections = lazy(() => import("./detail-collections"))
 const DetailNft = lazy(() => import("./detail-nft"))
-const CreateNft = lazy(() => import("./create-nft"))
 const ListNft = lazy(() => import("./list-nft"))
+const LoginGame = lazy(() => import("./game/login"))
+const Inventory = lazy(() => import("./game/inventory"))
+const Admin = lazy(() => import("./admin"))
+const HomeClaim = lazy(() => import("./game/home"))
+const Popup = lazy(() => import("../components/popup"))
+const Breeding = lazy(() => import("./game/breeding"))
+const Farming = lazy(() => import("./game/farming"))
+const Nest = lazy(() => import("./game/nest"))
+const Kingdom = lazy(() => import("./game/kingdom"))
+const Market = lazy(() => import("./game/market"))
+const Battle = lazy(() => import("./game/battle"))
+const CreateNft = lazy(() => import("./create-nft"))
 
 const routes = [
+    {
+        path: "/queen",
+        exact: true,
+        public: true,
+        component: Breeding,
+        layout: GameLayout
+    },
+    {
+        path: "/test-popup",
+        exact: true,
+        public: true,
+        component: Popup,
+        layout: null
+    },
+    {
+        path: "/inventory",
+        exact: true,
+        public: true,
+        component: Inventory,
+        layout: GameLayout
+    },
+    {
+        path: "/home-claim",
+        exact: true,
+        public: true,
+        component: HomeClaim,
+        layout: GameLayout
+    },
+    {
+        path: "/land",
+        exact: true,
+        public: true,
+        component: Farming,
+        layout: GameLayout
+    },
+    {
+        path: "/nest",
+        exact: true,
+        public: true,
+        component: Nest,
+        layout: GameLayout
+    },
     {
         path: "/",
         exact: true,
         public: true,
-        component: HomePage
+        component: HomePage,
+        layout: MarketLayout
+    },
+    {
+        path: "/market",
+        exact: true,
+        public: true,
+        component: Market,
+        layout: GameLayout
+    },
+    {
+        path: "/battle",
+        exact: true,
+        public: true,
+        component: Battle,
+        layout: GameLayout
+    },
+    {
+        path: "/login",
+        exact: true,
+        public: true,
+        component: LoginGame,
+        layout: null
     },
     {
         path: "/collection/detail",
         exact: true,
         public: true,
-        component: DetailCollections
+        component: DetailCollections,
+        layout: MarketLayout
     },
     {
         path: "/nft/:id",
         exact: true,
         public: true,
-        component: DetailNft
+        component: DetailNft,
+        layout: MarketLayout
+    },
+    {
+        path: "nft/list",
+        exact: true,
+        public: true,
+        component: ListNft
     },
     {
         path: "nft/create",
@@ -32,10 +120,11 @@ const routes = [
         component: CreateNft
     },
     {
-        path: "nft/list",
+        path: "/admin",
         exact: true,
         public: true,
-        component: ListNft
+        component: Admin,
+        layout: MarketLayout
     }
 ]
 

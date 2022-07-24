@@ -92,13 +92,14 @@ module.exports = env => {
                 template: path.join(__dirname, asset_entry),
                 cache: false,
             }),
-            // new CopyPlugin({
-            //     patterns: [
-            //         {
-            //             to: path.join(__dirname, "dist", frontendDirectory),
-            //         },
-            //     ],
-            // }),
+            new CopyPlugin({
+                patterns: [
+                    {
+                        from: path.join(__dirname, "src", frontendDirectory, "assets"),
+                        to: path.join(__dirname, "dist", frontendDirectory),
+                    },
+                ],
+            }),
             new webpack.EnvironmentPlugin(env.devM == "mo" ? {
                 NODE_ENV: "development",
                 ...canisterEnvVariables
