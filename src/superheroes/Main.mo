@@ -120,10 +120,12 @@ shared(msg) actor class NFTSale(
 
     // private stable var saleInfo: ?SaleInfo = ?{
     //     var fundRaised = 0;
+    //     devFee = _devFee;
+    //     devAddr = _devAddr;
+    //     paymentToken = _paymentToken;
     //     var fundClaimed = false;
     //     var feeClaimed = false;
-    // };
-
+    // }
     private stable var owner_: Principal = _owner;
     private stable var totalSupply_: Nat = 0;
     private stable var blackhole: Principal = Principal.fromText("aaaaa-aa");
@@ -367,14 +369,11 @@ shared(msg) actor class NFTSale(
     //     switch(saleInfo) {
     //         case(?i) {
     //             ?{
-    //                 amount = i.amount;
     //                 amountLeft = i.amountLeft;
     //                 fundRaised = i.fundRaised;
     //                 devFee = i.devFee;
     //                 devAddr = i.devAddr;
-    //                 price = i.price;
     //                 paymentToken = i.paymentToken;
-    //                 whitelist = i.whitelist;
     //                 fundClaimed = i.fundClaimed;
     //                 feeClaimed = i.feeClaimed;
     //             }
@@ -698,7 +697,7 @@ shared(msg) actor class NFTSale(
         return #Ok(txs.size() - num);
     };
 
-    // public query function 
+    // // public query function 
     // public query func logo(): async Text {
     //     return logo_;
     // };
@@ -873,6 +872,7 @@ shared(msg) actor class NFTSale(
 
         users := HashMap.fromIter<Principal, UserInfo>(usersEntries.vals(), 1, Principal.equal, Principal.hash);
         tokens := HashMap.fromIter<Nat, TokenInfo>(tokensEntries.vals(), 1, Nat.equal, Hash.hash);
+        // orders := HashMap.fromIter<Nat, OrderInfo>(ordersEntries.vals(), 1 , Nat.equal, Hash.hash);
         usersEntries := [];
         tokensEntries := [];
     };
