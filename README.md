@@ -39,7 +39,7 @@ Verify the following before running this demo:
 dfx canister  install superheroes --argument="(\"Test logo\", \"Test NFT1\", \"NFT1\", \"This is a NFT demo test\", principal \"$(dfx identity get-principal)\")"
 
 
-dfx canister --network ic  install superheroes --argument="(\"Test logo\", \"Test NFT1\", \"NFT1\", \"This is a NFT demo test\", principal \"$(dfx identity get-principal)\")"
+dfx canister --network ic  install superheroes --argument="(principal \"$(dfx identity get-principal)\")"
 1. Build your front-end.
 
    ```text
