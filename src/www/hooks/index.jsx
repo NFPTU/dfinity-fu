@@ -44,7 +44,7 @@ export function Provider({ children }) {
 	useEffect(() => {
 		console.log(prinpId);
 		if(prinpId && principal) {
-			getUserInfo();
+			// getUserInfo();
 		} 
 	}, [prinpId, principal]);
 

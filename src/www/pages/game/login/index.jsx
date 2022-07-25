@@ -48,6 +48,7 @@ function LoginGame(props) {
 			console.log(principal);
 			if (principal) {
 				setPrinpId(principal);
+				navigate('/')
 			}
 		} catch (e) {
 			console.log(e);

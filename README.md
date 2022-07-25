@@ -60,7 +60,7 @@ dfx canister --network ic  install superheroes --argument="(principal \"$(dfx id
 1. Build your canister.
 
    ```text
-   dfx build
+   dfx build superheroes
    ```
 
 1. Deploy your canister.

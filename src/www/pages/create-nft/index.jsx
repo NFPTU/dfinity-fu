@@ -86,6 +86,7 @@ function CreateNft(props) {
 	};
 
 	const onFinish = async (values) => {
+		console.log(values);
 		toast('Minting NFT!!!');
 		const cid = await client.put([fileImg]);
 		const nFile = new File(
@@ -168,58 +169,27 @@ function CreateNft(props) {
 								</Form.Item>
 							</FormItem>
 
-							<FormItem
+							<Form.Item
 								name='name'
 								rules={[{ required: true, message: 'Please input NFT name!' }]}>
-								<FormItemName>
-									Name
-									<RedIcon>*</RedIcon>
-								</FormItemName>
-								<Input size='large' placeholder='Item name' />
-							</FormItem>
+						
+								<Input size='large' placeholder='NFT name' />
+							</Form.Item>
 
-							<FormItem name='description'>
-								<FormItemName>Description</FormItemName>
-								<FormItemDesc>
-									The description will be included on the item's detail page
-									underneath its image. Markdown syntax is supported
-								</FormItemDesc>
+							<Form.Item name='description'>
 								<Input
 									size='large'
 									placeholder='Provide a detailed description of your item'
 								/>
-							</FormItem>
+							</Form.Item>
 
-							<FormItem name='collection'>
-								<FormItemName>Collection</FormItemName>
-								<FormItemDesc>
-									This is the collection where your item will appear.
-								</FormItemDesc>
-								<Select
-									showSearch
-									placeholder='Select collection'
-                                    style={{ width: 1000 }}
-									optionFilterProp='children'
-									onChange={onChange}
-									onSearch={onSearch}
-									filterOption={(input, option) =>
-										option.children
-											.toLowerCase()
-											.indexOf(input.toLowerCase()) >= 0
-									}>
-									<Option value='jack'>Collection 1</Option>
-									<Option value='lucy'>Collection 2</Option>
-									<Option value='tom'>Collection 3</Option>
-								</Select>
-							</FormItem>
-
-							<FormItem name='supply'>
+							<Form.Item name='supply'>
 								<FormItemName>Supply</FormItemName>
 								<FormItemDesc>
 									The number of items that can be minted. No gas cost to you!
 								</FormItemDesc>
 								<Input size='large' placeholder='1' />
-							</FormItem>
+							</Form.Item>
 
 							<FormItem>
 								<Form.Item wrapperCol={{ offset: 8, span: 16 }}>
