@@ -143,14 +143,6 @@ function CreateNft(props) {
 						autoComplete='off'>
 						<FormWrapper>
 							<FormItem>
-								<FormItemName>
-									Image, Video, Audio, or 3D Model
-									<RedIcon>*</RedIcon>
-								</FormItemName>
-								<FormItemDesc>
-									File types supported: JPG, PNG, GIF, SVG, MP4, WEBM, MP3, WAV,
-									OGG, GLB, GLTF. Max size: 100 MB
-								</FormItemDesc>
 								<Form.Item
 									name='image'
 									rules={[{ required: true, message: 'Please upload image!' }]}>
@@ -181,14 +173,6 @@ function CreateNft(props) {
 									size='large'
 									placeholder='Provide a detailed description of your item'
 								/>
-							</Form.Item>
-
-							<Form.Item name='supply'>
-								<FormItemName>Supply</FormItemName>
-								<FormItemDesc>
-									The number of items that can be minted. No gas cost to you!
-								</FormItemDesc>
-								<Input size='large' placeholder='1' />
 							</Form.Item>
 
 							<FormItem>
