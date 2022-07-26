@@ -10,9 +10,6 @@ import ListNft from '../list-nft'
 function Home() {
   return (
     <>
-      <Banner />
-      <Statistic />
-      <TopCollections />
       <ListNft />
     </>
   )

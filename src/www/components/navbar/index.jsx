@@ -81,18 +81,11 @@ function Navbar(props) {
 				<Name>NFPTU</Name>
 			</LogoWrapper>
 			<Right>
-				<SearchWrapper>
-					<Search style={{ color: '#gray' }} />
-					<SearchInput placeholder='Search items, collections, and accounts' />
-				</SearchWrapper>
 
 				<OptionWrapper>
 					<Menu>
 						<Link to='/' style={{ color: 'black' }} onClick={scrollToTop}>
 							<MenuItem>Home</MenuItem>
-						</Link>
-						<Link to='/nft/detail' style={{ color: 'black' }}>
-							<MenuItem>Stats</MenuItem>
 						</Link>
 						<Link to='nft/create' style={{ color: 'black' }}>
 							<MenuItem>Create</MenuItem>
@@ -100,9 +93,6 @@ function Navbar(props) {
 					</Menu>
 
 					<Option>
-						<OptionItem>
-							<AccountCircleOutlined fontSize='large' />
-						</OptionItem>
 						{!prinpId ? (
 							<>
 								<OptionItem>
@@ -120,16 +110,6 @@ function Navbar(props) {
 										{walletAddress.slice(0, 3)} ...{' '}
 										{walletAddress.slice(60, 63)}
 									</WalletAddress>
-								</OptionItem>
-
-								<OptionItem>
-									<Balance>
-										<BalanceNumber>0</BalanceNumber>
-										<IcpLogo
-											src='https://cryptologos.cc/logos/internet-computer-icp-logo.png'
-											alt=''
-										/>
-									</Balance>
 								</OptionItem>
 							</>
 						)}

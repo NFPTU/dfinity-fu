@@ -8,6 +8,7 @@ import {
 } from './list-nft.elements';
 import { customAxios } from '../../utils/custom-axios';
 import { useCanister, useConnect } from '@connect2ic/react';
+import { Principal } from '@dfinity/principal';
 
 function ListNft() {
 	const {
@@ -19,8 +20,6 @@ function ListNft() {
 		isConnecting,
 		principal
 	} = useConnect();
-	const [fileImg, setFileImg] = useState(true);
-	const [prinpId, setPrinpId] = useState();
 	const [listNFt, setListNFt] = useState([]);
 	const [listAllNFt, setListAllNFt] = useState([]);
 
@@ -28,6 +27,7 @@ function ListNft() {
 	useEffect(async () => {
 		if(superheroes) {
 			getListAll();
+			getLIst()
 		}
 	}, [superheroes]);
 
@@ -42,19 +42,21 @@ function ListNft() {
 		const newlist = res.map((el, index) => {
 			return {...el, ...resu[index]}
 		})
-		console.log(newlist);
 		setListAllNFt(newlist);
 	};
 
 	const getLIst = async () => {
-		const res = await superheroes.getUserTokens(prinpId);
+		const res = await superheroes.getUserTokens(Principal.fromText(principal));
 		const promise4all = Promise.all(
 			res.map(function (el) {
 				return customAxios(el.metadata[0]?.tokenUri);
 			})
 		);
 		const resu = await promise4all;
-		setListNFt(resu);
+		const newlist = res.map((el, index) => {
+			return {...el, ...resu[index]}
+		})
+		setListNFt(newlist);
 	};
 
 	return (
@@ -65,6 +67,16 @@ function ListNft() {
 
 			<ListNftWrapper>
 				{listAllNFt.map((item, index) => (
+					<NftItem item={item} key={index} />
+				))}
+			</ListNftWrapper>
+
+			<TopWrapper>
+				<Title>My NFT</Title>
+			</TopWrapper>
+
+			<ListNftWrapper>
+				{listNFt.map((item, index) => (
 					<NftItem item={item} key={index} />
 				))}
 			</ListNftWrapper>
