@@ -1,278 +1,96 @@
-type WorkerFarmRequest = 
- record {
-   countIds: nat;
-   food: vec TokenIndex;
-   gold: vec TokenIndex;
-   leaf: vec TokenIndex;
-   soil: vec TokenIndex;
- };
-type UserState = 
- record {
-   currentAnt: nat;
-   kingdomId: TokenIndex;
-   limitAnt: nat;
-   resource: Resource;
- };
 type UserInfoExt = 
  record {
-   id: text;
-   name: text;
-   tokens: vec TokenIndex;
-   userState: UserState;
+   allowedBy: vec principal;
+   allowedTokens: vec nat;
+   operators: vec principal;
+   tokens: vec nat;
  };
-type User = 
- variant {
-   address: AccountIdentifier;
-   "principal": principal;
- };
-type TransferResponse = 
- variant {
-   err:
-    variant {
-      CannotNotify: AccountIdentifier;
-      InsufficientBalance;
-      InvalidToken: TokenIdentifier;
-      Other: text;
-      Rejected;
-      Unauthorized: AccountIdentifier;
-    };
-   ok: Balance;
- };
-type TransferRequest = 
+type TxRecord = 
  record {
-   amount: Balance;
-   from: User;
-   memo: Memo;
-   notify: bool;
-   subaccount: opt SubAccount;
-   to: User;
-   token: TokenIdentifier;
+   caller: principal;
+   from: Record;
+   index: nat;
+   op: Operation;
+   timestamp: Time;
+   to: Record;
+   tokenIndex: opt nat;
  };
-type TokenIndex__1 = nat32;
-type TokenIndex = nat32;
-type TokenIdentifier__1 = text;
-type TokenIdentifier = text;
+type TxReceipt = 
+ variant {
+   Err: Errors;
+   Ok: nat;
+ };
+type TokenMetadata__1 = record {tokenUri: text;};
+type TokenMetadata = record {tokenUri: text;};
+type TokenInfoExt = 
+ record {
+   index: nat;
+   metadata: opt TokenMetadata__1;
+   operator: opt principal;
+   owner: principal;
+   timestamp: Time;
+ };
 type Time = int;
-type SubAccount = vec nat8;
-type Result_9 = 
+type Record = 
  variant {
-   err: text;
-   ok: vec MetadataExt;
+   metadata: opt TokenMetadata__1;
+   user: principal;
  };
-type Result_8 = 
+type Operation = 
  variant {
-   err: CommonError;
-   ok: vec MetadataExt;
+   approve;
+   approveAll;
+   burn;
+   createOrder;
+   mint: opt TokenMetadata__1;
+   revokeAll;
+   setMetadata;
+   transfer;
+   transferFrom;
  };
-type Result_7 = 
- variant {
-   err: CommonError;
-   ok: MetadataExt;
- };
-type Result_6 = 
- variant {
-   err: CommonError;
-   ok: vec record {
-             AccountIdentifier__1;
-             Balance__1;
-           };
- };
-type Result_5 = 
- variant {
-   err: text;
-   ok: vec LevelData;
- };
-type Result_4 = 
- variant {
-   err: text;
-   ok: text;
- };
-type Result_3 = 
- variant {
-   err: CommonError;
-   ok: Balance__1;
- };
-type Result_2 = 
- variant {
-   err: CommonError;
-   ok: nat;
- };
-type Result_1 = 
- variant {
-   err: text;
-   ok: MetadataExt;
- };
-type Result = 
- variant {
-   err: text;
-   ok: bool;
- };
-type Resource = 
- record {
-   food: float64;
-   gold: float64;
-   leaf: float64;
-   soil: float64;
- };
-type MetadataExt = 
- record {
-   attributes: vec AttributeMeta;
-   description: text;
-   detail: DetailNFT;
-   image: text;
-   name: text;
-   tokenId: opt TokenIndex;
- };
-type Memo = blob;
-type LevelData = 
- record {
-   info: vec InfoLevel;
-   name: text;
- };
-type InfoLevel = 
- record {
-   info: vec CostInfo;
-   rarity: text;
- };
-type Extension = text;
-type DetailNFT = 
- variant {
-   army: record {
-           antState: nat;
-           kingdomId: TokenIndex;
-           queenId: TokenIndex;
-         };
-   kingdom: record {landId: vec TokenIndex;};
-   land:
-    record {
-      claimableResource: vec ClaimResouceInfo;
-      inKingdom: TokenIndex;
-      info: record {farmingTime: Time;};
-      nestStaked: opt TokenIndex;
-      resource: Resource;
-    };
-   nest:
-    record {
-      inLand: opt TokenIndex;
-      level: nat;
-      limit: nat;
-      queenIn: opt TokenIndex;
-    };
-   queen:
-    record {
-      breedingWorkerId: TokenIndex;
-      inNest: opt TokenIndex;
-      info: record {
-              breedWorkerTime: Time;
-              resourcePerWorker: Resource;
-            };
-      level: nat;
-    };
-   worker:
-    record {
-      antState: nat;
-      breedTimestamp: Time;
-      farmTimestamp: Time;
-      inNest: opt TokenIndex;
-      info: record {
-              farmPerTime: Resource;
-              farmingTime: Time;
-            };
-      queenId: opt TokenIndex;
-    };
- };
-type CostInfo = 
- record {
-   costResource: Resource;
-   level: nat;
-   nextLevel:
-    variant {
-      nest: record {limit: nat;};
-      queen: record {
-               breedWorkerTime: Time;
-               resourcePerWorker: Resource;
-             };
-      worker: record {farmPerTime: Resource;};
-    };
- };
-type CommonError__1 = 
- variant {
-   InvalidToken: TokenIdentifier;
-   Other: text;
- };
-type CommonError = 
- variant {
-   InvalidToken: TokenIdentifier;
-   Other: text;
- };
-type ClaimResouceInfo = 
- record {
-   claimTimeStamp: Time;
-   id: TokenIndex;
-   resource: Resource;
-   workersFarmIds: vec TokenIndex;
- };
-type Balance__1 = nat;
-type BalanceResponse = 
- variant {
-   err: CommonError__1;
-   ok: Balance;
- };
-type BalanceRequest = 
- record {
-   token: TokenIdentifier;
-   user: User;
- };
-type Balance = nat;
-type AttributeMeta = 
- record {
-   max: opt text;
-   min: opt text;
-   trait_type: text;
-   value: text;
- };
-type AntKingdoms = 
+type NFTSale = 
  service {
-   acceptCycles: () -> ();
-   allRegistry: () ->
-    (vec
-      record {
-        TokenIndex__1;
-        vec record {
-              AccountIdentifier__1;
-              Balance__1;
-            };
-      }) query;
-   availableCycles: () -> (nat) query;
-   balance: (BalanceRequest) -> (BalanceResponse) query;
-   breedAntArmy: (TokenIndex__1) -> (Result);
-   breedAntWorkder: (TokenIndex__1) -> (Result);
-   changeAdmin: (principal) -> ();
-   claimResourceInLand: (TokenIndex__1, TokenIndex__1) -> (Result);
-   claimWorkerEgg: (TokenIndex__1) -> (Result);
-   claiming: () -> (Result);
-   extensions: () -> (vec Extension) query;
-   getDataByLandId: (TokenIndex__1) -> (Result_9);
-   getTokensMetadata: () -> (vec MetadataExt);
-   getUserAvailableWorker: (AccountIdentifier__1) -> (Result_8) query;
-   getUserInfo: (AccountIdentifier__1) -> (UserInfoExt) query;
-   getUserTokens: (AccountIdentifier__1) -> (Result_8) query;
-   metadata: (TokenIdentifier__1) -> (Result_7) query;
-   numberOfTokenHolders: (TokenIdentifier__1) -> (Result_2) query;
-   numberOfTokens: () -> (nat) query;
-   registry: (TokenIdentifier__1) -> (Result_6) query;
-   setLevelMetadata: (vec LevelData) -> (Result_5);
-   setTokensMetadata: (vec MetadataExt) -> (Result);
-   stakeLandToKingdom: (TokenIndex__1, TokenIndex__1) -> (Result);
-   stakeNestInLand: (TokenIndex__1, TokenIndex__1) -> (Result_4);
-   stakeQueenInNest: (TokenIndex__1, TokenIndex__1) -> (Result_4);
-   supply: (TokenIdentifier__1) -> (Result_3) query;
-   transfer: (TransferRequest) -> (TransferResponse);
-   updateUser: (text) -> (Result_2);
-   upgradeLevelNest: (TokenIndex__1) -> (Result_1);
-   upgradeLevelQueen: (TokenIndex__1) -> (Result_1);
-   workerFarmInLand: (WorkerFarmRequest, TokenIndex__1) -> (Result);
+   approve: (nat, principal) -> (TxReceipt);
+   balanceOf: (principal) -> (nat) query;
+   batchMint: (principal, vec opt TokenMetadata) -> (MintResult);
+   batchSetTokenMetadata: (vec record {
+                                 nat;
+                                 TokenMetadata;
+                               }) -> (TxReceipt);
+   batchTransferFrom: (principal, principal, vec nat) -> (TxReceipt);
+   burn: (nat) -> (TxReceipt);
+   getAllTokens: () -> (vec TokenInfoExt) query;
+   getOperator: (nat) -> (principal) query;
+   getTokenInfo: (nat) -> (TokenInfoExt) query;
+   getTransaction: (nat) -> (TxRecord) query;
+   getTransactions: (nat, nat) -> (vec TxRecord) query;
+   getUserInfo: (principal) -> (UserInfoExt) query;
+   getUserTokens: (principal) -> (vec TokenInfoExt) query;
+   getUserTransactionAmount: (principal) -> (nat) query;
+   getUserTransactions: (principal, nat, nat) -> (vec TxRecord) query;
+   historySize: () -> (nat) query;
+   isApprovedForAll: (principal, principal) -> (bool) query;
+   mint: (principal, opt TokenMetadata) -> (MintResult);
+   ownerOf: (nat) -> (principal) query;
+   setApprovalForAll: (principal, bool) -> (TxReceipt);
+   setOwner: (principal) -> (principal);
+   setTokenMetadata: (nat, TokenMetadata) -> (TxReceipt);
+   totalSupply: () -> (nat) query;
+   transfer: (principal, nat) -> (TxReceipt);
+   transferFrom: (principal, principal, nat) -> (TxReceipt);
  };
-type AccountIdentifier__1 = text;
-type AccountIdentifier = text;
-service : (principal) -> AntKingdoms
+type MintResult = 
+ variant {
+   Err: Errors;
+   Ok: record {
+         nat;
+         nat;
+       };
+ };
+type Errors = 
+ variant {
+   InvalidOperator;
+   TokenNotExist;
+   Unauthorized;
+ };
+service : (principal) -> NFTSale
