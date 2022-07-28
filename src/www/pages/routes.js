@@ -3,6 +3,7 @@ import { lazy } from 'react'
 //Layouts:
 import MarketLayout from '../components/layout/market-layout'
 import GameLayout from '../components/layout/game-layout'
+import GameLayoutHeader from '../components/layout/game-layout-header'
 
 //Pages
 const HomePage = lazy(() => import("./home"))
@@ -18,7 +19,7 @@ const Breeding = lazy(() => import("./game/breeding"))
 const Farming = lazy(() => import("./game/farming"))
 const Nest = lazy(() => import("./game/nest"))
 const Kingdom = lazy(() => import("./game/kingdom"))
-const Market = lazy(() => import("./game/market"))
+const Market = lazy(() => import("./market"))
 const Battle = lazy(() => import("./game/battle"))
 
 const routes = [
@@ -76,7 +77,7 @@ const routes = [
         exact: true,
         public: true,
         component: Market,
-        layout: GameLayout
+        layout: GameLayoutHeader
     },
     {
         path: "/battle",
