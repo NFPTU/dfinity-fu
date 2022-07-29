@@ -9,6 +9,7 @@ import NewCard from '../../components/test/new-card';
 import { useCanister, useConnect } from '@connect2ic/react';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import { Link } from 'react-router-dom';
 
 function Market() {
 	const [tab, setTab] = useState('lands');
@@ -134,9 +135,11 @@ function Market() {
 
 						<div className='body__right-top-card'>
 							{listCard.map((item, index) => (
-								<div className='body__right-top-cardItem'>
-									<NewCard width='244' height='380' />
-								</div>
+								<Link to={`/detail/ds86bdd7sns`} style={{color: 'inherit', textDecoration: 'none'}}>
+									<div className='body__right-top-cardItem'>
+										<NewCard width='244' height='380' />
+									</div>
+								</Link>
 							))}
 						</div>
 

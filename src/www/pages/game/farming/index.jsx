@@ -69,6 +69,8 @@ function Farming(props) {
 	const { principal } = useConnect();
 	const [open, setOpen] = useState(false);
 
+	const [check, setCheck] = useState(false);
+
 	const onGetData = async () => {
 		const resp = await superheroes?.getUserTokens(principal?.toString());
 		const listLand = resp?.ok.filter((el) => el.attributes[0].value === 'Land');

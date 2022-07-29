@@ -29,8 +29,8 @@ import PopupList from '../../../components/popup-list';
 import { withContext } from '../../../hooks';
 import CardNft from '../../../components/card-nft';
 
-function Kingdom(props ) {
-	const {setOpenProcess} = props
+function Kingdom(props) {
+	const { setOpenProcess } = props;
 	const [listNest, setListNest] = useState([]);
 	const [listLand, setListLand] = useState([]);
 	const [cardSelected, setCardSelected] = useState();
@@ -43,7 +43,9 @@ function Kingdom(props ) {
 	const onGetData = async () => {
 		const resp = await superheroes?.getUserTokens(principal?.toString());
 		console.log(resp);
-		const listNest = resp?.ok.filter((el) => el.attributes[0].value === 'Kingdom');
+		const listNest = resp?.ok.filter(
+			(el) => el.attributes[0].value === 'Kingdom'
+		);
 		setListLand(resp?.ok.filter((el) => el.attributes[0].value === 'Land'));
 		setCardSelected(listNest[0]);
 		setListNest(listNest);
@@ -59,20 +61,23 @@ function Kingdom(props ) {
 		console.log('hi');
 		onChangeCard(data);
 
-		setCardSelectedId(data?.tokenId[0])
+		setCardSelectedId(data?.tokenId[0]);
 	};
 
 	const rendterBtn = (land) => {
-		return <Btn onClick={() => onStakeLand(land)}>Stake</Btn>
-	}
+		return <Btn onClick={() => onStakeLand(land)}>Stake</Btn>;
+	};
 
-	const onStakeLand =async (land) => {
-		setOpenProcess(true)
-		await superheroes.stakeLandToKingdom(land.tokenId[0],cardSelected.tokenId[0])
-		setOpenProcess(false)
-		setOpen(false)
-		onGetData()
-	}
+	const onStakeLand = async (land) => {
+		setOpenProcess(true);
+		await superheroes.stakeLandToKingdom(
+			land.tokenId[0],
+			cardSelected.tokenId[0]
+		);
+		setOpenProcess(false);
+		setOpen(false);
+		onGetData();
+	};
 
 	useEffect(() => {
 		if (principal && superheroes) {
@@ -87,9 +92,7 @@ function Kingdom(props ) {
 					<Left>
 						<LeftWrapper>
 							<CardWrapper>
-								{cardSelected && (
-									<CardNft data={cardSelected} />
-								)}
+								{cardSelected && <CardNft data={cardSelected} />}
 							</CardWrapper>
 						</LeftWrapper>
 					</Left>
@@ -119,16 +122,9 @@ function Kingdom(props ) {
 							<ListLandTitle>List All Land</ListLandTitle>
 							<ListLandWrapper>
 								{listLand.map((el, index) => {
-									const tokenId = el?.tokenId[0]
-									if(!el?.detail?.land?.inKingdom) return 
-									return (
-										<CardNft
-											key={index}
-											data={el}
-											alt=''
-											size="small"
-										/>
-									);
+									const tokenId = el?.tokenId[0];
+									if (!el?.detail?.land?.inKingdom) return;
+									return <CardNft key={index} data={el} alt='' size='small' />;
 								})}
 							</ListLandWrapper>
 						</ListLand>
@@ -139,18 +135,18 @@ function Kingdom(props ) {
 					</Right>
 				</Wrapper>
 				<PopupList open={open} setOpen={setOpen}>
-				{listLand.map((el, index) => {
-									const tokenId = el?.tokenId[0]
-									if(el?.detail?.land?.inKingdom) return 
-									return (
-										<CardNft
-											key={index}
-											data={el}
-											footer={() => rendterBtn(el)}
-											alt=''
-										/>
-									);
-								})}
+					{listLand.map((el, index) => {
+						const tokenId = el?.tokenId[0];
+						if (el?.detail?.land?.inKingdom) return;
+						return (
+							<CardNft
+								key={index}
+								data={el}
+								footer={() => rendterBtn(el)}
+								alt=''
+							/>
+						);
+					})}
 				</PopupList>
 			</Container>
 		</>

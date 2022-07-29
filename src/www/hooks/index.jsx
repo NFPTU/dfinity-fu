@@ -5,12 +5,12 @@ import { superheroes } from '../../declarations';
 import { customAxios } from '../utils/custom-axios';
 import { useConnect } from '@connect2ic/react';
 import ProcessModal from '../components/process-modal';
-import { useNavigate  } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 export function Provider({ children }) {
 	const [prinpId, setprinpId] = useState(localStorage.getItem('prinpId'));
 	const { principal, isConnected } = useConnect();
-	const [resource, setResource] = useState({})
+	const [resource, setResource] = useState({});
 	const [openProcess, setopenProcess] = useState(false);
 	const navigate = useNavigate();
 
@@ -23,29 +23,28 @@ export function Provider({ children }) {
 		console.log('logout');
 		setprinpId();
 		localStorage.clear();
-		navigate('/login')
+		navigate('/login');
 	};
 
-	
 	//Get user info (resource)
 	const getUserInfo = async () => {
 		const res = await superheroes.getUserInfo(principal?.toString());
 		console.log('user', res);
 		setResource(res?.userState?.resource);
 	};
-	
+
 	const setOpenProcess = async (value) => {
-		if(!value) {
-			await getUserInfo()
+		if (!value) {
+			await getUserInfo();
 		}
-		setopenProcess(value)
-	}
+		setopenProcess(value);
+	};
 
 	useEffect(() => {
 		console.log(prinpId);
-		if(prinpId && principal) {
+		if (prinpId && principal) {
 			getUserInfo();
-		} 
+		}
 	}, [prinpId, principal]);
 
 	const value = {
@@ -55,12 +54,14 @@ export function Provider({ children }) {
 		getUserInfo,
 		resource,
 		openProcess,
-		setOpenProcess
+		setOpenProcess,
 	};
-	return <Context.Provider value={value}>
-		{children}
-		<ProcessModal open={openProcess} setOpen={setOpenProcess} />
-	</Context.Provider>;
+	return (
+		<Context.Provider value={value}>
+			{children}
+			<ProcessModal open={openProcess} setOpen={setOpenProcess} />
+		</Context.Provider>
+	);
 }
 
 export function useUIContext() {

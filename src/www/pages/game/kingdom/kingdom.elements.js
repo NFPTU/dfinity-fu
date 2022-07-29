@@ -6,7 +6,7 @@ export const Container = styled.div`
     background-repeat: no-repeat;
     background-position: 50%;
     position: relative;
-    margin: -30px auto;
+    margin: auto;
     width: 67rem;
     transition: all .2s ease-in-out;
     -webkit-user-select: none;

@@ -21,6 +21,7 @@ const Nest = lazy(() => import("./game/nest"))
 const Kingdom = lazy(() => import("./game/kingdom"))
 const Market = lazy(() => import("./market"))
 const Battle = lazy(() => import("./game/battle"))
+const DetailMarket = lazy(() => import("./detail-market"))
 
 const routes = [
     {
@@ -77,6 +78,13 @@ const routes = [
         exact: true,
         public: true,
         component: Market,
+        layout: GameLayoutHeader
+    },
+    {
+        path: "/detail/:id",
+        exact: true,
+        public: true,
+        component: DetailMarket,
         layout: GameLayoutHeader
     },
     {
