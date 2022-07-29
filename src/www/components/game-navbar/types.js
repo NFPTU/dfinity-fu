@@ -7,4 +7,4 @@ export const FONTSIZE_L = '40px';
 export const PRIMARY = 'greenyellow';
 
 //Height:
-export const HEIGHT_NAVBAR = '70px';
+export const HEIGHT_NAVBAR = '75px';

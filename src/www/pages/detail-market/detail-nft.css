@@ -1,0 +1,253 @@
+.container {
+  background-color: rgba(0, 0, 0, 0.85);
+  width: 100%;
+  min-height: 100%;
+} 
+
+.wrapper {
+  margin: 0 135px;
+  padding: 80px 0;
+  display: flex;
+}
+
+.wrapper__left {
+  width: 513px;
+  margin-right: 40px;
+}
+
+.wrapper__left-img {
+  width: 100%;
+}
+
+.wrapper__left-img img {
+  width: 80%;
+}
+
+.wrapper__right {
+  width: 648px;
+  display: flex;
+  flex-direction: column;
+}
+
+.wrapper__right-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: 40px;
+  width: 100%;
+}
+
+.wrapper__right-header-left {
+  display: flex;
+  flex-direction: column;
+}
+
+.item-name {
+  color: #e1e2e9;
+  font-size: 32px;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.item-id {
+  color: #e1e2e9;
+  font-size: 14px;
+}
+
+.wrapper__right-level {
+  color: #e1e2e9;
+  font-size: 18px;
+  margin-bottom: 40px;
+}
+
+.wrapper__right-listBtn {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 50px;
+}
+
+.wrapper__right-leftBtn {
+  color: #ffffff;
+  font-size: 14px;
+  background: linear-gradient(180deg, #be9c80, #68492a);
+  width: 290px;
+  height: 45px;
+  border-radius: 6px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  cursor: pointer;
+  opacity: 0.8;
+  transition: all 0.5s ease;
+  margin-right: 30px;
+}
+
+.wrapper__right-leftBtn:hover {
+  opacity: 1;
+}
+
+.wrapper__right-rightBtn {
+  color: #ffffff;
+  font-size: 14px;
+  background: linear-gradient(180deg, #f9c744, #df8c00);
+  width: 290px;
+  height: 45px;
+  border-radius: 6px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  opacity: 0.8;
+  transition: all 0.5s ease;
+}
+
+.wrapper__right-rightBtn:hover {
+  opacity: 1;
+}
+
+.wrapper__right-rightBtn img {
+  width: 30px;
+  margin-right: 10px;
+}
+
+.wrapper__right-rightBtn-title {
+  display: flex;
+  flex-direction: column;
+}
+
+.wrapper__right-rightBtn-titleBot {
+  font-weight: bold;
+}
+
+.wrapper__right-tab-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.wrapper__right-tab-nameList {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 30px;
+}
+
+.wrapper__right-tab-nameList-wrapper {
+  display: flex;
+  align-items: center;
+  font-size: 20px;
+  color: white;
+  font-weight: 600;
+}
+
+.wrapper__right-tab-nameItem {
+  margin-right: 25px;
+  cursor: pointer;
+}
+
+.tab-active {
+  color: #e89f01;
+}
+
+.wrapper__right-tab-item {
+  width: 100%;
+}
+
+.wrapper__right-tab-item1 {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.wrapper__right-tab-item1-top {
+  font-size: 18px;
+  color: white;
+  font-weight: 600;
+  margin-bottom: 15px;
+}
+
+.wrapper__right-tab-item1-bottom {
+  background: #4a535a;
+  border-radius: 12px;
+}
+
+.wrapper__right-tab-item1-bottom {
+  display: flex;
+  flex-direction: column;
+  padding: 15px;
+}
+
+.wrapper__right-tab-item1-title {
+  color: #c4c4c4;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.wrapper__right-tab-item1-detail {
+  display: flex;
+  align-items: center;
+}
+
+.wrapper__right-tab-item1-detail img {
+  width: 32px;
+  margin-right: 10px;
+}
+
+.wrapper__right-tab-item1-detail-name {
+  color: white;
+  text-transform: uppercase;
+}
+
+.bottom-line {
+  margin-top: 5px;
+  width: 100px;
+  height: 1px;
+  transition: all 0.5s ease;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    rgba(232, 159, 1, 0),
+    #e89f01 47.4%,
+    rgba(232, 159, 1, 0)
+  );
+  box-sizing: border-box;
+  margin-top: 10px;
+  font-weight: 500;
+}
+
+.bottom-line-1 {
+  transform: translateX(0px);
+}
+
+.bottom-line-2 {
+  transform: translateX(112px);
+}
+
+.wrapper__right-tab-item2 {
+    color: white;
+}
+
+html *::-webkit-scrollbar {
+  border-radius: 0;
+  width: 8px;
+}
+html *::-webkit-scrollbar {
+  border-radius: 0;
+  width: 8px;
+}
+html *::-webkit-scrollbar-thumb {
+  border-radius: 4px;
+  background-color: rgba(0, 0, 0, .15);
+}
+html *::-webkit-scrollbar-thumb {
+  border-radius: 4px;
+  background-color: rgba(0, 0, 0, .15);
+}
+html *::-webkit-scrollbar-track {
+  border-radius: 0;
+  background-color: rgba(0, 0, 0, 0);
+}
+html *::-webkit-scrollbar-track {
+  border-radius: 0;
+  background-color: rgba(0, 0, 0, 0);
+}
