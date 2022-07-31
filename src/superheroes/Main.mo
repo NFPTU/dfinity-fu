@@ -1224,28 +1224,20 @@ private let NFT_RARITY : [Text] =   ["Common","Uncommon","Rare", "Epec", "Legend
   };
 
   
-  public shared(msg) func createOrder(_tokenId: TokenIndex, _price: Nat) {
-        var owner: Principal = switch (_isOwnerOf(_tokenId,  Principal.toText(msg.caller))) {
-            case (?own) {
-                own;
-            };
-            case (_) {
-                return #Err(#TokenNotExist)
-            };
+  public shared(msg) func createOrder(_tokenId: TokenIndex, _price: Nat) : async Result.Result<Nat, Text> {
+        if(_isOwnerOf(_tokenId,  Principal.toText(msg.caller)) == false) {
+          return #err("unauthorized");
         };
-        if(owner != msg.caller) {
-            return #Err(#Unauthorized);
-        };
-
-        var order: OrderInfo = {
+    
+        var newOrder: OrderInfo = {
             index = totalOrders_;
             owner = msg.caller;
             var price = _price;
             tokenId = _tokenId;
-        }
-        orders.put(totalOrders_, order);
+        };
+        orders.put(totalOrders_, newOrder);
         totalOrders_ +=1;
-        return #Ok(txid);
+        return #ok(1);
 
     };
 

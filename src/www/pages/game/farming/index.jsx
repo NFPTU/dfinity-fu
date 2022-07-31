@@ -71,10 +71,11 @@ function Farming(props) {
 
 	const [check, setCheck] = useState(false);
 
+	console.log('re-render nay', cardSelected)
 	const onGetData = async () => {
 		const resp = await superheroes?.getUserTokens(principal?.toString());
 		const listLand = resp?.ok.filter((el) => el.attributes[0].value === 'Land');
-		console.log(resp, listLand[0]);
+		//console.log(resp, listLand[0]);
 		await onGetAvailWorker();
 		setListNFt(resp?.ok);
 		setCardSelected(listLand[0]);
@@ -87,12 +88,12 @@ function Farming(props) {
 		);
 		setListWorker(resp?.ok);
 		setRemainWorker(resp?.ok.length);
-		console.log(resp);
+		//console.log(resp);
 	};
 
 	useEffect(() => {
 		if (principal && superheroes) {
-			console.log(superheroes);
+			//console.log(superheroes);
 			onGetData();
 		}
 	}, [principal, superheroes]);
@@ -100,7 +101,7 @@ function Farming(props) {
 	const onChangeCard = (item) => {
 		setCardSelected(item);
 
-		console.log('cardSelected when click mini card:', cardSelected);
+		//console.log('cardSelected when click mini card:', cardSelected);
 	};
 
 	const onClickFarm = async () => {
@@ -116,7 +117,7 @@ function Farming(props) {
 			(previousValue, currentValue) => previousValue + currentValue,
 			0
 		);
-		console.log(selectedWorker);
+		//console.log(selectedWorker);
 		const remainW = listWorker.length - selectedWorker;
 		if (value - valueResource[item] <= remainW) {
 			setRemainWorker(remainW);
@@ -130,6 +131,7 @@ function Farming(props) {
 			sliceFarm(),
 			cardSelected.tokenId[0]
 		);
+		await onGetData();
 		setOpenProcess(false);
 		setShowFarmDialog(false);
 	};
@@ -149,7 +151,7 @@ function Farming(props) {
 			.slice(0, valueResource.gold)
 			.map((el) => el.tokenId[0]);
 		farmRequest.countIds = listWorker.length - remainWorker;
-		console.log(farmRequest);
+		//console.log(farmRequest);
 		return farmRequest;
 	};
 
@@ -160,9 +162,9 @@ function Farming(props) {
 				cardSelected.tokenId[0],
 				item.id
 			);
+			await onGetData();
 			setOpenProcess(false);
 			setOpen(false);
-			window.location.reload();
 		} catch (err) {
 			console.log(err);
 			setOpenProcess(false);
@@ -176,7 +178,8 @@ function Farming(props) {
 				nest?.tokenId[0],
 				cardSelected.tokenId[0]
 			);
-			console.log('res', res);
+			//console.log('res', res);
+
 			setOpenProcess(false);
 			setOpen(false);
 			onGetData();
@@ -194,7 +197,7 @@ function Farming(props) {
 	};
 
 	const resourceItem = (item) => {
-		console.log(item);
+		//console.log(item);
 		return (
 			<>
 				<ListResource>
