@@ -28,6 +28,8 @@ import { useCanister, useConnect } from '@connect2ic/react';
 import PopupList from '../../../components/popup-list';
 import { withContext } from '../../../hooks';
 import CardNft from '../../../components/card-nft';
+import Skeleton from '@mui/material/Skeleton';
+import Stack from '@mui/material/Stack';
 
 function Kingdom(props) {
 	const { setOpenProcess } = props;
@@ -92,7 +94,15 @@ function Kingdom(props) {
 					<Left>
 						<LeftWrapper>
 							<CardWrapper>
-								{cardSelected && <CardNft data={cardSelected} />}
+								{!cardSelected ? (
+									<Stack spacing={1}>
+										<Skeleton variant='text' width={240} height={15} />
+										<Skeleton variant='text' width={240} height={15} />
+										<Skeleton variant='rectangular' width={240} height={245} />
+									</Stack>
+								) : (
+									cardSelected && <CardNft data={cardSelected} />
+								)}
 							</CardWrapper>
 						</LeftWrapper>
 					</Left>
@@ -121,11 +131,21 @@ function Kingdom(props) {
 						<ListLand>
 							<ListLandTitle>List All Land</ListLandTitle>
 							<ListLandWrapper>
-								{listLand.map((el, index) => {
-									const tokenId = el?.tokenId[0];
-									if (!el?.detail?.land?.inKingdom) return;
-									return <CardNft key={index} data={el} alt='' size='small' />;
-								})}
+								{cardSelected ? (
+									listLand.map((el, index) => {
+										const tokenId = el?.tokenId[0];
+										if (!el?.detail?.land?.inKingdom) return;
+										return (
+											<CardNft key={index} data={el} alt='' size='small' />
+										);
+									})
+								) : (
+									<Stack spacing={1}>
+										<Skeleton variant='text' width={123} height={10} />
+										<Skeleton variant='text' width={123} height={10} />
+										<Skeleton variant='rectangular' width={123} height={100} />
+									</Stack>
+								)}
 							</ListLandWrapper>
 						</ListLand>
 
