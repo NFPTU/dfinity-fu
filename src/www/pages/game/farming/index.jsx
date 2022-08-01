@@ -49,6 +49,8 @@ import { useCanister, useConnect } from '@connect2ic/react';
 import PopupList from '../../../components/popup-list';
 import { withContext } from '../../../hooks';
 import CardNft from '../../../components/card-nft';
+import Skeleton from '@mui/material/Skeleton';
+import Stack from '@mui/material/Stack';
 
 function Farming(props) {
 	const { setOpenProcess } = props;
@@ -71,7 +73,7 @@ function Farming(props) {
 
 	const [check, setCheck] = useState(false);
 
-	console.log('re-render nay', cardSelected)
+	console.log('re-render nay', cardSelected);
 	const onGetData = async () => {
 		const resp = await superheroes?.getUserTokens(principal?.toString());
 		const listLand = resp?.ok.filter((el) => el.attributes[0].value === 'Land');
@@ -232,33 +234,54 @@ function Farming(props) {
 							))}
 						</ListMiniCard> */}
 						<CardWrapper>
-							{cardSelected && <CardNft data={cardSelected} heightImg={160} />}
+							{!cardSelected ? (
+								<Stack spacing={1}>
+									<Skeleton variant='text' width={240} height={15} />
+									<Skeleton variant='text' width={240} height={15} />
+									<Skeleton variant='rectangular' width={240} height={245} />
+								</Stack>
+							) : (
+								<CardNft data={cardSelected} heightImg={160} />
+							)}
 						</CardWrapper>
 					</LeftWrapper>
 				</Left>
 
 				<Right>
 					<Info>
-						<InfoTop>
-							<Type>{cardSelected?.attributes[0]?.value || 'Land'}</Type>
-						</InfoTop>
-						<InfoBody>
-							<InfoBodyLeft>
-								<InfoBodyLeftItem>Rarity:</InfoBodyLeftItem>
-								<InfoBodyLeftItem>Farming Time:</InfoBodyLeftItem>
-							</InfoBodyLeft>
+						{!cardSelected ? (
+							<Stack spacing={1} sx={{ marginBottom: '10px' }}>
+								<Skeleton variant='text' width={435} height={10} />
+								<Skeleton variant='text' width={435} height={10} />
+							</Stack>
+						) : (
+							<InfoTop>
+								<Type>{cardSelected?.attributes[0]?.value || 'Land'}</Type>
+							</InfoTop>
+						)}
+						{!cardSelected ? (
+							<Stack spacing={1} sx={{ marginBottom: '10px' }}>
+								<Skeleton variant='rectangular' width={435} height={80} />
+							</Stack>
+						) : (
+							<InfoBody>
+								<InfoBodyLeft>
+									<InfoBodyLeftItem>Rarity:</InfoBodyLeftItem>
+									<InfoBodyLeftItem>Farming Time:</InfoBodyLeftItem>
+								</InfoBodyLeft>
 
-							<InfoBodyRight>
-								<InfoBodyRightItem>
-									{cardSelected?.attributes[1]?.value || 'Uncommon'}
-								</InfoBodyRightItem>
-								<InfoBodyRightItem>
-									{cardSelected?.detail?.land?.info?.farmingTime
-										? toHHMMSS(cardSelected?.detail?.land?.info?.farmingTime)
-										: 0}
-								</InfoBodyRightItem>
-							</InfoBodyRight>
-						</InfoBody>
+								<InfoBodyRight>
+									<InfoBodyRightItem>
+										{cardSelected?.attributes[1]?.value || 'Uncommon'}
+									</InfoBodyRightItem>
+									<InfoBodyRightItem>
+										{cardSelected?.detail?.land?.info?.farmingTime
+											? toHHMMSS(cardSelected?.detail?.land?.info?.farmingTime)
+											: 0}
+									</InfoBodyRightItem>
+								</InfoBodyRight>
+							</InfoBody>
+						)}
 					</Info>
 
 					<ListResourceWrapper>

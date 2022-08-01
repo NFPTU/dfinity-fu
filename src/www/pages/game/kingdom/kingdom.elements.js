@@ -65,7 +65,8 @@ export const CardImg = styled.img`
 `
 
 export const CardWrapper = styled.div`
-    margin-left: 20px;
+    margin-left: 45px;
+    margin-top: 50px;
 `
 
 export const Right = styled.div`
