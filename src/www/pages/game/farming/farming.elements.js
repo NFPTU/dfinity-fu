@@ -7,7 +7,7 @@ export const Container = styled.div`
     background-position: 50%;
     position: relative;
     margin: auto;
-    width: 70rem;
+    width: 60rem;
     transition: all .2s ease-in-out;
     -webkit-user-select: none;
     -ms-user-select: none;
@@ -67,6 +67,8 @@ export const CardImg = styled.img`
 export const CardWrapper = styled.div`
     height: 380px;
     width: 280px;
+    margin-left: 62px;
+    margin-top: 96px;
 `
 
 export const Right = styled.div`
@@ -77,6 +79,7 @@ export const Right = styled.div`
     background-color: rgba(233,225,214,.6);
     border-radius: 5px;
     padding: 10px 10px;
+    margin-left: -62px;
 `
 
 export const Info = styled.div`
