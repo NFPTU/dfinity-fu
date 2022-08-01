@@ -32,7 +32,7 @@ export const Wrapper = styled.div`
 export const Left = styled.div`
    width: 280px;
    height: 100%;
-   margin-left: 50px;
+   margin-left: 87px;
 `
 
 export const Right = styled.div`
@@ -146,11 +146,11 @@ export const Btn = styled.div`
     font-size: 18px;
     text-align: center;
     color: #fff;
-    cursor: ${({ disabled }) => !disabled ? 'pointer' : 'not-allowed'};
     text-shadow: -3px 2px 2px #923935;
     display: flex;
     align-items: center;
     justify-content: center;
     //Disable button
     filter: ${({ disabled }) => disabled ? 'grayscale(1)' : ''};
+    cursor: ${({ disabled }) => !disabled ? 'pointer' : 'not-allowed'};
 `

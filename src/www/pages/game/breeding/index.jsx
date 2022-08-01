@@ -25,64 +25,44 @@ import {
 import { useCanister, useConnect } from '@connect2ic/react';
 import { getRemainingTime, toHHMMSS } from '../../../utils/utils';
 import Countdown from 'react-countdown';
-import isCompleted from 'react-countdown'
+import isCompleted from 'react-countdown';
 import Swal from 'sweetalert2';
 import { withContext } from '../../../hooks';
 import CardNft from '../../../components/card-nft';
 import Skeleton from '@mui/material/Skeleton';
 import Stack from '@mui/material/Stack';
+import { toast } from 'react-toastify';
 
 function Breeding(props) {
-	const { setOpenProcess } = props;
+	const { setOpenProcess, resource } = props;
 	const [data, setData] = useState([]);
 	const [queenNFT, setQueenNFT] = useState({});
 	const [listWorkerNFT, setListWorkerNFT] = useState([]);
+	const [remainWorker, setRemainWorker] = useState([]);
 	const [worker, setWorker] = useState();
 	const [completedCount, setCompletedCount] = useState(false);
+	const [listNest, setListNest] = useState([]);
 
 	const [superheroes, { loading, error }] = useCanister('superheroes');
 	const { principal, isConnected, disconnect } = useConnect();
 
-	// ======================== DIALOG SWEETALERT 2 =================================
-	//show dialog stake when choose:
-	const dialogClaim = async () => {
-		Swal.fire({
-			title: 'Do you want to breeding ant worker?',
-			showDenyButton: true,
-			showCancelButton: true,
-			confirmButtonText: 'Yes',
-			denyButtonText: `No`,
-		}).then((result) => {
-			/* Read more about isConfirmed, isDenied below */
-			if (result.isConfirmed) {
-				Swal.fire('Saved!', '', 'success').then((result) => {
-					if (result.isConfirmed) {
-						onBreedingWorker();
-					}
+	const toastEmitter = async (type, message) => {
+		switch (type) {
+			case 'warn':
+				toast.warn(message, {
+					position: 'top-right',
+					autoClose: 5000,
+					hideProgressBar: false,
+					closeOnClick: true,
+					pauseOnHover: true,
+					draggable: true,
+					progress: undefined,
 				});
-			} else if (result.isDenied) {
-				Swal.fire('Changes are not saved', '', 'info');
-			}
-		});
-	};
-
-	const Toast = Swal.mixin({
-		toast: true,
-		position: 'top-end',
-		showConfirmButton: false,
-		timer: 3000,
-		timerProgressBar: true,
-		didOpen: (toast) => {
-			toast.addEventListener('mouseenter', Swal.stopTimer);
-			toast.addEventListener('mouseleave', Swal.resumeTimer);
-		},
-	});
-
-	const toastDialog = async () => {
-		Toast.fire({
-			icon: 'success',
-			title: 'Breeding Ant Worker successfully!!!',
-		});
+				break;
+		
+			default:
+				break;
+		}
 	};
 
 	//=================================================================================
@@ -90,6 +70,7 @@ function Breeding(props) {
 	//Get All NFT
 	const onGetData = async () => {
 		const resp = await superheroes?.getUserTokens(principal?.toString());
+		await onGetAvailWorker();
 		setData(resp?.ok);
 	};
 
@@ -113,6 +94,13 @@ function Breeding(props) {
 		setQueenNFT(queen && queen[0]);
 	};
 
+	//Get List Nest:
+	const getListNest = () => {
+		const listNest = getNFTByType('Nest');
+
+		setListNest(listNest && listNest);
+	};
+
 	//Get List Worker:
 	const getListWorkerNFT = () => {
 		const listWorker = getNFTByType('Worker');
@@ -128,34 +116,82 @@ function Breeding(props) {
 
 	//===================== Call Superheroes ==========================
 	const onBreedingWorker = async () => {
-		const listQ = getNFTByType('Queen');
-		const res = await superheroes.breedAntWorkder(listQ[0]?.tokenId[0]);
+		const foodNeeded = queenNFT?.detail?.queen?.info?.resourcePerWorker?.food;
+		const limitWorkerInNest = Number(listNest[0]?.detail?.nest?.limit);
+		if (resource?.food < foodNeeded) {
+			toastEmitter('warn', 'You need more food to breeding')
+		} else {
+			if (remainWorker === limitWorkerInNest) {
+				toastEmitter('warn', 'Can not breeding! The number of ant worker in the nest has reached the limit')
+			} else {
+				setOpenProcess(true);
+				const listQ = getNFTByType('Queen');
+				const res = await superheroes.breedAntWorkder(listQ[0]?.tokenId[0]);
+				setOpenProcess(false);
+			}
+		}
 	};
 
 	const onClaimWorker = async (e) => {
-		if (
-			worker?.detail?.worker?.breedTimestamp &&
-			!getRemainingTime(worker?.detail?.worker?.breedTimestamp)
-		) {
-			const res = await superheroes.claimWorkerEgg(queenNFT?.tokenId[0]);
-			await onGetData();
+		if (!completedCount) {
+			e.preventDefault();
+			toast.warn('You need to wait for the time out to claim', {
+				position: 'top-right',
+				autoClose: 5000,
+				hideProgressBar: false,
+				closeOnClick: true,
+				pauseOnHover: true,
+				draggable: true,
+				progress: undefined,
+			});
+		} else {
+			if (
+				worker?.detail?.worker?.breedTimestamp &&
+				!getRemainingTime(worker?.detail?.worker?.breedTimestamp)
+			) {
+				setOpenProcess(true);
+				const res = await superheroes.claimWorkerEgg(queenNFT?.tokenId[0]);
+				await onGetData();
+				setOpenProcess(false);
+			}
 		}
 	};
 
 	const onUpgrade = async (e) => {
 		const listQ = getNFTByType('Queen');
-		const res = await superheroes.upgradeLevelQueen(listQ[0].tokenId[0]);
+		setOpenProcess(true);
+		const res = await superheroes.upgradeLevelQueen(listQ[0]?.tokenId[0]);
+		console.log('res', res);
+		setOpenProcess(false);
 	};
 
 	const onBreeding = async (e) => {
-		setOpenProcess(true);
 		if (!queenNFT?.detail?.queen?.breedingWorkerId) {
 			await onBreedingWorker();
 		} else {
 			await onClaimWorker();
 		}
 		await onGetData();
-		setOpenProcess(false);
+	};
+
+	const onCompleteCount = (props) => {
+		setCompletedCount(true);
+		toast.success('Breeding successfully !!!', {
+			position: 'top-right',
+			autoClose: 5000,
+			hideProgressBar: false,
+			closeOnClick: true,
+			pauseOnHover: true,
+			draggable: true,
+			progress: undefined,
+		});
+	};
+
+	const onGetAvailWorker = async () => {
+		const resp = await superheroes?.getUserAvailableWorker(
+			principal?.toString()
+		);
+		setRemainWorker(resp?.ok.length);
 	};
 
 	//=================================================================
@@ -168,14 +204,14 @@ function Breeding(props) {
 		if (data) {
 			getQueenNFT();
 			getListWorkerNFT();
+			getListNest();
 		}
 	}, [data]);
 
-	console.log('queenNFT', queenNFT);
-
-	console.log('worker', worker)
-
-	console.log('completedCount', completedCount)
+	// console.log('queenNFT', queenNFT);
+	// console.log('completedCount', completedCount);
+	console.log('remainWorker', remainWorker);
+	console.log('listNest', Number(listNest[0]?.detail?.nest?.limit));
 
 	return (
 		<>
@@ -244,7 +280,7 @@ function Breeding(props) {
 							)}
 						</Info>
 
-						{(worker?.detail?.worker?.breedTimestamp && !completedCount) && (
+						{worker?.detail?.worker?.breedTimestamp && !completedCount && (
 							<CountdownWrapper>
 								<CountdownInside>
 									<Countdown
@@ -253,14 +289,18 @@ function Breeding(props) {
 											getRemainingTime(worker?.detail?.worker?.breedTimestamp) *
 												1000
 										}
-										onComplete={(props) => setCompletedCount(props.completed)}
+										onComplete={(props) => onCompleteCount(props.completed)}
 									/>
 								</CountdownInside>
 							</CountdownWrapper>
 						)}
 
 						<BtnList>
-							<Btn onClick={onBreeding}>
+							<Btn
+								onClick={onBreeding}
+								disabled={
+									queenNFT?.detail?.queen?.breedingWorkerId && !completedCount
+								}>
 								{!queenNFT?.detail?.queen?.breedingWorkerId
 									? 'Breeding'
 									: 'Claim'}
