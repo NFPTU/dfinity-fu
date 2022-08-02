@@ -21,6 +21,7 @@ export interface AntKingdoms {
   'claiming' : () => Promise<Result>,
   'createOrder' : (arg_0: TokenIndex__1, arg_1: bigint) => Promise<Result_10>,
   'extensions' : () => Promise<Array<Extension>>,
+  'getAllOrders' : () => Promise<Result_9>,
   'getDataByLandId' : (arg_0: TokenIndex__1) => Promise<Result_9>,
   'getTokensMetadata' : () => Promise<Array<MetadataExt>>,
   'getUserAvailableWorker' : (arg_0: AccountIdentifier) => Promise<Result_8>,

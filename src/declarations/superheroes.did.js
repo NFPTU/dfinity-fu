@@ -182,6 +182,7 @@ export const idlFactory = ({ IDL }) => {
     'claiming' : IDL.Func([], [Result], []),
     'createOrder' : IDL.Func([TokenIndex__1, IDL.Nat], [Result_10], []),
     'extensions' : IDL.Func([], [IDL.Vec(Extension)], ['query']),
+    'getAllOrders' : IDL.Func([], [Result_9], ['query']),
     'getDataByLandId' : IDL.Func([TokenIndex__1], [Result_9], []),
     'getTokensMetadata' : IDL.Func([], [IDL.Vec(MetadataExt)], []),
     'getUserAvailableWorker' : IDL.Func(

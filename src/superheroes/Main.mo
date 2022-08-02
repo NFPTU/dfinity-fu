@@ -138,6 +138,7 @@ private let NFT_RARITY : [Text] =   ["Common","Uncommon","Rare", "Epec", "Legend
   private stable var _metadataState : [(TokenIndex, (Metadata, Balance))] = [];
   private stable var _admin : Principal = init_admin;
   private stable var usersEntries : [(AccountIdentifier, UserInfo)] = [];
+  private stable var orderEntries : [(Nat, OrderInfo)] = [];
   private var users = HashMap.HashMap<AccountIdentifier, UserInfo>(1, Text.equal, Text.hash);
   
   private var _registry = HashMap.HashMap<TokenIndex, TokenLedger>(1, Nat32.equal, func(x : Nat32) : Hash.Hash {x});
@@ -154,6 +155,9 @@ private let NFT_RARITY : [Text] =   ["Common","Uncommon","Rare", "Epec", "Legend
 
   private var levelMetadata: [Types.LevelData] = [];
 
+  private stable var totalOrders_: Nat = 0;
+  private var orders = HashMap.HashMap<Nat, OrderInfo>(1, Nat.equal, Hash.hash);
+
   //State functions
   system func preupgrade() {
     Iter.iterate(_registry.entries(), func(x : (TokenIndex, TokenLedger), _index : Nat) {
@@ -161,16 +165,17 @@ private let NFT_RARITY : [Text] =   ["Common","Uncommon","Rare", "Epec", "Legend
     });
     _metadataState := Iter.toArray(_metadata.entries());
     usersEntries := Iter.toArray(users.entries());
+    orderEntries := Iter.toArray(orders.entries());
   };
   system func postupgrade() {
     _registryState := [];
     _metadataState := [];
     users := HashMap.fromIter<AccountIdentifier, UserInfo>(usersEntries.vals(), 1, Text.equal, Text.hash);
     usersEntries := [];
+    orders := HashMap.fromIter<Nat, OrderInfo>(orderEntries.vals(), 1, Nat.equal, Hash.hash);
+    orderEntries := [];
   };
 
-   private stable var totalOrders_: Nat = 0;
-    private var orders = HashMap.HashMap<Nat, OrderInfo>(1, Nat.equal, Hash.hash);
   
     private func _isOwnerOf(tokenId: TokenIndex, who: AccountIdentifier) : Bool {
       var tokenBalances = switch(_registry.get(tokenId)) {
@@ -602,6 +607,19 @@ var orderData = switch(orders.get(orderId)) {
       };
       ret.add(_tokenMetadata(tokenData.0));
     };
+    return  #ok(ret.toArray());
+  };
+
+  public query func getAllOrders() : async Result.Result<[MetadataExt] , Text>{
+    let ret = Buffer.Buffer<MetadataExt>(orders.size());
+       Iter.iterate(orders.entries(), func(order : (Nat, OrderInfo), _index : Nat) {
+        var tokenData = switch(_metadata.get(order.1.tokenId)) {
+        case (?metadata) metadata;
+        case (_) return ;
+      };
+      ret.add(_tokenMetadata(tokenData.0));
+    });
+   
     return  #ok(ret.toArray());
   };
 
