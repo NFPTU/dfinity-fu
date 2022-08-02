@@ -6,32 +6,33 @@
  */
 
 // import Array "mo:base/Array";
-import AID "/Lib/Ext/util/AccountIdentifier";
 import Array "mo:base/Array";
 import Buffer "mo:base/Buffer";
 import Cycles "mo:base/ExperimentalCycles";
 import D "mo:base/Debug";
 import Error "mo:base/Error";
-import Ext "Ext";
-import ExtCommon "/Lib/Ext/ext/Common";
-import ExtCore "/Lib/Ext/ext/Core";
-import ExtTypes "Ext/types";
 import Float "mo:base/Float";
 import Hash "mo:base/Hash";
 import HashMap "mo:base/HashMap";
 import Int "mo:base/Int";
 import Iter "mo:base/Iter";
+import List "mo:base/List";
 import Nat "mo:base/Nat";
 import Nat32 "mo:base/Nat32";
 import Prelude "mo:base/Prelude";
 import Principal "mo:base/Principal";
-import List "mo:base/List";
+import Random "mo:base/Random";
 import Result "mo:base/Result";
 import Text "mo:base/Text";
 import Time "mo:base/Time";
 import TokenIndex "mo:base/Bool";
-import Random "mo:base/Random";
 import TrieSet "mo:base/TrieSet";
+
+import AID "/Lib/Ext/util/AccountIdentifier";
+import Ext "Ext";
+import ExtCommon "/Lib/Ext/ext/Common";
+import ExtCore "/Lib/Ext/ext/Core";
+import ExtTypes "Ext/types";
 import Types "./types";
 import User "./User";
 
@@ -292,6 +293,68 @@ private let NFT_RARITY : [Text] =   ["Common","Uncommon","Rare", "Epec", "Legend
     };
   };
 
+  public shared(msg) func unStakeNestInLand(nestTokenId: TokenIndex, landTokenId: TokenIndex ) : async Result.Result<Text, Text> {
+    if(checkTypeToken(nestTokenId, "Nest") == true and checkTypeToken(landTokenId, "Land") == true) {
+      if(_isOwnerOf(nestTokenId, Principal.toText(msg.caller)) == true and _isOwnerOf(landTokenId, Principal.toText(msg.caller)) == true) {
+        var tokenData = switch(_metadata.get(landTokenId)) {
+      case (?metadata)  {
+        var newDetail: DetailNFT = metadata.0.detail;
+        switch (metadata.0.detail) {
+          case (#land(n)) {
+            newDetail := #land({resource = n.resource;  claimableResource = n.claimableResource; nestStaked=?0;info=n.info;inKingdom = n.inKingdom;});
+          };
+          case (_) {
+
+          };
+        };
+     
+        metadata.0.detail := newDetail;
+         _metadata.put(landTokenId,metadata);
+         };
+      case (_) return #err("Token not valid!");
+  };
+
+   var nestData = switch(_metadata.get(nestTokenId)) {
+      case (?metadata)  {
+        var newDetail: DetailNFT = metadata.0.detail;
+        switch (metadata.0.detail) {
+          case (#nest(n)) {
+            newDetail := #nest({level=n.level; inLand= ?0;queenIn= n.queenIn; limit = n.limit});
+              switch (users.get(Principal.toText(msg.caller))) {
+                  case (?user) {
+                    let userRes  = user.userState.resource;
+                    let userLimit = user.userState.limitAnt;
+                    user.userState := {kingdomId=user.userState.kingdomId;
+                    resource = user.userState.resource; 
+                    limitAnt= userLimit + n.limit;currentAnt=user.userState.currentAnt};
+                    users.put(Principal.toText(msg.caller), user);
+                  };
+         
+                  case (_) {
+                    return #err("User Not Found")
+                  };
+                };
+          };
+          case (_) {
+
+          };
+        };
+     
+        metadata.0.detail := newDetail;
+         _metadata.put(nestTokenId,metadata);
+         };
+      case (_) return #err("Token not valid!");
+  };
+  
+        return #ok("ok");
+    } else {
+       return #err("Token Staked!");
+    };
+    } else {
+      return #err("Token not valid!");
+    };
+  };
+
   public shared(msg) func stakeQueenInNest(queenTokenId: TokenIndex,  nestTokenId: TokenIndex ) : async Result.Result<Text, Text> {
     if(checkTypeToken(nestTokenId, "Nest") == true and checkTypeToken(queenTokenId,NFT_TYPE[0]) == true) {
       if(_isOwnerOf(nestTokenId, Principal.toText(msg.caller)) == true and _isOwnerOf(queenTokenId, Principal.toText(msg.caller)) == true) {
@@ -319,6 +382,52 @@ private let NFT_RARITY : [Text] =   ["Common","Uncommon","Rare", "Epec", "Legend
             switch (metadata.0.detail) {
               case (#nest(n)) {
                 newDetail := #nest({level=n.level; inLand= n.inLand;queenIn= ?queenTokenId; limit= n.limit});
+              };
+              case (_) {
+              };
+            };
+     
+            metadata.0.detail := newDetail;
+            _metadata.put(nestTokenId,metadata);
+          };
+          case (_) return #err("Token not valid!");
+        };
+        return #ok("ok");
+      } else {
+        return #err("Token Staked!");
+      };
+    } else {
+      return #err("Token not valid!");
+    };
+  };
+
+  public shared(msg) func unStakeQueenInNest(queenTokenId: TokenIndex,  nestTokenId: TokenIndex ) : async Result.Result<Text, Text> {
+    if(checkTypeToken(nestTokenId, "Nest") == true and checkTypeToken(queenTokenId,NFT_TYPE[0]) == true) {
+      if(_isOwnerOf(nestTokenId, Principal.toText(msg.caller)) == true and _isOwnerOf(queenTokenId, Principal.toText(msg.caller)) == true) {
+        var tokenData = switch(_metadata.get(queenTokenId)) {
+          case (?metadata)  {
+            var newDetail: DetailNFT = metadata.0.detail;
+              switch (metadata.0.detail) {
+                case (#queen(n)) {
+                  newDetail := #queen({level=n.level; inNest = ?0; info=n.info;breedingWorkerId=n.breedingWorkerId;});
+                };
+                case (_) {
+
+                };
+              };
+     
+            metadata.0.detail := newDetail;
+            _metadata.put(queenTokenId,metadata);
+          };
+    
+          case (_) return #err("Token not valid!");
+        };
+        var nestData = switch(_metadata.get(nestTokenId)) {
+          case (?metadata)  {
+            var newDetail: DetailNFT = metadata.0.detail;
+            switch (metadata.0.detail) {
+              case (#nest(n)) {
+                newDetail := #nest({level=n.level; inLand= n.inLand;queenIn= ?0; limit= n.limit});
               };
               case (_) {
               };
@@ -378,26 +487,28 @@ private let NFT_RARITY : [Text] =   ["Common","Uncommon","Rare", "Epec", "Legend
             tokenId = _tokenId;
         };
         orders.put(totalOrders_, newOrder);
+         switch(users.get(Principal.toText(msg.caller))) {
+      case (?user) {
+        user.orders := TrieSet.put(user.orders, totalOrders_, Hash.hash(totalOrders_), Nat.equal);
+        users.put(Principal.toText(msg.caller), user);
+          };
+          case (_) return #err("no user");
+        };
         totalOrders_ +=1;
         return #ok(1);
 
     };
 
-    public shared(msg) func createOrder(_tokenId: TokenIndex, _price: Nat) : async Result.Result<Nat, Text> {
-        if(_isOwnerOf(_tokenId,  Principal.toText(msg.caller)) == false) {
-          return #err("unauthorized");
+    public shared(msg) func cancelOrder(orderId: Nat) : async Result.Result<Nat, Text> {
+        orders.delete(orderId);
+            switch(users.get(Principal.toText(msg.caller))) {
+      case (?user) {
+        user.orders := TrieSet.delete(user.orders, totalOrders_, Hash.hash(totalOrders_), Nat.equal);
+        users.put(Principal.toText(msg.caller), user);
+          };
+          case (_) return #err("no user");
         };
-    
-        var newOrder: OrderInfo = {
-            index = totalOrders_;
-            owner = msg.caller;
-            var price = _price;
-            tokenId = _tokenId;
-        };
-        orders.put(totalOrders_, newOrder);
-        totalOrders_ +=1;
         return #ok(1);
-
     };
 
     
@@ -474,6 +585,26 @@ var orderData = switch(orders.get(orderId)) {
     return  #ok(ret.toArray());
   };
 
+  public query func getUserOrders(owner: AccountIdentifier) : async Result.Result<[MetadataExt] , CommonError>{
+    let tokenIds = switch (users.get(owner)) {
+      case (?user) {
+        TrieSet.toArray(user.tokens)
+      };
+      case _ {
+        []
+      };
+    };
+    let ret = Buffer.Buffer<MetadataExt>(tokenIds.size());
+    for(id in Iter.fromArray(tokenIds)) {
+      var tokenData = switch(_metadata.get(id)) {
+        case (?metadata) metadata;
+        case (_) return #err(#InvalidToken(Nat32.toText(id)));
+      };
+      ret.add(_tokenMetadata(tokenData.0));
+    };
+    return  #ok(ret.toArray());
+  };
+
   public query func getUserAvailableWorker(owner: AccountIdentifier) : async Result.Result<[MetadataExt] , CommonError>{
     let tokenIds = switch (users.get(owner)) {
       case (?user) {
@@ -511,6 +642,7 @@ var orderData = switch(orders.get(orderId)) {
       var id = "";
       var name = "";
       var tokens = TrieSet.empty<TokenIndex>();
+      var orders = TrieSet.empty<Nat>();
       var userState : UserState = {resource = {soil=0; leaf= 0; gold=0;food=0;}; limitAnt = 0;kingdomId=0;currentAnt=0;};
     }
   };
@@ -1034,7 +1166,7 @@ return tokens[4];
             var newDetail: DetailNFT = metadata.0.detail;
             switch (metadata.0.detail) {
               case (#kingdom(n)) {
-                newDetail := #kingdom({landId = Array.append(n.landId, [landTokenId])});
+                newDetail := #kingdom({landId = removeEle(n.landId, landTokenId)});
               };
               case (_) {
               };
@@ -1045,18 +1177,6 @@ return tokens[4];
           };
           case (_) return #err("Token not valid!");
         };
-        switch (users.get(Principal.toText(msg.caller))) {
-          case (?user) {
-            if(user.userState.kingdomId==0) {
-              user.userState := {resource = user.userState.resource; kingdomId= kingdomTokenId;limitAnt=user.userState.limitAnt;currentAnt=user.userState.currentAnt};
-              users.put(Principal.toText(msg.caller), user);
-            };    
-          };
-         
-          case (_) {
-            return #err("User Not Found")
-          };
-        };
   
         return #ok(true);
       } else {
@@ -1066,6 +1186,10 @@ return tokens[4];
       return #err("Token not valid!");
     };
   };
+
+  private func removeEle(array: [TokenIndex], value: TokenIndex) : [TokenIndex] {
+    Array.filter(array, func(val: TokenIndex) : Bool { value != val });
+};
 
   public shared(msg) func breedAntWorkder(queenTokenId: TokenIndex) : async Result.Result<Bool, Text> {  
     var tokenData = switch(_metadata.get(queenTokenId)) {

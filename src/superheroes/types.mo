@@ -145,7 +145,8 @@ module {
      public type UserInfo = {
         var name: Text;
         var id: AccountIdentifier;
-        var tokens: TrieSet.Set<TokenIndex>;              // user's tokens
+        var tokens: TrieSet.Set<TokenIndex>;    
+        var orders: TrieSet.Set<Nat>;              // user's tokens
         var userState: UserState;
     };
 

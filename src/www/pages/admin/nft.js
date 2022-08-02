@@ -1005,7 +1005,7 @@ export const levelData = [
 				],
 			},
 			{
-				rarity: "Common",
+				rarity: "Uncommon",
 				data: [
 					{
 						level: 1, costResource: {
@@ -1105,30 +1105,6 @@ export const levelData = [
 				],
 			},
 			{
-				rarity: "Uncommon",
-				data: [
-					{
-						level: 1, costResource: {
-							gold: 15,
-							leaf: 35,
-							food: 45,
-							soil: 0,
-						},
-						nextLevel: {
-							queen: {
-								'resourcePerWorker': {
-									gold: 0,
-									leaf: 0,
-									soil: 0,
-									food: 30,
-								},
-								'breedWorkerTime': 60 * second,
-							}
-						}
-					}
-				],
-			},
-			{
 				rarity: "Rare",
 				data: [
 					{
@@ -1149,10 +1125,85 @@ export const levelData = [
 								'breedWorkerTime': 60 * second,
 							}
 						}
+					},
+					{
+						level: 2, costResource: {
+							gold: 10,
+							leaf: 30,
+							food: 40,
+							soil: 0,
+						},
+						nextLevel: {
+							queen: {
+								'resourcePerWorker': {
+									gold: 0,
+									leaf: 0,
+									soil: 0,
+									food: 28,
+								},
+								'breedWorkerTime': 58 * second,
+							}
+						}
+					},
+					{
+						level: 3, costResource: {
+							gold: 12,
+							leaf: 35,
+							food: 45,
+							soil: 0,
+						},
+						nextLevel: {
+							queen: {
+								'resourcePerWorker': {
+									gold: 0,
+									leaf: 0,
+									soil: 0,
+									food: 26,
+								},
+								'breedWorkerTime': 56 * second,
+							}
+						}
+					},
+					{
+						level: 4, costResource: {
+							gold: 14,
+							leaf: 40,
+							food: 50,
+							soil: 0,
+						},
+						nextLevel: {
+							queen: {
+								'resourcePerWorker': {
+									gold: 0,
+									leaf: 0,
+									soil: 0,
+									food: 24,
+								},
+								'breedWorkerTime': 54 * second,
+							}
+						}
+					},
+					{
+						level: 5, costResource: {
+							gold: 16,
+							leaf: 45,
+							food: 50,
+							soil: 0,
+						},
+						nextLevel: {
+							queen: {
+								'resourcePerWorker': {
+									gold: 0,
+									leaf: 0,
+									soil: 0,
+									food: 22,
+								},
+								'breedWorkerTime': 52 * second,
+							}
+						}
 					}
 				],
-			}
-			,
+			},
 			{
 				rarity: "Epic",
 				data: [
@@ -1174,11 +1225,87 @@ export const levelData = [
 								'breedWorkerTime': 60 * second,
 							}
 						}
+					},
+					{
+						level: 2, costResource: {
+							gold: 10,
+							leaf: 30,
+							food: 40,
+							soil: 0,
+						},
+						nextLevel: {
+							queen: {
+								'resourcePerWorker': {
+									gold: 0,
+									leaf: 0,
+									soil: 0,
+									food: 28,
+								},
+								'breedWorkerTime': 58 * second,
+							}
+						}
+					},
+					{
+						level: 3, costResource: {
+							gold: 12,
+							leaf: 35,
+							food: 45,
+							soil: 0,
+						},
+						nextLevel: {
+							queen: {
+								'resourcePerWorker': {
+									gold: 0,
+									leaf: 0,
+									soil: 0,
+									food: 26,
+								},
+								'breedWorkerTime': 56 * second,
+							}
+						}
+					},
+					{
+						level: 4, costResource: {
+							gold: 14,
+							leaf: 40,
+							food: 50,
+							soil: 0,
+						},
+						nextLevel: {
+							queen: {
+								'resourcePerWorker': {
+									gold: 0,
+									leaf: 0,
+									soil: 0,
+									food: 24,
+								},
+								'breedWorkerTime': 54 * second,
+							}
+						}
+					},
+					{
+						level: 5, costResource: {
+							gold: 16,
+							leaf: 45,
+							food: 50,
+							soil: 0,
+						},
+						nextLevel: {
+							queen: {
+								'resourcePerWorker': {
+									gold: 0,
+									leaf: 0,
+									soil: 0,
+									food: 22,
+								},
+								'breedWorkerTime': 52 * second,
+							}
+						}
 					}
 				],
 			},
 			{
-				rarity: "",
+				rarity: "Legendary",
 				data: [
 					{
 						level: 1, costResource: {
@@ -1198,9 +1325,425 @@ export const levelData = [
 								'breedWorkerTime': 60 * second,
 							}
 						}
+					},
+					{
+						level: 2, costResource: {
+							gold: 10,
+							leaf: 30,
+							food: 40,
+							soil: 0,
+						},
+						nextLevel: {
+							queen: {
+								'resourcePerWorker': {
+									gold: 0,
+									leaf: 0,
+									soil: 0,
+									food: 28,
+								},
+								'breedWorkerTime': 58 * second,
+							}
+						}
+					},
+					{
+						level: 3, costResource: {
+							gold: 12,
+							leaf: 35,
+							food: 45,
+							soil: 0,
+						},
+						nextLevel: {
+							queen: {
+								'resourcePerWorker': {
+									gold: 0,
+									leaf: 0,
+									soil: 0,
+									food: 26,
+								},
+								'breedWorkerTime': 56 * second,
+							}
+						}
+					},
+					{
+						level: 4, costResource: {
+							gold: 14,
+							leaf: 40,
+							food: 50,
+							soil: 0,
+						},
+						nextLevel: {
+							queen: {
+								'resourcePerWorker': {
+									gold: 0,
+									leaf: 0,
+									soil: 0,
+									food: 24,
+								},
+								'breedWorkerTime': 54 * second,
+							}
+						}
+					},
+					{
+						level: 5, costResource: {
+							gold: 16,
+							leaf: 45,
+							food: 50,
+							soil: 0,
+						},
+						nextLevel: {
+							queen: {
+								'resourcePerWorker': {
+									gold: 0,
+									leaf: 0,
+									soil: 0,
+									food: 22,
+								},
+								'breedWorkerTime': 52 * second,
+							}
+						}
 					}
 				],
-			}
+			},
 		]
+	},
+	{
+		type: "Nest",
+		info: [
+			{
+			rarity: "Common",
+			data: [{
+				level: 1, costResource: {
+					gold: 15,
+					leaf: 35,
+					food: 45,
+					soil: 0,
+				},
+				nextLevel: {
+					queen: {
+						'limit': 11
+					}
+				}
+			},
+			{
+				level: 2, costResource: {
+					gold: 15,
+					leaf: 35,
+					food: 45,
+					soil: 0,
+				},
+				nextLevel: {
+					queen: {
+						'limit': 12
+					}
+				}
+			},
+			{
+				level: 3, costResource: {
+					gold: 15,
+					leaf: 35,
+					food: 45,
+					soil: 0,
+				},
+				nextLevel: {
+					queen: {
+						'limit': 13
+					}
+				}
+			},
+			{
+				level: 4, costResource: {
+					gold: 15,
+					leaf: 35,
+					food: 45,
+					soil: 0,
+				},
+				nextLevel: {
+					queen: {
+						'limit': 15
+					}
+				}
+			}, {
+				level: 5, costResource: {
+					gold: 15,
+					leaf: 35,
+					food: 45,
+					soil: 0,
+				},
+				nextLevel: {
+					queen: {
+						'limit': 16
+					}
+				}
+			}]
+		},
+		{
+			rarity: "Uncommon",
+			data: [{
+				level: 1, costResource: {
+					gold: 15,
+					leaf: 35,
+					food: 45,
+					soil: 0,
+				},
+				nextLevel: {
+					queen: {
+						'limit': 11
+					}
+				}
+			},
+			{
+				level: 2, costResource: {
+					gold: 15,
+					leaf: 35,
+					food: 45,
+					soil: 0,
+				},
+				nextLevel: {
+					queen: {
+						'limit': 12
+					}
+				}
+			},
+			{
+				level: 3, costResource: {
+					gold: 15,
+					leaf: 35,
+					food: 45,
+					soil: 0,
+				},
+				nextLevel: {
+					queen: {
+						'limit': 13
+					}
+				}
+			},
+			{
+				level: 4, costResource: {
+					gold: 15,
+					leaf: 35,
+					food: 45,
+					soil: 0,
+				},
+				nextLevel: {
+					queen: {
+						'limit': 15
+					}
+				}
+			}, {
+				level: 5, costResource: {
+					gold: 15,
+					leaf: 35,
+					food: 45,
+					soil: 0,
+				},
+				nextLevel: {
+					queen: {
+						'limit': 16
+					}
+				}
+			}]
+		},{
+			rarity: "Rare",
+			data: [{
+				level: 1, costResource: {
+					gold: 15,
+					leaf: 35,
+					food: 45,
+					soil: 0,
+				},
+				nextLevel: {
+					queen: {
+						'limit': 11
+					}
+				}
+			},
+			{
+				level: 2, costResource: {
+					gold: 15,
+					leaf: 35,
+					food: 45,
+					soil: 0,
+				},
+				nextLevel: {
+					queen: {
+						'limit': 12
+					}
+				}
+			},
+			{
+				level: 3, costResource: {
+					gold: 15,
+					leaf: 35,
+					food: 45,
+					soil: 0,
+				},
+				nextLevel: {
+					queen: {
+						'limit': 13
+					}
+				}
+			},
+			{
+				level: 4, costResource: {
+					gold: 15,
+					leaf: 35,
+					food: 45,
+					soil: 0,
+				},
+				nextLevel: {
+					queen: {
+						'limit': 15
+					}
+				}
+			}, {
+				level: 5, costResource: {
+					gold: 15,
+					leaf: 35,
+					food: 45,
+					soil: 0,
+				},
+				nextLevel: {
+					queen: {
+						'limit': 16
+					}
+				}
+			}]
+		},
+		{
+			rarity: "Epic",
+			data: [{
+				level: 1, costResource: {
+					gold: 15,
+					leaf: 35,
+					food: 45,
+					soil: 0,
+				},
+				nextLevel: {
+					queen: {
+						'limit': 11
+					}
+				}
+			},
+			{
+				level: 2, costResource: {
+					gold: 15,
+					leaf: 35,
+					food: 45,
+					soil: 0,
+				},
+				nextLevel: {
+					queen: {
+						'limit': 12
+					}
+				}
+			},
+			{
+				level: 3, costResource: {
+					gold: 15,
+					leaf: 35,
+					food: 45,
+					soil: 0,
+				},
+				nextLevel: {
+					queen: {
+						'limit': 13
+					}
+				}
+			},
+			{
+				level: 4, costResource: {
+					gold: 15,
+					leaf: 35,
+					food: 45,
+					soil: 0,
+				},
+				nextLevel: {
+					queen: {
+						'limit': 15
+					}
+				}
+			}, {
+				level: 5, costResource: {
+					gold: 15,
+					leaf: 35,
+					food: 45,
+					soil: 0,
+				},
+				nextLevel: {
+					queen: {
+						'limit': 16
+					}
+				}
+			}]
+		},
+		,
+		{
+			rarity: "Legendary",
+			data: [{
+				level: 1, costResource: {
+					gold: 15,
+					leaf: 35,
+					food: 45,
+					soil: 0,
+				},
+				nextLevel: {
+					queen: {
+						'limit': 11
+					}
+				}
+			},
+			{
+				level: 2, costResource: {
+					gold: 15,
+					leaf: 35,
+					food: 45,
+					soil: 0,
+				},
+				nextLevel: {
+					queen: {
+						'limit': 12
+					}
+				}
+			},
+			{
+				level: 3, costResource: {
+					gold: 15,
+					leaf: 35,
+					food: 45,
+					soil: 0,
+				},
+				nextLevel: {
+					queen: {
+						'limit': 13
+					}
+				}
+			},
+			{
+				level: 4, costResource: {
+					gold: 15,
+					leaf: 35,
+					food: 45,
+					soil: 0,
+				},
+				nextLevel: {
+					queen: {
+						'limit': 15
+					}
+				}
+			}, {
+				level: 5, costResource: {
+					gold: 15,
+					leaf: 35,
+					food: 45,
+					soil: 0,
+				},
+				nextLevel: {
+					queen: {
+						'limit': 16
+					}
+				}
+			}]
+		}
+	]
 	}
 ]
