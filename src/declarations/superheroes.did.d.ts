@@ -10,8 +10,8 @@ export interface AntKingdoms {
   'balance' : (arg_0: BalanceRequest) => Promise<BalanceResponse>,
   'breedAntArmy' : (arg_0: TokenIndex__1) => Promise<Result>,
   'breedAntWorkder' : (arg_0: TokenIndex__1) => Promise<Result>,
-  'buy' : (arg_0: bigint) => Promise<Result_10>,
-  'cancelOrder' : (arg_0: bigint) => Promise<Result_10>,
+  'buy' : (arg_0: bigint) => Promise<Result_12>,
+  'cancelOrder' : (arg_0: bigint) => Promise<Result_12>,
   'changeAdmin' : (arg_0: Principal) => Promise<undefined>,
   'claimResourceInLand' : (
       arg_0: TokenIndex__1,
@@ -19,14 +19,14 @@ export interface AntKingdoms {
     ) => Promise<Result>,
   'claimWorkerEgg' : (arg_0: TokenIndex__1) => Promise<Result>,
   'claiming' : () => Promise<Result>,
-  'createOrder' : (arg_0: TokenIndex__1, arg_1: bigint) => Promise<Result_10>,
+  'createOrder' : (arg_0: TokenIndex__1, arg_1: bigint) => Promise<Result_12>,
   'extensions' : () => Promise<Array<Extension>>,
-  'getAllOrders' : () => Promise<Result_9>,
-  'getDataByLandId' : (arg_0: TokenIndex__1) => Promise<Result_9>,
+  'getAllOrders' : () => Promise<Result_11>,
+  'getDataByLandId' : (arg_0: TokenIndex__1) => Promise<Result_10>,
   'getTokensMetadata' : () => Promise<Array<MetadataExt>>,
   'getUserAvailableWorker' : (arg_0: AccountIdentifier) => Promise<Result_8>,
   'getUserInfo' : (arg_0: AccountIdentifier) => Promise<UserInfoExt>,
-  'getUserOrders' : (arg_0: AccountIdentifier) => Promise<Result_8>,
+  'getUserOrders' : (arg_0: AccountIdentifier) => Promise<Result_9>,
   'getUserTokens' : (arg_0: AccountIdentifier) => Promise<Result_8>,
   'metadata' : (arg_0: TokenIdentifier__1) => Promise<Result_7>,
   'numberOfTokenHolders' : (arg_0: TokenIdentifier__1) => Promise<Result_2>,
@@ -147,6 +147,20 @@ export interface MetadataExt {
   'attributes' : Array<AttributeMeta>,
   'image' : string,
 }
+export interface MetadataExt__1 {
+  'tokenId' : [] | [TokenIndex],
+  'name' : string,
+  'description' : string,
+  'detail' : DetailNFT,
+  'attributes' : Array<AttributeMeta>,
+  'image' : string,
+}
+export interface OrderExt {
+  'token' : MetadataExt__1,
+  'owner' : Principal,
+  'index' : bigint,
+  'price' : bigint,
+}
 export interface Resource {
   'food' : number,
   'gold' : number,
@@ -157,7 +171,11 @@ export type Result = { 'ok' : boolean } |
   { 'err' : string };
 export type Result_1 = { 'ok' : MetadataExt } |
   { 'err' : string };
-export type Result_10 = { 'ok' : bigint } |
+export type Result_10 = { 'ok' : Array<MetadataExt> } |
+  { 'err' : string };
+export type Result_11 = { 'ok' : Array<OrderExt> } |
+  { 'err' : string };
+export type Result_12 = { 'ok' : bigint } |
   { 'err' : string };
 export type Result_2 = { 'ok' : bigint } |
   { 'err' : CommonError };
@@ -173,8 +191,8 @@ export type Result_7 = { 'ok' : MetadataExt } |
   { 'err' : CommonError };
 export type Result_8 = { 'ok' : Array<MetadataExt> } |
   { 'err' : CommonError };
-export type Result_9 = { 'ok' : Array<MetadataExt> } |
-  { 'err' : string };
+export type Result_9 = { 'ok' : Array<OrderExt> } |
+  { 'err' : CommonError };
 export type Time = bigint;
 export type TokenIdentifier = string;
 export type TokenIdentifier__1 = string;

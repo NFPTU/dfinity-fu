@@ -202,6 +202,13 @@ module {
          tokenId: TokenIndex;
     };
 
+    public type OrderExt = {
+         index: Nat;
+         price: Nat;
+         owner: Principal;
+         token: MetadataExt;
+    };
+
 
     /// Update call operations
     public type Operation = {

@@ -22,7 +22,7 @@ export const idlFactory = ({ IDL }) => {
     'err' : CommonError__1,
   });
   const Result = IDL.Variant({ 'ok' : IDL.Bool, 'err' : IDL.Text });
-  const Result_10 = IDL.Variant({ 'ok' : IDL.Nat, 'err' : IDL.Text });
+  const Result_12 = IDL.Variant({ 'ok' : IDL.Nat, 'err' : IDL.Text });
   const Extension = IDL.Text;
   const TokenIndex = IDL.Nat32;
   const Resource = IDL.Record({
@@ -82,6 +82,21 @@ export const idlFactory = ({ IDL }) => {
     'trait_type' : IDL.Text,
     'value' : IDL.Text,
   });
+  const MetadataExt__1 = IDL.Record({
+    'tokenId' : IDL.Opt(TokenIndex),
+    'name' : IDL.Text,
+    'description' : IDL.Text,
+    'detail' : DetailNFT,
+    'attributes' : IDL.Vec(AttributeMeta),
+    'image' : IDL.Text,
+  });
+  const OrderExt = IDL.Record({
+    'token' : MetadataExt__1,
+    'owner' : IDL.Principal,
+    'index' : IDL.Nat,
+    'price' : IDL.Nat,
+  });
+  const Result_11 = IDL.Variant({ 'ok' : IDL.Vec(OrderExt), 'err' : IDL.Text });
   const MetadataExt = IDL.Record({
     'tokenId' : IDL.Opt(TokenIndex),
     'name' : IDL.Text,
@@ -90,7 +105,7 @@ export const idlFactory = ({ IDL }) => {
     'attributes' : IDL.Vec(AttributeMeta),
     'image' : IDL.Text,
   });
-  const Result_9 = IDL.Variant({
+  const Result_10 = IDL.Variant({
     'ok' : IDL.Vec(MetadataExt),
     'err' : IDL.Text,
   });
@@ -113,6 +128,10 @@ export const idlFactory = ({ IDL }) => {
     'userState' : UserState,
     'name' : IDL.Text,
     'tokens' : IDL.Vec(TokenIndex),
+  });
+  const Result_9 = IDL.Variant({
+    'ok' : IDL.Vec(OrderExt),
+    'err' : CommonError,
   });
   const TokenIdentifier__1 = IDL.Text;
   const Result_7 = IDL.Variant({ 'ok' : MetadataExt, 'err' : CommonError });
@@ -170,8 +189,8 @@ export const idlFactory = ({ IDL }) => {
     'balance' : IDL.Func([BalanceRequest], [BalanceResponse], ['query']),
     'breedAntArmy' : IDL.Func([TokenIndex__1], [Result], []),
     'breedAntWorkder' : IDL.Func([TokenIndex__1], [Result], []),
-    'buy' : IDL.Func([IDL.Nat], [Result_10], []),
-    'cancelOrder' : IDL.Func([IDL.Nat], [Result_10], []),
+    'buy' : IDL.Func([IDL.Nat], [Result_12], []),
+    'cancelOrder' : IDL.Func([IDL.Nat], [Result_12], []),
     'changeAdmin' : IDL.Func([IDL.Principal], [], []),
     'claimResourceInLand' : IDL.Func(
         [TokenIndex__1, TokenIndex__1],
@@ -180,10 +199,10 @@ export const idlFactory = ({ IDL }) => {
       ),
     'claimWorkerEgg' : IDL.Func([TokenIndex__1], [Result], []),
     'claiming' : IDL.Func([], [Result], []),
-    'createOrder' : IDL.Func([TokenIndex__1, IDL.Nat], [Result_10], []),
+    'createOrder' : IDL.Func([TokenIndex__1, IDL.Nat], [Result_12], []),
     'extensions' : IDL.Func([], [IDL.Vec(Extension)], ['query']),
-    'getAllOrders' : IDL.Func([], [Result_9], ['query']),
-    'getDataByLandId' : IDL.Func([TokenIndex__1], [Result_9], []),
+    'getAllOrders' : IDL.Func([], [Result_11], ['query']),
+    'getDataByLandId' : IDL.Func([TokenIndex__1], [Result_10], []),
     'getTokensMetadata' : IDL.Func([], [IDL.Vec(MetadataExt)], []),
     'getUserAvailableWorker' : IDL.Func(
         [AccountIdentifier],
@@ -191,7 +210,7 @@ export const idlFactory = ({ IDL }) => {
         ['query'],
       ),
     'getUserInfo' : IDL.Func([AccountIdentifier], [UserInfoExt], ['query']),
-    'getUserOrders' : IDL.Func([AccountIdentifier], [Result_8], ['query']),
+    'getUserOrders' : IDL.Func([AccountIdentifier], [Result_9], ['query']),
     'getUserTokens' : IDL.Func([AccountIdentifier], [Result_8], ['query']),
     'metadata' : IDL.Func([TokenIdentifier__1], [Result_7], ['query']),
     'numberOfTokenHolders' : IDL.Func(
