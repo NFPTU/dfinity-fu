@@ -10,5 +10,6 @@ actor {
   stable var _nextTokenId : Nat32;
   stable var _registryState :
     [(TokenIndex/2, [(AccountIdentifier/3, Balance/1)])];
+  stable var totalOrders_ : Nat;
   stable var usersEntries : [(AccountIdentifier/3, UserInfo/2)]
 };

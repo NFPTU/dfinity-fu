@@ -22,38 +22,14 @@ type UserInfoExt =
  };
 type User = 
  variant {
-   address: AccountIdentifier;
+   address: AccountIdentifier__1;
    "principal": principal;
- };
-type TransferResponse = 
- variant {
-   err:
-    variant {
-      CannotNotify: AccountIdentifier;
-      InsufficientBalance;
-      InvalidToken: TokenIdentifier;
-      Other: text;
-      Rejected;
-      Unauthorized: AccountIdentifier;
-    };
-   ok: Balance;
- };
-type TransferRequest = 
- record {
-   amount: Balance;
-   from: User;
-   memo: Memo;
-   notify: bool;
-   subaccount: opt SubAccount;
-   to: User;
-   token: TokenIdentifier;
  };
 type TokenIndex__1 = nat32;
 type TokenIndex = nat32;
 type TokenIdentifier__1 = text;
 type TokenIdentifier = text;
 type Time = int;
-type SubAccount = vec nat8;
 type Result_9 = 
  variant {
    err: text;
@@ -73,8 +49,8 @@ type Result_6 =
  variant {
    err: CommonError;
    ok: vec record {
-             AccountIdentifier__1;
-             Balance__1;
+             AccountIdentifier;
+             Balance;
            };
  };
 type Result_5 = 
@@ -84,17 +60,22 @@ type Result_5 =
  };
 type Result_4 = 
  variant {
-   err: text;
-   ok: text;
+   err: CommonError;
+   ok: Balance;
  };
 type Result_3 = 
  variant {
-   err: CommonError;
-   ok: Balance__1;
+   err: text;
+   ok: text;
  };
 type Result_2 = 
  variant {
    err: CommonError;
+   ok: nat;
+ };
+type Result_10 = 
+ variant {
+   err: text;
    ok: nat;
  };
 type Result_1 = 
@@ -123,7 +104,6 @@ type MetadataExt =
    name: text;
    tokenId: opt TokenIndex;
  };
-type Memo = blob;
 type LevelData = 
  record {
    info: vec InfoLevel;
@@ -216,7 +196,7 @@ type Balance__1 = nat;
 type BalanceResponse = 
  variant {
    err: CommonError__1;
-   ok: Balance;
+   ok: Balance__1;
  };
 type BalanceRequest = 
  record {
@@ -235,28 +215,31 @@ type AntKingdoms =
  service {
    acceptCycles: () -> ();
    allRegistry: () ->
-    (vec
-      record {
-        TokenIndex__1;
-        vec record {
-              AccountIdentifier__1;
-              Balance__1;
-            };
-      }) query;
+    (vec record {
+           TokenIndex__1;
+           vec record {
+                 AccountIdentifier;
+                 Balance;
+               };
+         }) query;
    availableCycles: () -> (nat) query;
    balance: (BalanceRequest) -> (BalanceResponse) query;
    breedAntArmy: (TokenIndex__1) -> (Result);
    breedAntWorkder: (TokenIndex__1) -> (Result);
+   buy: (nat) -> (Result_10);
+   cancelOrder: (nat) -> (Result_10);
    changeAdmin: (principal) -> ();
    claimResourceInLand: (TokenIndex__1, TokenIndex__1) -> (Result);
    claimWorkerEgg: (TokenIndex__1) -> (Result);
    claiming: () -> (Result);
+   createOrder: (TokenIndex__1, nat) -> (Result_10);
    extensions: () -> (vec Extension) query;
    getDataByLandId: (TokenIndex__1) -> (Result_9);
    getTokensMetadata: () -> (vec MetadataExt);
-   getUserAvailableWorker: (AccountIdentifier__1) -> (Result_8) query;
-   getUserInfo: (AccountIdentifier__1) -> (UserInfoExt) query;
-   getUserTokens: (AccountIdentifier__1) -> (Result_8) query;
+   getUserAvailableWorker: (AccountIdentifier) -> (Result_8) query;
+   getUserInfo: (AccountIdentifier) -> (UserInfoExt) query;
+   getUserOrders: (AccountIdentifier) -> (Result_8) query;
+   getUserTokens: (AccountIdentifier) -> (Result_8) query;
    metadata: (TokenIdentifier__1) -> (Result_7) query;
    numberOfTokenHolders: (TokenIdentifier__1) -> (Result_2) query;
    numberOfTokens: () -> (nat) query;
@@ -264,10 +247,13 @@ type AntKingdoms =
    setLevelMetadata: (vec LevelData) -> (Result_5);
    setTokensMetadata: (vec MetadataExt) -> (Result);
    stakeLandToKingdom: (TokenIndex__1, TokenIndex__1) -> (Result);
-   stakeNestInLand: (TokenIndex__1, TokenIndex__1) -> (Result_4);
-   stakeQueenInNest: (TokenIndex__1, TokenIndex__1) -> (Result_4);
-   supply: (TokenIdentifier__1) -> (Result_3) query;
-   transfer: (TransferRequest) -> (TransferResponse);
+   stakeNestInLand: (TokenIndex__1, TokenIndex__1) -> (Result_3);
+   stakeQueenInNest: (TokenIndex__1, TokenIndex__1) -> (Result_3);
+   supply: (TokenIdentifier__1) -> (Result_4) query;
+   transfer: (principal, TokenIndex__1) -> (Result);
+   unStakeLandToKingdom: (TokenIndex__1, TokenIndex__1) -> (Result);
+   unStakeNestInLand: (TokenIndex__1, TokenIndex__1) -> (Result_3);
+   unStakeQueenInNest: (TokenIndex__1, TokenIndex__1) -> (Result_3);
    updateUser: (text) -> (Result_2);
    upgradeLevelNest: (TokenIndex__1) -> (Result_1);
    upgradeLevelQueen: (TokenIndex__1) -> (Result_1);
@@ -275,4 +261,4 @@ type AntKingdoms =
  };
 type AccountIdentifier__1 = text;
 type AccountIdentifier = text;
-service : (principal) -> AntKingdoms
+service : (principal, principal, nat) -> AntKingdoms

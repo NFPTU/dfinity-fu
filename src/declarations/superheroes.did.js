@@ -1,27 +1,28 @@
 export const idlFactory = ({ IDL }) => {
   const TokenIndex__1 = IDL.Nat32;
-  const AccountIdentifier__1 = IDL.Text;
-  const Balance__1 = IDL.Nat;
-  const TokenIdentifier = IDL.Text;
   const AccountIdentifier = IDL.Text;
+  const Balance = IDL.Nat;
+  const TokenIdentifier = IDL.Text;
+  const AccountIdentifier__1 = IDL.Text;
   const User = IDL.Variant({
     'principal' : IDL.Principal,
-    'address' : AccountIdentifier,
+    'address' : AccountIdentifier__1,
   });
   const BalanceRequest = IDL.Record({
     'token' : TokenIdentifier,
     'user' : User,
   });
-  const Balance = IDL.Nat;
+  const Balance__1 = IDL.Nat;
   const CommonError__1 = IDL.Variant({
     'InvalidToken' : TokenIdentifier,
     'Other' : IDL.Text,
   });
   const BalanceResponse = IDL.Variant({
-    'ok' : Balance,
+    'ok' : Balance__1,
     'err' : CommonError__1,
   });
   const Result = IDL.Variant({ 'ok' : IDL.Bool, 'err' : IDL.Text });
+  const Result_10 = IDL.Variant({ 'ok' : IDL.Nat, 'err' : IDL.Text });
   const Extension = IDL.Text;
   const TokenIndex = IDL.Nat32;
   const Resource = IDL.Record({
@@ -117,7 +118,7 @@ export const idlFactory = ({ IDL }) => {
   const Result_7 = IDL.Variant({ 'ok' : MetadataExt, 'err' : CommonError });
   const Result_2 = IDL.Variant({ 'ok' : IDL.Nat, 'err' : CommonError });
   const Result_6 = IDL.Variant({
-    'ok' : IDL.Vec(IDL.Tuple(AccountIdentifier__1, Balance__1)),
+    'ok' : IDL.Vec(IDL.Tuple(AccountIdentifier, Balance)),
     'err' : CommonError,
   });
   const CostInfo = IDL.Record({
@@ -141,30 +142,8 @@ export const idlFactory = ({ IDL }) => {
     'name' : IDL.Text,
   });
   const Result_5 = IDL.Variant({ 'ok' : IDL.Vec(LevelData), 'err' : IDL.Text });
-  const Result_4 = IDL.Variant({ 'ok' : IDL.Text, 'err' : IDL.Text });
-  const Result_3 = IDL.Variant({ 'ok' : Balance__1, 'err' : CommonError });
-  const Memo = IDL.Vec(IDL.Nat8);
-  const SubAccount = IDL.Vec(IDL.Nat8);
-  const TransferRequest = IDL.Record({
-    'to' : User,
-    'token' : TokenIdentifier,
-    'notify' : IDL.Bool,
-    'from' : User,
-    'memo' : Memo,
-    'subaccount' : IDL.Opt(SubAccount),
-    'amount' : Balance,
-  });
-  const TransferResponse = IDL.Variant({
-    'ok' : Balance,
-    'err' : IDL.Variant({
-      'CannotNotify' : AccountIdentifier,
-      'InsufficientBalance' : IDL.Null,
-      'InvalidToken' : TokenIdentifier,
-      'Rejected' : IDL.Null,
-      'Unauthorized' : AccountIdentifier,
-      'Other' : IDL.Text,
-    }),
-  });
+  const Result_3 = IDL.Variant({ 'ok' : IDL.Text, 'err' : IDL.Text });
+  const Result_4 = IDL.Variant({ 'ok' : Balance, 'err' : CommonError });
   const Result_1 = IDL.Variant({ 'ok' : MetadataExt, 'err' : IDL.Text });
   const WorkerFarmRequest = IDL.Record({
     'food' : IDL.Vec(TokenIndex),
@@ -181,7 +160,7 @@ export const idlFactory = ({ IDL }) => {
           IDL.Vec(
             IDL.Tuple(
               TokenIndex__1,
-              IDL.Vec(IDL.Tuple(AccountIdentifier__1, Balance__1)),
+              IDL.Vec(IDL.Tuple(AccountIdentifier, Balance)),
             )
           ),
         ],
@@ -191,6 +170,8 @@ export const idlFactory = ({ IDL }) => {
     'balance' : IDL.Func([BalanceRequest], [BalanceResponse], ['query']),
     'breedAntArmy' : IDL.Func([TokenIndex__1], [Result], []),
     'breedAntWorkder' : IDL.Func([TokenIndex__1], [Result], []),
+    'buy' : IDL.Func([IDL.Nat], [Result_10], []),
+    'cancelOrder' : IDL.Func([IDL.Nat], [Result_10], []),
     'changeAdmin' : IDL.Func([IDL.Principal], [], []),
     'claimResourceInLand' : IDL.Func(
         [TokenIndex__1, TokenIndex__1],
@@ -199,16 +180,18 @@ export const idlFactory = ({ IDL }) => {
       ),
     'claimWorkerEgg' : IDL.Func([TokenIndex__1], [Result], []),
     'claiming' : IDL.Func([], [Result], []),
+    'createOrder' : IDL.Func([TokenIndex__1, IDL.Nat], [Result_10], []),
     'extensions' : IDL.Func([], [IDL.Vec(Extension)], ['query']),
     'getDataByLandId' : IDL.Func([TokenIndex__1], [Result_9], []),
     'getTokensMetadata' : IDL.Func([], [IDL.Vec(MetadataExt)], []),
     'getUserAvailableWorker' : IDL.Func(
-        [AccountIdentifier__1],
+        [AccountIdentifier],
         [Result_8],
         ['query'],
       ),
-    'getUserInfo' : IDL.Func([AccountIdentifier__1], [UserInfoExt], ['query']),
-    'getUserTokens' : IDL.Func([AccountIdentifier__1], [Result_8], ['query']),
+    'getUserInfo' : IDL.Func([AccountIdentifier], [UserInfoExt], ['query']),
+    'getUserOrders' : IDL.Func([AccountIdentifier], [Result_8], ['query']),
+    'getUserTokens' : IDL.Func([AccountIdentifier], [Result_8], ['query']),
     'metadata' : IDL.Func([TokenIdentifier__1], [Result_7], ['query']),
     'numberOfTokenHolders' : IDL.Func(
         [TokenIdentifier__1],
@@ -226,16 +209,31 @@ export const idlFactory = ({ IDL }) => {
       ),
     'stakeNestInLand' : IDL.Func(
         [TokenIndex__1, TokenIndex__1],
-        [Result_4],
+        [Result_3],
         [],
       ),
     'stakeQueenInNest' : IDL.Func(
         [TokenIndex__1, TokenIndex__1],
-        [Result_4],
+        [Result_3],
         [],
       ),
-    'supply' : IDL.Func([TokenIdentifier__1], [Result_3], ['query']),
-    'transfer' : IDL.Func([TransferRequest], [TransferResponse], []),
+    'supply' : IDL.Func([TokenIdentifier__1], [Result_4], ['query']),
+    'transfer' : IDL.Func([IDL.Principal, TokenIndex__1], [Result], []),
+    'unStakeLandToKingdom' : IDL.Func(
+        [TokenIndex__1, TokenIndex__1],
+        [Result],
+        [],
+      ),
+    'unStakeNestInLand' : IDL.Func(
+        [TokenIndex__1, TokenIndex__1],
+        [Result_3],
+        [],
+      ),
+    'unStakeQueenInNest' : IDL.Func(
+        [TokenIndex__1, TokenIndex__1],
+        [Result_3],
+        [],
+      ),
     'updateUser' : IDL.Func([IDL.Text], [Result_2], []),
     'upgradeLevelNest' : IDL.Func([TokenIndex__1], [Result_1], []),
     'upgradeLevelQueen' : IDL.Func([TokenIndex__1], [Result_1], []),
@@ -247,4 +245,6 @@ export const idlFactory = ({ IDL }) => {
   });
   return AntKingdoms;
 };
-export const init = ({ IDL }) => { return [IDL.Principal]; };
+export const init = ({ IDL }) => {
+  return [IDL.Principal, IDL.Principal, IDL.Nat];
+};
