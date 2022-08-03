@@ -176,7 +176,6 @@ private let NFT_RARITY : [Text] =   ["Common","Uncommon","Rare", "Epec", "Legend
     orders := HashMap.fromIter<Nat, OrderInfo>(orderEntries.vals(), 1, Nat.equal, Hash.hash);
     orderEntries := [];
   };
-
   
     private func _isOwnerOf(tokenId: TokenIndex, who: AccountIdentifier) : Bool {
       var tokenBalances = switch(_registry.get(tokenId)) {
@@ -198,6 +197,7 @@ private let NFT_RARITY : [Text] =   ["Common","Uncommon","Rare", "Epec", "Legend
   };
 
   public shared(msg) func setTokensMetadata(listMeta: [MetadataExt]): async Result.Result<Bool, Text> {
+    D.print(Principal.toText(msg.caller));
      assert(msg.caller == _admin);
      var i = 0;
     for(metadata in Iter.fromArray(listMeta)) {
@@ -208,6 +208,7 @@ private let NFT_RARITY : [Text] =   ["Common","Uncommon","Rare", "Epec", "Legend
   };
 
   public shared(msg) func setLevelMetadata(listMeta: [LevelData]): async Result.Result<[LevelData], Text> {
+    assert(msg.caller == _admin);
     levelMetadata:=listMeta;
     return #ok(levelMetadata);
   };

@@ -14,48 +14,14 @@ function Admin() {
 	} = useConnect();
 	const [listNFt, setListNFt] = useState([]);
 	const [superheroes, { loading, error }] = useCanister('superheroes');
-	useEffect(() => {
-		const newLevel = levelData.map(el => {
-			
-			const newArr = [el.info[0]];
-			el.info.map(ele => ele.data.map((e, index) => {
-				const baseData = ele.data[index];
-				console.log(baseData);
-				const newLevel = {
-					level: newArr.length+1, 
-					costResource: {
-						gold: Number((baseData.costResource.gold*1.1).toFixed()),
-						leaf:  Number((baseData.costResource.leaf*1.2).toFixed()),
-						food:  Number((baseData.costResource.food*1.2).toFixed()),
-						soil: 0,
-					},
-					nextLevel: {
-						queen: {
-							'resourcePerWorker': {
-								gold: 0,
-								leaf: 0,
-								soil: 0,
-								food: baseData.nextLevel.queen.resourcePerWorker.food-2,
-							},
-							'breedWorkerTime': baseData.nextLevel.queen.breedWorkerTime - (baseData.nextLevel.queen.breedWorkerTime/60*2),
-						}
-					}
-				}
-				newArr.push(newLevel)
-				
-			}))
-			return newArr
-		})
-		console.log(newLevel);
-	}, [])
 	
 
 	const onSubmit = async () => {
 			console.log(superheroes);
-			const newArr = metadata.map((el) => ({ nonfungible: el }));
-			console.log(metadata);
 			const res = await superheroes?.setTokensMetadata(metadata);
 			console.log(res);
+			const res2 = await superheroes?.setLevelMetadata(levelData);
+			console.log(res2);
 			const response = await superheroes?.getTokensMetadata();
 			console.log(response);
 		
@@ -160,6 +126,12 @@ function Admin() {
 
 	const getUserInfo = async () => {
 		const res = await superheroes.getUserInfo(principal?.toString());
+		console.log(res);
+	};
+
+	const createOrder = async () => {
+		const listQ = getNFTByType('Land');
+		const res = await superheroes.createOrder(listQ[0].tokenId[0], 10);
 		console.log(res);
 	};
 

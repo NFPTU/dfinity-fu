@@ -4,6 +4,10 @@
       "main": "src/superheroes/Main.mo",
       "type": "motoko"
     },
+    "token": {
+      "main": "src/superheroes/Token/token.mo",
+      "type": "motoko"
+    },
     "www": {
       "frontend": {
         "entrypoint": "src/www/index.html"
