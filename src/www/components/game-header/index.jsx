@@ -3,13 +3,22 @@ import './game-header.css';
 import { Notifications, Logout } from '@mui/icons-material';
 import { tabs } from './data';
 import Tooltip from '@mui/material/Tooltip';
+import { Link } from 'react-router-dom';
+import { useCanister, useConnect } from '@connect2ic/react';
+import { withContext } from '../../hooks'
 
-function GameHeader() {
-	const [tab, setTab] = useState('market');
+function GameHeader(props) {
+	const { tabGameHeader, setTabGameHeader } = props
+
 	const [isCopied, setIsCopied] = useState(false);
 
+	const { principal } = useConnect();
+	const walletIdBefore = principal?.toString()?.slice(0, 4);
+	const walletIdAfter = principal?.toString()?.slice(60, 63);
+	const walletId = walletIdBefore?.concat(`...${walletIdAfter}`);
+
 	const handleCopyToClipboard = () => {
-		navigator.clipboard.writeText('test copy 1');
+		navigator.clipboard.writeText(walletId);
 
 		setIsCopied(true);
 
@@ -19,6 +28,10 @@ function GameHeader() {
 
 		return () => clearTimeout(timerId);
 	};
+
+	const handleChangeTabItem = (item) => {
+		setTabGameHeader(item)
+	}
 
 	return (
 		<div className='header'>
@@ -31,16 +44,20 @@ function GameHeader() {
 
 					<div className='header__wrapper-list'>
 						{tabs.map((item, key) => (
-							<div
-								onClick={() => setTab(item.type)}
-								key={key}
-								className={
-									item.type === tab
-										? 'header__wrapper-item header__wrapper-itemActive'
-										: 'header__wrapper-item'
-								}>
-								{item.name}
-							</div>
+							<Link
+								to={item.link}
+								style={{ color: 'inherit', textDecoration: 'none' }}>
+								<div
+									onClick={() => handleChangeTabItem(item.type)}
+									key={key}
+									className={
+										item.type === tabGameHeader
+											? 'header__wrapper-item header__wrapper-itemActive'
+											: 'header__wrapper-item'
+									}>
+									{item.name}
+								</div>
+							</Link>
 						))}
 					</div>
 				</div>
@@ -62,7 +79,7 @@ function GameHeader() {
 
 					<div className='header__wrapper-account'>
 						<span className={isCopied && 'text-copied'}>
-							{isCopied ? 'Copied ✓' : '0xe23...eefc'}
+							{isCopied ? 'Copied ✓' : (!principal ? '########' : walletId)}
 						</span>
 						<img
 							className={isCopied && 'img-copied'}
@@ -83,4 +100,4 @@ function GameHeader() {
 	);
 }
 
-export default GameHeader;
+export default withContext(GameHeader);

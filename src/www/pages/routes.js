@@ -11,7 +11,7 @@ const DetailCollections = lazy(() => import("./detail-collections"))
 const DetailNft = lazy(() => import("./detail-nft"))
 const ListNft = lazy(() => import("./list-nft"))
 const LoginGame = lazy(() => import("./game/login"))
-const Inventory = lazy(() => import("./game/inventory"))
+const InventoryOld = lazy(() => import("./game/inventory"))
 const Admin = lazy(() => import("./admin"))
 const HomeClaim = lazy(() => import("./game/home"))
 const Popup = lazy(() => import("../components/popup"))
@@ -20,6 +20,7 @@ const Farming = lazy(() => import("./game/farming"))
 const Nest = lazy(() => import("./game/nest"))
 const Kingdom = lazy(() => import("./game/kingdom"))
 const Market = lazy(() => import("./market"))
+const Inventory = lazy(() => import("./inventory"))
 const Battle = lazy(() => import("./game/battle"))
 const DetailMarket = lazy(() => import("./detail-market"))
 
@@ -39,10 +40,10 @@ const routes = [
         layout: null
     },
     {
-        path: "/inventory",
+        path: "/inventory-old",
         exact: true,
         public: true,
-        component: Inventory,
+        component: InventoryOld,
         layout: GameLayout
     },
     {
@@ -78,6 +79,13 @@ const routes = [
         exact: true,
         public: true,
         component: Market,
+        layout: GameLayoutHeader
+    },
+    {
+        path: "/inventory",
+        exact: true,
+        public: true,
+        component: Inventory,
         layout: GameLayoutHeader
     },
     {

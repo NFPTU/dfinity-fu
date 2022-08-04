@@ -59,7 +59,17 @@ function Breeding(props) {
 					progress: undefined,
 				});
 				break;
-		
+
+			case 'success':
+				toast.success(message, {
+					position: 'top-right',
+					autoClose: 5000,
+					hideProgressBar: false,
+					closeOnClick: true,
+					pauseOnHover: true,
+					draggable: true,
+					progress: undefined,
+				});
 			default:
 				break;
 		}
@@ -119,10 +129,13 @@ function Breeding(props) {
 		const foodNeeded = queenNFT?.detail?.queen?.info?.resourcePerWorker?.food;
 		const limitWorkerInNest = Number(listNest[0]?.detail?.nest?.limit);
 		if (resource?.food < foodNeeded) {
-			toastEmitter('warn', 'You need more food to breeding')
+			toastEmitter('warn', 'You need more food to breeding');
 		} else {
 			if (remainWorker === limitWorkerInNest) {
-				toastEmitter('warn', 'Can not breeding! The number of ant worker in the nest has reached the limit')
+				toastEmitter(
+					'warn',
+					'Can not breeding! The number of ant worker in the nest has reached the limit'
+				);
 			} else {
 				setOpenProcess(true);
 				const listQ = getNFTByType('Queen');
@@ -132,18 +145,12 @@ function Breeding(props) {
 		}
 	};
 
+	console.log('completedCount', completedCount);
+
 	const onClaimWorker = async (e) => {
 		if (!completedCount) {
-			e.preventDefault();
-			toast.warn('You need to wait for the time out to claim', {
-				position: 'top-right',
-				autoClose: 5000,
-				hideProgressBar: false,
-				closeOnClick: true,
-				pauseOnHover: true,
-				draggable: true,
-				progress: undefined,
-			});
+			e?.preventDefault();
+			toastEmitter('warn', 'You need to wait for the time out to claim');
 		} else {
 			if (
 				worker?.detail?.worker?.breedTimestamp &&
@@ -153,6 +160,7 @@ function Breeding(props) {
 				const res = await superheroes.claimWorkerEgg(queenNFT?.tokenId[0]);
 				await onGetData();
 				setOpenProcess(false);
+				toastEmitter('success', 'Claim egg successfully !!!');
 			}
 		}
 	};
@@ -161,7 +169,6 @@ function Breeding(props) {
 		const listQ = getNFTByType('Queen');
 		setOpenProcess(true);
 		const res = await superheroes.upgradeLevelQueen(listQ[0]?.tokenId[0]);
-		console.log('res', res);
 		setOpenProcess(false);
 	};
 
@@ -176,15 +183,7 @@ function Breeding(props) {
 
 	const onCompleteCount = (props) => {
 		setCompletedCount(true);
-		toast.success('Breeding successfully !!!', {
-			position: 'top-right',
-			autoClose: 5000,
-			hideProgressBar: false,
-			closeOnClick: true,
-			pauseOnHover: true,
-			draggable: true,
-			progress: undefined,
-		});
+		toastEmitter('success', 'Breeding successfully !!!');
 	};
 
 	const onGetAvailWorker = async () => {
@@ -207,11 +206,6 @@ function Breeding(props) {
 			getListNest();
 		}
 	}, [data]);
-
-	// console.log('queenNFT', queenNFT);
-	// console.log('completedCount', completedCount);
-	console.log('remainWorker', remainWorker);
-	console.log('listNest', Number(listNest[0]?.detail?.nest?.limit));
 
 	return (
 		<>
@@ -298,9 +292,10 @@ function Breeding(props) {
 						<BtnList>
 							<Btn
 								onClick={onBreeding}
-								disabled={
-									queenNFT?.detail?.queen?.breedingWorkerId && !completedCount
-								}>
+								// disabled={
+								// 	queenNFT?.detail?.queen?.breedingWorkerId && !completedCount
+								// }
+							>
 								{!queenNFT?.detail?.queen?.breedingWorkerId
 									? 'Breeding'
 									: 'Claim'}

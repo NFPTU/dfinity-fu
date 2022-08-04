@@ -2,21 +2,25 @@ export const tabs = [
     {
         id: 1,
         type: "market",
-        name: "P2P Market"
+        name: "P2P Market",
+        link: '/market'
     },
     {
         id: 2,
         type: "inventory",
-        name: "Inventory"
+        name: "Inventory",
+        link: '/inventory'
     },
     {
         id: 3,
         type: "game",
-        name: "Game"
+        name: "Game",
+        link: '/market'
     },
     {
         id: 4,
         type: "docs",
-        name: "Docs"
+        name: "Docs",
+        link: '/market'
     },
 ]
