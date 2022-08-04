@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { metadata, levelData } from './nft';
 import { useCanister, useConnect } from '@connect2ic/react';
+import { Principal } from '@dfinity/principal';
 
 function Admin() {
 	const {
@@ -14,6 +15,7 @@ function Admin() {
 	} = useConnect();
 	const [listNFt, setListNFt] = useState([]);
 	const [superheroes, { loading, error }] = useCanister('superheroes');
+	const [token] = useCanister('token');
 	
 
 	const onSubmit = async () => {
@@ -135,6 +137,14 @@ function Admin() {
 		console.log(res);
 	};
 
+	const transfer = async () => {
+		const res = await token.transfer(Principal.fromText(process.env.SUPERHEROES_CANISTER_ID), 5000000);
+		console.log(res);
+		const res2 = await token.balanceOf(Principal.fromText(process.env.SUPERHEROES_CANISTER_ID));
+		console.log(res2);
+	};
+
+
 	return (
 		<>
 			<button onClick={getUserInfo}> get User</button>
@@ -159,6 +169,8 @@ function Admin() {
 			<button onClick={onWorkerFarmInLand}> worker ant Farm land</button>
 			<br />
 			<button onClick={onClaimResourceInLand}> claim Resource In Land</button>
+			<br />
+			<button onClick={transfer}> transfer</button>
 		</>
 	);
 }

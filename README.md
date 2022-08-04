@@ -72,7 +72,7 @@ dfx canister  install superheroes --argument="( principal \"$(dfx identity get-p
 dfx canister  install superheroes --argument="(principal \"jaguw-lwcc6-3zqsj-j4ct7-yfbb5-gkdyj-wowxh-2wgkg-kbtba-s7raw-mqe\", principal \"$(dfx canister id token)\", 5)"
 
 
-dfx canister install token --argument="(\"Test Token Logo\", \"Test Token Name\", \"Test Token Symbol\", 3, 100000000, principal \"$(dfx identity get-principal)\", 0)"
+dfx canister install token --argument="(\"Test Token Logo\", \"Test Token Name\", \"Test Token Symbol\", 3, 100000000, principal \"jaguw-lwcc6-3zqsj-j4ct7-yfbb5-gkdyj-wowxh-2wgkg-kbtba-s7raw-mqe\", 0)"
  ```text
    npm start:dev
    ```

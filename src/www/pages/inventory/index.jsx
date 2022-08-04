@@ -237,7 +237,7 @@ function Inventory() {
 						<div className='body__right-top-card'>
 							{pageData?.map((item, index) => (
 								<Link
-									to={`/detail/dasddasddssd`}
+									to={`/detail/${item?.tokenId[0]}`}
 									style={{ color: 'inherit', textDecoration: 'none' }}>
 									<div className='body__right-top-cardItem'>
 										<NewCard width='230' height='360' data={item} />
