@@ -32,8 +32,8 @@ type TokenIdentifier = text;
 type Time = int;
 type Result_9 = 
  variant {
-   err: text;
-   ok: vec MetadataExt;
+   err: CommonError;
+   ok: vec OrderExt;
  };
 type Result_8 = 
  variant {
@@ -73,10 +73,20 @@ type Result_2 =
    err: CommonError;
    ok: nat;
  };
-type Result_10 = 
+type Result_12 = 
  variant {
    err: text;
    ok: nat;
+ };
+type Result_11 = 
+ variant {
+   err: text;
+   ok: vec OrderExt;
+ };
+type Result_10 = 
+ variant {
+   err: text;
+   ok: vec MetadataExt;
  };
 type Result_1 = 
  variant {
@@ -94,6 +104,22 @@ type Resource =
    gold: float64;
    leaf: float64;
    soil: float64;
+ };
+type OrderExt = 
+ record {
+   index: nat;
+   owner: principal;
+   price: nat;
+   token: MetadataExt__1;
+ };
+type MetadataExt__1 = 
+ record {
+   attributes: vec AttributeMeta;
+   description: text;
+   detail: DetailNFT;
+   image: text;
+   name: text;
+   tokenId: opt TokenIndex;
  };
 type MetadataExt = 
  record {
@@ -226,20 +252,20 @@ type AntKingdoms =
    balance: (BalanceRequest) -> (BalanceResponse) query;
    breedAntArmy: (TokenIndex__1) -> (Result);
    breedAntWorkder: (TokenIndex__1) -> (Result);
-   buy: (nat) -> (Result_10);
-   cancelOrder: (nat) -> (Result_10);
+   buy: (nat) -> (Result_12);
+   cancelOrder: (nat) -> (Result_12);
    changeAdmin: (principal) -> ();
    claimResourceInLand: (TokenIndex__1, TokenIndex__1) -> (Result);
    claimWorkerEgg: (TokenIndex__1) -> (Result);
    claiming: () -> (Result);
-   createOrder: (TokenIndex__1, nat) -> (Result_10);
+   createOrder: (TokenIndex__1, nat) -> (Result_12);
    extensions: () -> (vec Extension) query;
-   getAllOrders: () -> (Result_9) query;
-   getDataByLandId: (TokenIndex__1) -> (Result_9);
+   getAllOrders: () -> (Result_11) query;
+   getDataByLandId: (TokenIndex__1) -> (Result_10);
    getTokensMetadata: () -> (vec MetadataExt);
    getUserAvailableWorker: (AccountIdentifier) -> (Result_8) query;
    getUserInfo: (AccountIdentifier) -> (UserInfoExt) query;
-   getUserOrders: (AccountIdentifier) -> (Result_8) query;
+   getUserOrders: (AccountIdentifier) -> (Result_9) query;
    getUserTokens: (AccountIdentifier) -> (Result_8) query;
    metadata: (TokenIdentifier__1) -> (Result_7) query;
    numberOfTokenHolders: (TokenIdentifier__1) -> (Result_2) query;

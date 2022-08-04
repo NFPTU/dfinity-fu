@@ -59,6 +59,7 @@ Verify the following before running this demo:
 
    ```text
    dfx build
+   dfx build token
    ```
 
 1. Deploy your canister.
@@ -68,11 +69,10 @@ Verify the following before running this demo:
    ```
 dfx canister install --all --mode upgrade
 dfx canister  install superheroes --argument="( principal \"$(dfx identity get-principal)\")" --mode upgrade
-dfx canister  install superheroes --argument="(principal \"$(dfx identity get-principal)\")"
+dfx canister  install superheroes --argument="(principal \"jaguw-lwcc6-3zqsj-j4ct7-yfbb5-gkdyj-wowxh-2wgkg-kbtba-s7raw-mqe\", principal \"$(dfx canister id token)\", 5)"
 
 
-dfx canister --network ic  install superheroes --argument="(\"Test logo\", \"Test NFT1\", \"NFT1\", \"This is a NFT demo test\", principal \"$(dfx identity get-principal)\")"
-
+dfx canister install token --argument="(\"Test Token Logo\", \"Test Token Name\", \"Test Token Symbol\", 3, 100000000, principal \"$(dfx identity get-principal)\", 0)"
  ```text
    npm start:dev
    ```

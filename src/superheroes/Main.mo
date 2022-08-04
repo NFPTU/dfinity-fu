@@ -69,6 +69,7 @@ shared(msg) actor class AntKingdoms(
     type LevelData = Types.LevelData;
     type ResourceInt= Types.ResourceInt;
      type OrderInfo= Types.OrderInfo;
+     type OrderExt = Types.OrderExt;
 
   type RegisterTokenRequest = {
     metadata : MetadataExt;
@@ -175,7 +176,6 @@ private let NFT_RARITY : [Text] =   ["Common","Uncommon","Rare", "Epec", "Legend
     orders := HashMap.fromIter<Nat, OrderInfo>(orderEntries.vals(), 1, Nat.equal, Hash.hash);
     orderEntries := [];
   };
-
   
     private func _isOwnerOf(tokenId: TokenIndex, who: AccountIdentifier) : Bool {
       var tokenBalances = switch(_registry.get(tokenId)) {
@@ -197,6 +197,7 @@ private let NFT_RARITY : [Text] =   ["Common","Uncommon","Rare", "Epec", "Legend
   };
 
   public shared(msg) func setTokensMetadata(listMeta: [MetadataExt]): async Result.Result<Bool, Text> {
+    D.print(Principal.toText(msg.caller));
      assert(msg.caller == _admin);
      var i = 0;
     for(metadata in Iter.fromArray(listMeta)) {
@@ -207,6 +208,7 @@ private let NFT_RARITY : [Text] =   ["Common","Uncommon","Rare", "Epec", "Legend
   };
 
   public shared(msg) func setLevelMetadata(listMeta: [LevelData]): async Result.Result<[LevelData], Text> {
+    assert(msg.caller == _admin);
     levelMetadata:=listMeta;
     return #ok(levelMetadata);
   };
@@ -590,7 +592,7 @@ var orderData = switch(orders.get(orderId)) {
     return  #ok(ret.toArray());
   };
 
-  public query func getUserOrders(owner: AccountIdentifier) : async Result.Result<[MetadataExt] , CommonError>{
+  public query func getUserOrders(owner: AccountIdentifier) : async Result.Result<[OrderExt] , CommonError>{
     let tokenIds = switch (users.get(owner)) {
       case (?user) {
         TrieSet.toArray(user.tokens)
@@ -599,25 +601,39 @@ var orderData = switch(orders.get(orderId)) {
         []
       };
     };
-    let ret = Buffer.Buffer<MetadataExt>(tokenIds.size());
-    for(id in Iter.fromArray(tokenIds)) {
-      var tokenData = switch(_metadata.get(id)) {
-        case (?metadata) metadata;
-        case (_) return #err(#InvalidToken(Nat32.toText(id)));
+   let ret = Buffer.Buffer<OrderExt>(orders.size());
+       Iter.iterate(orders.entries(), func(order : (Nat, OrderInfo), _index : Nat) {
+        var tokenData = switch(_metadata.get(order.1.tokenId)) {
+        case (?metadata) {
+           var newOrder : OrderExt = {
+          index = order.1.index;
+         price = order.1.price;
+         owner = order.1.owner;
+         token = _tokenMetadata(metadata.0);
+        };
+      ret.add(newOrder);
+        };
+        case (_) return ;
       };
-      ret.add(_tokenMetadata(tokenData.0));
-    };
+    });
     return  #ok(ret.toArray());
   };
 
-  public query func getAllOrders() : async Result.Result<[MetadataExt] , Text>{
-    let ret = Buffer.Buffer<MetadataExt>(orders.size());
+  public query func getAllOrders() : async Result.Result<[OrderExt] , Text>{
+    let ret = Buffer.Buffer<OrderExt>(orders.size());
        Iter.iterate(orders.entries(), func(order : (Nat, OrderInfo), _index : Nat) {
         var tokenData = switch(_metadata.get(order.1.tokenId)) {
-        case (?metadata) metadata;
+        case (?metadata) {
+           var newOrder : OrderExt = {
+          index = order.1.index;
+         price = order.1.price;
+         owner = order.1.owner;
+         token = _tokenMetadata(metadata.0);
+        };
+      ret.add(newOrder);
+        };
         case (_) return ;
       };
-      ret.add(_tokenMetadata(tokenData.0));
     });
    
     return  #ok(ret.toArray());

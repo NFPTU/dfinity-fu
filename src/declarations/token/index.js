@@ -1,15 +1,16 @@
 import { Actor, HttpAgent } from "@dfinity/agent";
 
 // Imports and re-exports candid interface
-import { idlFactory } from './superheroes/superheroes.did.js';
+import { idlFactory } from './token.did.js';
+export { idlFactory } from './token.did.js';
 // CANISTER_ID is replaced by webpack based on node environment
-export const canisterId = process.env.SUPERHEROES_CANISTER_ID;
+export const canisterId = process.env.TOKEN_CANISTER_ID;
 
 /**
  * 
  * @param {string | import("@dfinity/principal").Principal} canisterId Canister ID of Agent
  * @param {{agentOptions?: import("@dfinity/agent").HttpAgentOptions; actorOptions?: import("@dfinity/agent").ActorConfig}} [options]
- * @return {import("@dfinity/agent").ActorSubclass<import("./superheroes.did.js")._SERVICE>}
+ * @return {import("@dfinity/agent").ActorSubclass<import("./token.did.js")._SERVICE>}
  */
  export const createActor = (canisterId, options) => {
   const agent = new HttpAgent({ ...options?.agentOptions });
@@ -31,7 +32,7 @@ export const canisterId = process.env.SUPERHEROES_CANISTER_ID;
 };
   
 /**
- * A ready-to-use agent for the superheroes canister
- * @type {import("@dfinity/agent").ActorSubclass<import("./superheroes.did.js")._SERVICE>}
+ * A ready-to-use agent for the token canister
+ * @type {import("@dfinity/agent").ActorSubclass<import("./token.did.js")._SERVICE>}
  */
- export const superheroes = createActor(canisterId);
+ export const token = createActor(canisterId);

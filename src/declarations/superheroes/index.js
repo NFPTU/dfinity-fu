@@ -1,7 +1,8 @@
 import { Actor, HttpAgent } from "@dfinity/agent";
 
 // Imports and re-exports candid interface
-import { idlFactory } from './superheroes/superheroes.did.js';
+import { idlFactory } from './superheroes.did.js';
+export { idlFactory } from './superheroes.did.js';
 // CANISTER_ID is replaced by webpack based on node environment
 export const canisterId = process.env.SUPERHEROES_CANISTER_ID;
 
