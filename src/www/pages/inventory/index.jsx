@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import './market.css';
-import { Search, Landscape } from '@mui/icons-material/';
+import './inventory.css';
+import { Search, Landscape } from '@mui/icons-material';
 import { tabs, rarity } from './data';
 import Pagination from '@mui/material/Pagination';
 import PaginationItem from '@mui/material/PaginationItem';
@@ -11,37 +11,117 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { Link } from 'react-router-dom';
 
-function Market() {
-	const [tab, setTab] = useState('lands');
+function Inventory() {
+	const [tab, setTab] = useState('Land');
 	const [classesTabLine, setClassesTabLine] = useState('tab-line');
-	const [queenNFT, setQueenNFT] = useState({});
+
 	const [data, setData] = useState([]);
+	const [filterData, setFilterData] = useState([]);
+	const [pageData, setPageData] = useState([]);
+
+	const [page, setPage] = useState(1);
+
+	const [checked, setChecked] = useState([]);
+
 	const [superheroes, { loading, error }] = useCanister('superheroes');
 	const { principal, isConnected, disconnect } = useConnect();
 
-	const listCard = Array.from(Array(6).keys());
+	const tabItemHeader = JSON.parse(localStorage.getItem('tabItemHeader'));
+	const tabItemIventory = JSON.parse(localStorage.getItem('tabItemIventory'));
 
-	//Get All NFT
-	const onGetAllOrders = async () => {
-		const resp = await superheroes?.getAllOrders();
-		console.log('getAllOrders', resp)
+	//=============== PAGINATION ===================
+	const numberNftPerPage = 8;
+	const numberPage = Math.ceil(filterData?.length / numberNftPerPage);
+
+	const handleChangePagination = (event, value) => {
+		setPage(value);
 	};
 
 	useEffect(() => {
-		onGetAllOrders()
-	}, [])
+		const indexOfLastNFT = page * numberNftPerPage;
+		const indexOfFirstNFT = indexOfLastNFT - numberNftPerPage;
+		if (page >= 1) {
+			const newData = filterData?.slice(indexOfFirstNFT, indexOfLastNFT);
+			setPageData(newData);
+		}
+	}, [filterData, numberNftPerPage, page, tab]);
+
+	console.log('pageData', pageData);
+
+	//===============================================
+	//=============== HANDLE NFT ====================
+
+	//Filter NFT by type
+	const getNFTByType = (type) => {
+		const listNFT = data?.filter((el) => {
+			return el.attributes[0].value === type;
+		});
+		return listNFT;
+	};
+
+	//Get All NFT
+	const onGetData = async () => {
+		const resp = await superheroes?.getUserTokens(principal?.toString());
+		setData(resp?.ok);
+	};
+
+	//Get list NFT by type:
+	const onGetDataByType = () => {
+		const data = getNFTByType(tab);
+
+		setFilterData(data);
+	};
+	//=======================================================
+
+	const handleChangeTab = (item) => {
+		setTab(item);
+		const tabItem = JSON.stringify(item);
+		localStorage.setItem('tabItemInventory', tabItem);
+	};
+
+	const handleToggle = (value) => {
+		const currentIndex = checked.indexOf(value);
+		const newChecked = [...checked];
+
+		if (currentIndex === -1) {
+			newChecked.push(value);
+		} else {
+			newChecked.splice(currentIndex, 1);
+		}
+
+		setChecked(newChecked);
+	};
 
 	useEffect(() => {
-		if (tab === 'lands') {
+		const getDataByFilter = () => {
+			for (let i = 0; i < checked?.length; i++) {
+				
+			}
+		}
+
+		getDataByFilter()
+	}, [filterData, checked]);
+
+	//===================== SIDE EFFECT =======================
+	useEffect(() => {
+		onGetData();
+	}, [superheroes, principal]);
+
+	useEffect(() => {
+		onGetDataByType();
+	}, [superheroes, principal, tab]);
+
+	useEffect(() => {
+		if (tab === 'Land') {
 			setClassesTabLine('tab-line tab-line-1');
 		}
-		if (tab === 'nests') {
+		if (tab === 'Nest') {
 			setClassesTabLine('tab-line tab-line-2');
 		}
-		if (tab === 'queen') {
+		if (tab === 'Queen') {
 			setClassesTabLine('tab-line tab-line-3');
 		}
-		if (tab === 'ants') {
+		if (tab === 'Worker') {
 			setClassesTabLine('tab-line tab-line-4');
 		}
 	}, [tab]);
@@ -53,10 +133,13 @@ function Market() {
 					<div className='tabs-list-wrapper'>
 						{tabs.map((item, index) => (
 							<div
-								onClick={() => setTab(item.type)}
+								onClick={() => handleChangeTab(item.type)}
 								key={index}
 								className={
-									item.type === tab ? 'tab-item tab-itemActive' : 'tab-item'
+									item.type ===
+									JSON.parse(localStorage.getItem('tabItemIventory'))
+										? 'tab-item tab-itemActive'
+										: 'tab-item'
 								}>
 								<img src={item.icon} alt='' />
 								<div className='tab-item-name'>{item.name}</div>
@@ -101,7 +184,15 @@ function Market() {
 								<div className='filter__item-checkbox-list'>
 									{rarity.map((item, index) => (
 										<div key={index} className='filter__item-checkbox-item'>
-											<input type='checkbox' id={item.type} name={item.type} />
+											<input
+												type='checkbox'
+												id={item.type}
+												name={item.type}
+												onChange={() => handleToggle(item.name)}
+												checked={
+													checked.indexOf(item.name) === -1 ? false : true
+												}
+											/>
 											<label htmlFor={item.type}>{item.name}</label>
 										</div>
 									))}
@@ -144,10 +235,12 @@ function Market() {
 						</div>
 
 						<div className='body__right-top-card'>
-							{listCard.map((item, index) => (
-								<Link to={`/detail/ds86bdd7sns`} style={{color: 'inherit', textDecoration: 'none'}}>
+							{pageData?.map((item, index) => (
+								<Link
+									to={`/detail/dasddasddssd`}
+									style={{ color: 'inherit', textDecoration: 'none' }}>
 									<div className='body__right-top-cardItem'>
-										<NewCard width='244' height='380' />
+										<NewCard width='230' height='360' data={item} />
 									</div>
 								</Link>
 							))}
@@ -155,7 +248,9 @@ function Market() {
 
 						<div className='pagination'>
 							<Pagination
-								count={10}
+								count={numberPage}
+								page={page}
+								onChange={handleChangePagination}
 								color='secondary'
 								shape='rounded'
 								// variant='outlined'
@@ -178,4 +273,4 @@ function Market() {
 	);
 }
 
-export default Market;
+export default Inventory;

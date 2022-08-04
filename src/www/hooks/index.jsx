@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Context from './Context';
 import reducer, { initState } from './reducer';
 import { superheroes } from '../../declarations';
@@ -12,6 +12,7 @@ export function Provider({ children }) {
 	const { principal, isConnected } = useConnect();
 	const [resource, setResource] = useState({});
 	const [openProcess, setopenProcess] = useState(false);
+	const [tabGameHeader, setTabGameHeader] = useState('market');
 	const navigate = useNavigate();
 
 	const setPrinpId = (value) => {
@@ -55,6 +56,8 @@ export function Provider({ children }) {
 		resource,
 		openProcess,
 		setOpenProcess,
+		tabGameHeader,
+		setTabGameHeader		
 	};
 	return (
 		<Context.Provider value={value}>
