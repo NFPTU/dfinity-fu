@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { idlFactory } from '../../../declarations/superheroes.did.js';
 import {
 	Search,
 	AccountCircleOutlined,
