@@ -19,17 +19,16 @@ function Market() {
 	const [superheroes, { loading, error }] = useCanister('superheroes');
 	const { principal, isConnected, disconnect } = useConnect();
 
-	const listCard = Array.from(Array(6).keys());
-
 	//Get All NFT
 	const onGetAllOrders = async () => {
 		const resp = await superheroes?.getAllOrders();
 		console.log('getAllOrders', resp)
+		setData(resp?.ok)
 	};
 
 	useEffect(() => {
 		onGetAllOrders()
-	}, [])
+	}, [superheroes])
 
 	useEffect(() => {
 		if (tab === 'lands') {
@@ -144,10 +143,10 @@ function Market() {
 						</div>
 
 						<div className='body__right-top-card'>
-							{listCard.map((item, index) => (
-								<Link to={`/detail/ds86bdd7sns`} style={{color: 'inherit', textDecoration: 'none'}}>
+							{data?.map((item, index) => (
+								<Link to={`/detail/${item?.token?.tokenId[0]}`} style={{color: 'inherit', textDecoration: 'none'}}>
 									<div className='body__right-top-cardItem'>
-										<NewCard width='244' height='380' />
+										<NewCard width='244' height='380' data={item?.token}/>
 									</div>
 								</Link>
 							))}

@@ -25,6 +25,7 @@ const canisterDefinitions = {
 	superheroes: { idlFactory:idlSuperFactory, canisterId:canisterSuperId },
 	token: {idlFactory:idlTokenFactory, canisterId:canisterTokenId}
 };
+console.log(idlSuperFactory, idlTokenFactory, canisterSuperId, canisterTokenId);
 const host = window.location.origin;
 ReactDOM.render(
 	<Router>

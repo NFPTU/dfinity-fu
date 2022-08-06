@@ -15,12 +15,6 @@ export const tabs = [
         id: 3,
         type: "game",
         name: "Game",
-        link: '/market'
-    },
-    {
-        id: 4,
-        type: "docs",
-        name: "Docs",
-        link: '/market'
+        link: '/'
     },
 ]

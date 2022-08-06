@@ -11,10 +11,13 @@ import { useLocation } from 'react-router-dom';
 import Resource from './resource';
 import { useCanister, useConnect } from '@connect2ic/react';
 import { withContext } from '../../hooks';
+import { Principal } from '@dfinity/principal';
 
 function GameNavbar(props) {
 	const { resource, setResource, prinpId, logout } = props;
 	const [navbarTitle, setNavbarTitle] = useState('Ants Kingdoms');
+	const [balance, setbalance] = useState(0);
+	const [token] = useCanister('token');
 
 	const [superheroes, { loading, error }] = useCanister('superheroes');
 	const {
@@ -41,6 +44,18 @@ function GameNavbar(props) {
 		logout();
 	};
 
+	useEffect(async() => {
+		if(principal & token) {
+			getBalance()
+		}
+	}, [principal, token]);
+
+	const getBalance = async () => {
+		const res2 = await token?.balanceOf(Principal.fromText(principal?.toString()));
+		setbalance(res2)
+	}
+
+
 	return (
 		<Container>
 			<Wrapper>
@@ -52,18 +67,24 @@ function GameNavbar(props) {
 					img={'/images/navbar/icons/soil.png'}
 					resource={resource?.soil}
 				/>
+				
+				<Resource
+					img={'/images/navbar/icons/food.png'}
+					resource={resource?.food}
+				/>
 				<TitleWrapper>
 					<Background src={'/images/sidebarButton.png'} alt='background' />
 
 					<Title>Ants Kingdoms</Title>
 				</TitleWrapper>
 				<Resource
-					img={'/images/navbar/icons/food.png'}
-					resource={resource?.food}
-				/>
-				<Resource
 					img={'/images/navbar/icons/leaf.png'}
 					resource={resource?.leaf}
+				/>
+
+				<Resource
+					img={'/images/navbar/ant-token.jpg'}
+					resource={Number(balance)}
 				/>
 				<WalletAddress onClick={onDisconnect}>
 					{principal?.toString()?.slice(0, 3)} ...{' '}

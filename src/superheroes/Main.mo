@@ -532,6 +532,14 @@ var orderData = switch(orders.get(orderId)) {
                 switch(await tokenActor.transferFrom(Principal.fromActor(this), orderData.owner, amountToSeller)) {
                  case(#Ok(id)) {
                   _transfer(Principal.toText(orderData.owner), Principal.toText(msg.caller), orderData.tokenId);
+                   orders.delete(orderId);
+                      switch(users.get(Principal.toText(msg.caller))) {
+                case (?user) {
+                  user.orders := TrieSet.delete(user.orders, totalOrders_, Hash.hash(totalOrders_), Nat.equal);
+                  users.put(Principal.toText(msg.caller), user);
+                    };
+                    case (_) return #err("no user");
+                  };
                 return #ok(1);
                 };
                  case(#Err(e)) {
@@ -1102,6 +1110,7 @@ return tokens[4];
               if(kingdomId !=0) {
                 kingdomId := tokenId;
               }
+            
                 };
                 switch(users.get(Principal.toText(msg.caller))) {
             case (?user) {
@@ -1112,6 +1121,16 @@ return tokens[4];
                return #err("User Not Found")
             };
       };
+       let tokenActor: TokenActor = actor(Principal.toText(paymentToken));
+        switch(await tokenActor.transfer(msg.caller, 50)) {
+                case(#Ok(id)) {
+
+                return #ok(true);
+                };
+                 case(#Err(e)) {
+                    return #err("payment failed");
+                };
+              };
               return #ok(true);
             };
         };        

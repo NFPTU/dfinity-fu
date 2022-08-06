@@ -39,7 +39,7 @@ function NewCard(props) {
         <CardWrapper>
             <Top>
                 <Type>{data?.attributes[0]?.value}</Type>
-                <Id>{data?.tokenId[0]}</Id>
+                <Id>#{data?.tokenId[0]}</Id>
             </Top>
 
             <Body>

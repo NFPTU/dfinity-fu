@@ -7,6 +7,7 @@ const CopyPlugin = require("copy-webpack-plugin");
 let localCanisters, prodCanisters, canisters;
 
 const superheroes_IC = "fij5p-siaaa-aaaai-acata-cai"
+const token_IC = "w5uis-2yaaa-aaaam-qaupq-cai"
 
 try {
     localCanisters = require(path.resolve(
@@ -106,6 +107,7 @@ module.exports = env => {
             } : {
                 NODE_ENV: "development",
                 SUPERHEROES_CANISTER_ID: superheroes_IC,
+                TOKEN_CANISTER_ID: token_IC
 
             }),
             new webpack.ProvidePlugin({

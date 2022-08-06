@@ -6,16 +6,19 @@ import Tooltip from '@mui/material/Tooltip';
 import { Link } from 'react-router-dom';
 import { useCanister, useConnect } from '@connect2ic/react';
 import { withContext } from '../../hooks'
+import { Principal } from '@dfinity/principal';
 
 function GameHeader(props) {
 	const { tabGameHeader, setTabGameHeader } = props
 
 	const [isCopied, setIsCopied] = useState(false);
+	const [balance, setbalance] = useState(0);
 
 	const { principal } = useConnect();
 	const walletIdBefore = principal?.toString()?.slice(0, 4);
 	const walletIdAfter = principal?.toString()?.slice(60, 63);
 	const walletId = walletIdBefore?.concat(`...${walletIdAfter}`);
+	const [token] = useCanister('token');
 
 	const handleCopyToClipboard = () => {
 		navigator.clipboard.writeText(walletId);
@@ -29,6 +32,18 @@ function GameHeader(props) {
 		return () => clearTimeout(timerId);
 	};
 
+	useEffect(async() => {
+		if(principal && token) {
+			getBalance()
+		}
+	}, [principal, token]);
+
+	const getBalance = async () => {
+		const res2 = await token.balanceOf(Principal.fromText(principal?.toString()));
+		console.log(res2);
+		setbalance(res2)
+	}
+
 	const handleChangeTabItem = (item) => {
 		setTabGameHeader(item)
 	}
@@ -37,10 +52,7 @@ function GameHeader(props) {
 		<div className='header'>
 			<div className='header__wrapper'>
 				<div className='header__wrapper-left'>
-					<img
-						src='https://marketplace.monsterra.io/images/logo-game.png'
-						alt='logo'
-					/>
+					
 
 					<div className='header__wrapper-list'>
 						{tabs.map((item, key) => (
@@ -63,18 +75,9 @@ function GameHeader(props) {
 				</div>
 
 				<div className='header__wrapper-right'>
-					<div className='header__wrapper-noti'>
-						<Tooltip title='Notification'>
-							<Notifications sx={{ width: '25px' }} />
-						</Tooltip>
-					</div>
 
 					<div className='header__wrapper-balance'>
-						<span>0</span>
-						<img
-							src='https://marketplace.monsterra.io/images/rune2.png'
-							alt='logo-token'
-						/>
+						<span>{Number(balance) || 0}</span>
 					</div>
 
 					<div className='header__wrapper-account'>
@@ -88,12 +91,7 @@ function GameHeader(props) {
 							alt='copy-icon'
 						/>
 					</div>
-
-					<div className='header__wrapper-noti header__wrapper-noti-logout'>
-						<Tooltip title='Logout'>
-							<Logout sx={{ width: '25px' }} />
-						</Tooltip>
-					</div>
+				
 				</div>
 			</div>
 		</div>

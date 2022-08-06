@@ -65,7 +65,7 @@ function Inventory() {
 		// console.log(superheroes, principal?.toString());
 		// const response = await superheroes?.getTokensMetadata();
 		const resp = await superheroes?.getUserTokens(principal?.toString());
-
+		console.log(resp);
 		setData(resp?.ok);
 	};
 
