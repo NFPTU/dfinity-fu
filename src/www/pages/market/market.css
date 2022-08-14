@@ -1,10 +1,10 @@
-.container {
+.market-container {
   background-color: rgba(0, 0, 0, 0.85);
   width: 100%;
   min-height: 100vh;
 }
 
-.wrapper {
+.market-wrapper {
   display: flex;
   flex-direction: column;
   padding: 20px 60px;
@@ -24,30 +24,39 @@
   margin-top: 5px;
   width: 78px;
   height: 1px;
-  background-color: yellow;
+  background: linear-gradient(
+    90deg,
+    rgba(232, 159, 1, 0),
+    #e89f01 47.4%,
+    rgba(232, 159, 1, 0)
+  );
   transition: all 0.5s ease;
 }
 
-.tab-line-1 {
+.tab-line-market-1 {
   transform: translateX(0px);
+  color: white;
 }
 
-.tab-line-2 {
+.tab-line-market-2 {
   transform: translateX(112px);
   width: 74px;
+  color: white;
 }
 
-.tab-line-3 {
+.tab-line-market-3 {
   transform: translateX(218px);
   width: 83px;
+  color: white;
 }
 
-.tab-line-4 {
+.tab-line-market-4 {
   transform: translateX(336px);
-  width: 64px
+  width: 64px;
+  color: white;
 }
 
-.tab-item {
+.tab-market-item  {
   font-size: 20px;
   margin-right: 30px;
   display: flex;
@@ -58,7 +67,7 @@
   cursor: pointer;
 }
 
-.tab-itemActive {
+.tab-market-itemActive {
   opacity: 1;
 }
 
@@ -73,7 +82,7 @@
 }
 
 .body__left {
-  width: 300px;
+  width: 360px;
   height: 500px;
   border-radius: 9px;
   margin-right: 60px;
@@ -112,7 +121,7 @@
   cursor: pointer;
 }
 
-.filter__item {
+.filter__itemMarket {
   margin-top: 20px;
 }
 
@@ -164,24 +173,24 @@
   cursor: pointer;
 }
 
-.filter__item-checkbox {
+.filter__itemMarket-checkbox {
   width: 100%;
   display: flex;
   flex-direction: column;
   color: white;
 }
 
-.filter__item-checkbox-title {
+.filter__itemMarket-checkbox-title {
   font-size: 20px;
 }
 
-.filter__item-checkbox-list {
+.filter__itemMarket-checkbox-list {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
 }
 
-.filter__item-checkbox-item {
+.filter__itemMarket-checkbox-item {
   margin-right: 10px;
   margin-bottom: 10px;
 }
@@ -198,6 +207,12 @@
 .body__right {
   width: 100%;
   outline: none;
+}
+
+.body__right-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .body__right-top {
@@ -284,6 +299,7 @@ input:checked + .slider:before {
 .body__right-top-cardItem {
   margin-right: 20px;
   margin-top: 20px;
+  cursor: pointer;
 }
 
 .pagination {

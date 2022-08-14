@@ -11,6 +11,8 @@ import { Principal } from '@dfinity/principal';
 function GameHeader(props) {
 	const { tabGameHeader, setTabGameHeader } = props
 
+	const [tabHeader, setTabHeader] = useState("market");
+
 	const [isCopied, setIsCopied] = useState(false);
 	const [balance, setbalance] = useState(0);
 
@@ -46,7 +48,13 @@ function GameHeader(props) {
 
 	const handleChangeTabItem = (item) => {
 		setTabGameHeader(item)
+		const tabGameHeaderActive = JSON.stringify(item);
+		localStorage.setItem('tabGameHeaderActive', tabGameHeaderActive);
 	}
+
+	useEffect(() => {
+		localStorage.setItem('tabGameHeaderActive', JSON.stringify('market'));
+	}, [])
 
 	return (
 		<div className='header'>

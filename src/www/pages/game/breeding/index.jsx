@@ -43,6 +43,8 @@ function Breeding(props) {
 	const [completedCount, setCompletedCount] = useState(false);
 	const [listNest, setListNest] = useState([]);
 
+	const [inNest, setInNest] = useState('')
+
 	const [superheroes, { loading, error }] = useCanister('superheroes');
 	const { principal, isConnected, disconnect } = useConnect();
 
@@ -80,9 +82,16 @@ function Breeding(props) {
 	//Get All NFT
 	const onGetData = async () => {
 		const resp = await superheroes?.getUserTokens(principal?.toString());
+		const queenNFTs = resp?.ok.filter((el) => el.attributes[0].value === 'Queen');
+
+		const inNest = resp?.ok?.find((el) => el.tokenId[0] == queenNFTs[0]?.detail?.queen?.inNest[0]);
+
+		setInNest(inNest)
 		await onGetAvailWorker();
 		setData(resp?.ok);
 	};
+
+	console.log('inNest', inNest)
 
 	//Filter NFT by type
 	const getNFTByType = (type) => {
@@ -96,6 +105,7 @@ function Breeding(props) {
 		const listNFT = data?.find((el) => el.tokenId[0] == id);
 		return listNFT;
 	};
+
 
 	//Get Queen NFT:
 	const getQueenNFT = () => {
@@ -207,6 +217,7 @@ function Breeding(props) {
 		}
 	}, [data]);
 
+
 	return (
 		<>
 			<Container>
@@ -251,6 +262,7 @@ function Breeding(props) {
 										<InfoBodyLeftItem>Rarity:</InfoBodyLeftItem>
 										<InfoBodyLeftItem>Food Per Worker:</InfoBodyLeftItem>
 										<InfoBodyLeftItem>Breed Worker Time:</InfoBodyLeftItem>
+										<InfoBodyLeftItem>In Nest:</InfoBodyLeftItem>
 									</InfoBodyLeft>
 
 									<InfoBodyRight>
@@ -268,6 +280,9 @@ function Breeding(props) {
 														queenNFT?.detail?.queen?.info?.breedWorkerTime
 												  )
 												: 0}
+										</InfoBodyRightItem>
+										<InfoBodyRightItem>
+											{inNest?.name}
 										</InfoBodyRightItem>
 									</InfoBodyRight>
 								</InfoBody>
@@ -292,9 +307,9 @@ function Breeding(props) {
 						<BtnList>
 							<Btn
 								onClick={onBreeding}
-								// disabled={
-								// 	queenNFT?.detail?.queen?.breedingWorkerId && !completedCount
-								// }
+								disabled={
+									queenNFT?.detail?.queen?.breedingWorkerId && !completedCount
+								}
 							>
 								{!queenNFT?.detail?.queen?.breedingWorkerId
 									? 'Breeding'

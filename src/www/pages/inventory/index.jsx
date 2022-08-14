@@ -9,15 +9,23 @@ import NewCard from '../../components/test/new-card';
 import { useCanister, useConnect } from '@connect2ic/react';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { withContext } from '../../hooks';
+import { GridLoader } from 'react-spinners';
 
-function Inventory() {
+function Inventory(props) {
+	const { data } = props;
+
+	let navigate = useNavigate();
+
 	const [tab, setTab] = useState('Land');
 	const [classesTabLine, setClassesTabLine] = useState('tab-line');
 
-	const [data, setData] = useState([]);
+	// const [data, setData] = useState([]);
 	const [filterData, setFilterData] = useState([]);
 	const [pageData, setPageData] = useState([]);
+
+	const [filterDataOrigin, setFilterDataOrigin] = useState([]);
 
 	const [page, setPage] = useState(1);
 
@@ -28,6 +36,21 @@ function Inventory() {
 
 	const tabItemHeader = JSON.parse(localStorage.getItem('tabItemHeader'));
 	const tabItemIventory = JSON.parse(localStorage.getItem('tabItemIventory'));
+
+	const handleClickCard = (tokenId) => {
+		navigate(`/detail/${tokenId}`, {
+			state: {
+				link: 'inventory',
+			},
+		});
+	};
+
+	//================ Function =====================
+
+	const clearFilter = () => {
+		setChecked([]);
+	};
+	//===============================================
 
 	//=============== PAGINATION ===================
 	const numberNftPerPage = 8;
@@ -45,8 +68,6 @@ function Inventory() {
 			setPageData(newData);
 		}
 	}, [filterData, numberNftPerPage, page, tab]);
-
-	console.log('pageData', pageData);
 
 	//===============================================
 	//=============== HANDLE NFT ====================
@@ -70,37 +91,8 @@ function Inventory() {
 		const data = getNFTByType(tab);
 
 		setFilterData(data);
+		setFilterDataOrigin(data);
 	};
-	//=======================================================
-
-	const handleChangeTab = (item) => {
-		setTab(item);
-		const tabItem = JSON.stringify(item);
-		localStorage.setItem('tabItemInventory', tabItem);
-	};
-
-	const handleToggle = (value) => {
-		const currentIndex = checked.indexOf(value);
-		const newChecked = [...checked];
-
-		if (currentIndex === -1) {
-			newChecked.push(value);
-		} else {
-			newChecked.splice(currentIndex, 1);
-		}
-
-		setChecked(newChecked);
-	};
-
-	useEffect(() => {
-		const getDataByFilter = () => {
-			for (let i = 0; i < checked?.length; i++) {
-				
-			}
-		}
-
-		getDataByFilter()
-	}, [filterData, checked]);
 
 	//===================== SIDE EFFECT =======================
 	useEffect(() => {
@@ -121,10 +113,64 @@ function Inventory() {
 		if (tab === 'Queen') {
 			setClassesTabLine('tab-line tab-line-3');
 		}
-		if (tab === 'Worker') {
-			setClassesTabLine('tab-line tab-line-4');
-		}
 	}, [tab]);
+
+	//=======================================================
+
+	const handleChangeTab = (item) => {
+		setTab(item);
+		const tabItem = JSON.stringify(item);
+		localStorage.setItem('tabItemInventory', tabItem);
+	};
+
+	const handleToggle = (value) => {
+		const currentIndex = checked.indexOf(value);
+		const newChecked = [...checked];
+
+		if (currentIndex === -1) {
+			newChecked.push(value);
+		} else {
+			newChecked.splice(currentIndex, 1);
+		}
+
+		console.log('newChecked', newChecked);
+
+		setChecked(newChecked);
+	};
+
+	console.log('checked', checked);
+	console.log('pageData', pageData);
+
+	//Filter data by rarity checkbox:
+	useEffect(() => {
+		let mounted = true;
+		let newArr = [];
+		const data = getNFTByType(tab);
+
+		if (mounted) {
+			const getDataByFilter = () => {
+				for (const key of checked) {
+					const arrFilter = filterDataOrigin.filter(
+						(item) => item?.attributes[1]?.value === key
+					);
+
+					if (arrFilter.length !== 0) {
+						newArr.push(arrFilter);
+					}
+				}
+
+				return newArr.flat();
+			};
+
+			const filterByRarity = getDataByFilter();
+
+			checked.length !== 0
+				? setFilterData(filterByRarity)
+				: setFilterData(data);
+		}
+
+		return () => (mounted = false);
+	}, [superheroes, principal, checked]);
 
 	return (
 		<div className='container'>
@@ -160,23 +206,25 @@ function Inventory() {
 								<p>Filter</p>
 							</div>
 
-							<div className='filter__top-clear'>Clear Filter</div>
+							<div onClick={clearFilter} className='filter__top-clear'>
+								Clear Filter
+							</div>
 						</div>
-
+						{/* 
 						<div className='filter__item'>
 							<div className='filter__item-input'>
 								<input placeholder='Search by ID' name='id' type='text' />
 								<Search sx={{ color: '#e1e2e9', marginRight: '10px' }} />
 							</div>
-						</div>
+						</div> */}
 
-						<div className='filter__item'>
+						{/* <div className='filter__item'>
 							<select name='options' id='options'>
 								<option value='recently_added'>Recently Added</option>
 								<option value='highest_price'>Highest Price</option>
 								<option value='lowest_price'>Lowest Price</option>
 							</select>
-						</div>
+						</div> */}
 
 						<div className='filter__item'>
 							<div className='filter__item-checkbox'>
@@ -200,7 +248,7 @@ function Inventory() {
 							</div>
 						</div>
 
-						<div className='filter__item'>
+						{/* <div className='filter__item'>
 							<div className='filter__item-checkbox'>
 								<div className='filter__item-checkbox-title'>Rarity</div>
 								<div className='filter__item-checkbox-list'>
@@ -212,60 +260,63 @@ function Inventory() {
 									))}
 								</div>
 							</div>
-						</div>
+						</div> */}
 					</div>
 
-					<div className='body__right'>
-						<div className='body__right-top'>
-							<div className='body__right-top-item'>
-								<p>Owned</p>
-								<label className='switch'>
-									<input type='checkbox' />
-									<span className='slider'></span>
-								</label>
+					<div
+						className={
+							!loading ? 'body__right' : 'body__right body__right-loading'
+						}>
+						{loading ? (
+							<div>
+								<GridLoader color={'#e89f01'} />
 							</div>
+						) : (
+							<>
+								<div className='body__right-top-card'>
+									{data ? (
+										pageData?.map((item, index) => (
+											<div
+												onClick={() => handleClickCard(item?.tokenId[0])}
+												className='body__right-top-cardItem'>
+												<NewCard
+													link='inventory'
+													width='230'
+													height='360'
+													data={item}
+												/>
+											</div>
+										))
+									) : (
+										<div style={{ color: 'white', fontSize: '20px' }}>
+											There are currently no products, please come back later
+											!!!
+										</div>
+									)}
+								</div>
 
-							<div className='body__right-top-item'>
-								<p>My Offers</p>
-								<label className='switch'>
-									<input type='checkbox' />
-									<span className='slider'></span>
-								</label>
-							</div>
-						</div>
-
-						<div className='body__right-top-card'>
-							{pageData?.map((item, index) => (
-								<Link
-									to={`/detail/${item?.tokenId[0]}`}
-									style={{ color: 'inherit', textDecoration: 'none' }}>
-									<div className='body__right-top-cardItem'>
-										<NewCard width='230' height='360' data={item} />
-									</div>
-								</Link>
-							))}
-						</div>
-
-						<div className='pagination'>
-							<Pagination
-								count={numberPage}
-								page={page}
-								onChange={handleChangePagination}
-								color='secondary'
-								shape='rounded'
-								// variant='outlined'
-								renderItem={(item) => (
-									<PaginationItem
-										style={{ color: 'white' }}
-										components={{
-											previous: ArrowBackIcon,
-											next: ArrowForwardIcon,
-										}}
-										{...item}
+								<div className='pagination'>
+									<Pagination
+										count={numberPage}
+										page={page}
+										onChange={handleChangePagination}
+										color='secondary'
+										shape='rounded'
+										// variant='outlined'
+										renderItem={(item) => (
+											<PaginationItem
+												style={{ color: 'white' }}
+												components={{
+													previous: ArrowBackIcon,
+													next: ArrowForwardIcon,
+												}}
+												{...item}
+											/>
+										)}
 									/>
-								)}
-							/>
-						</div>
+								</div>
+							</>
+						)}
 					</div>
 				</div>
 			</div>
@@ -273,4 +324,4 @@ function Inventory() {
 	);
 }
 
-export default Inventory;
+export default withContext(Inventory);

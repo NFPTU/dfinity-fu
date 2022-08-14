@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import Context from './Context';
 import reducer, { initState } from './reducer';
 import { superheroes } from '../../declarations';
@@ -13,7 +13,22 @@ export function Provider({ children }) {
 	const [resource, setResource] = useState({});
 	const [openProcess, setopenProcess] = useState(false);
 	const [tabGameHeader, setTabGameHeader] = useState('market');
+	const [tabMarketFooter, setTabMarketFooter] = useState('Kingdom');
+	const [data, setData] = useState([]);
+	const [marketData, setMarketData] = useState([]);
 	const navigate = useNavigate();
+
+	//Get All NFT
+	const onGetData = async () => {
+		const resp = await superheroes?.getUserTokens(principal?.toString());
+		setData(resp?.ok);
+	};
+
+	//get list NFT in market:
+	const onGetAllOrders = async () => {
+		const resp = await superheroes?.getAllOrders();
+		setMarketData(resp?.ok);
+	};
 
 	const setPrinpId = (value) => {
 		localStorage.setItem('prinpId', value);
@@ -42,6 +57,11 @@ export function Provider({ children }) {
 	};
 
 	useEffect(() => {
+		onGetData();
+		onGetAllOrders();
+	}, [superheroes, principal]);
+
+	useEffect(() => {
 		console.log(prinpId);
 		if (prinpId && principal) {
 			getUserInfo();
@@ -57,7 +77,11 @@ export function Provider({ children }) {
 		openProcess,
 		setOpenProcess,
 		tabGameHeader,
-		setTabGameHeader		
+		setTabGameHeader,
+		data,
+		tabMarketFooter,
+		setTabMarketFooter,
+		marketData
 	};
 	return (
 		<Context.Provider value={value}>

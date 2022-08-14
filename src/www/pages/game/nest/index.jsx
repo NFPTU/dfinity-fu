@@ -38,13 +38,19 @@ function Nest(props) {
 	const [cardSelected, setCardSelected] = useState();
 	const [open, setOpen] = useState(false);
 
+	const [inLand, setInLand] = useState('');
+
 	const [superheroes, { loading, error }] = useCanister('superheroes');
 	const { principal } = useConnect();
+
+	console.log('listNest', listNest[0]?.detail?.nest?.inLand[0]);
 
 	const onGetData = async () => {
 		const resp = await superheroes?.getUserTokens(principal?.toString());
 		const listNest = resp?.ok.filter((el) => el.attributes[0].value === 'Nest');
-		console.log(resp?.ok);
+		const inLand = resp?.ok?.find((el) => el.tokenId[0] == listNest[0]?.detail?.nest?.inLand[0]);
+
+		setInLand(inLand);
 		setListNFt(resp?.ok);
 		setCardSelected(listNest[0]);
 		setListNest(listNest);
@@ -61,7 +67,6 @@ function Nest(props) {
 				queen?.tokenId[0],
 				cardSelected?.tokenId[0]
 			);
-			console.log(res);
 		} catch (er) {
 			console.log(er);
 		}
@@ -78,11 +83,16 @@ function Nest(props) {
 		return listNFt.filter((el) => el.attributes[0].value === type);
 	};
 
+	const getNFTById = (id) => {
+		const listNFT = listNFt?.find((el) => el.tokenId[0] == id);
+		return listNFT;
+	};
+
+
 	const onUpgrade = async (e) => {
 		const listNest = getNFTByType('Nest');
 		setOpenProcess(true);
 		const res = await superheroes.upgradeLevelNest(listNest[0]?.tokenId[0]);
-		console.log('res', res)
 		setOpenProcess(false);
 	};
 
@@ -98,15 +108,15 @@ function Nest(props) {
 				<Wrapper>
 					<Left>
 						<LeftWrapper>
-							{/* <ListMiniCard>
-                {listNest.map((el) => (
-                  <CardImg
-                    onClick={() => onChangeCard(el)}
-                    src={el.image}
-                    alt=''
-                  />
-                ))}
-              </ListMiniCard> */}
+							<ListMiniCard>
+								{listNest.map((el) => (
+									<CardImg
+										onClick={() => onChangeCard(el)}
+										src={el.image}
+										alt=''
+									/>
+								))}
+							</ListMiniCard>
 							<CardWrapper>
 								{cardSelected ? (
 									<Card data={cardSelected} />
@@ -140,7 +150,7 @@ function Nest(props) {
 								</Stack>
 							)}
 							{!cardSelected ? (
-								<Stack spacing={1} sx={{marginTop: '10px'}}>
+								<Stack spacing={1} sx={{ marginTop: '10px' }}>
 									<Skeleton variant='rectangular' width={380} height={80} />
 								</Stack>
 							) : (
@@ -148,6 +158,7 @@ function Nest(props) {
 									<InfoBodyLeft>
 										<InfoBodyLeftItem>Rarity:</InfoBodyLeftItem>
 										<InfoBodyLeftItem>Limit Ant:</InfoBodyLeftItem>
+										<InfoBodyLeftItem>In Land:</InfoBodyLeftItem>
 									</InfoBodyLeft>
 
 									<InfoBodyRight>
@@ -157,6 +168,9 @@ function Nest(props) {
 										<InfoBodyRightItem>
 											{cardSelected?.detail?.nest?.limit &&
 												Number(cardSelected?.detail?.nest?.limit)}
+										</InfoBodyRightItem>
+										<InfoBodyRightItem>
+											{inLand && inLand.name}
 										</InfoBodyRightItem>
 									</InfoBodyRight>
 								</InfoBody>
