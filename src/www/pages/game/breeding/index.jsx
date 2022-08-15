@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Card from '../../../components/game/card-origin';
 import {
 	Btn,
@@ -47,6 +47,8 @@ function Breeding(props) {
 
 	const [superheroes, { loading, error }] = useCanister('superheroes');
 	const { principal, isConnected, disconnect } = useConnect();
+
+	const completedCountRef = useRef(false)
 
 	const toastEmitter = async (type, message) => {
 		switch (type) {
@@ -180,6 +182,7 @@ function Breeding(props) {
 		setOpenProcess(true);
 		const res = await superheroes.upgradeLevelQueen(listQ[0]?.tokenId[0]);
 		setOpenProcess(false);
+		toast('Upgrade queen successfully!!!');
 	};
 
 	const onBreeding = async (e) => {
@@ -192,9 +195,13 @@ function Breeding(props) {
 	};
 
 	const onCompleteCount = (props) => {
-		setCompletedCount(true);
+		setCompletedCount(props);
+
+		completedCountRef.current = props
 		toastEmitter('success', 'Breeding successfully !!!');
 	};
+
+	console.log('completedCountRef', completedCountRef)
 
 	const onGetAvailWorker = async () => {
 		const resp = await superheroes?.getUserAvailableWorker(

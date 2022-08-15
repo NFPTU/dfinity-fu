@@ -29,6 +29,7 @@ import { withContext } from '../../../hooks';
 import CardNft from '../../../components/card-nft';
 import Skeleton from '@mui/material/Skeleton';
 import Stack from '@mui/material/Stack';
+import { toast } from 'react-toastify';
 
 function Nest(props) {
 	const { setOpenProcess } = props;
@@ -94,6 +95,7 @@ function Nest(props) {
 		setOpenProcess(true);
 		const res = await superheroes.upgradeLevelNest(listNest[0]?.tokenId[0]);
 		setOpenProcess(false);
+		toast('Upgrade resource successfully!!!');
 	};
 
 	useEffect(() => {

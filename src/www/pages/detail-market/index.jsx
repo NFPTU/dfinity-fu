@@ -119,7 +119,7 @@ function DetailNft(props) {
 				return;
 			}
 			setOpenProcess(true)
-			const resp = await superheroes?.createOrder(Number(desc), priceListing);
+			const resp = await superheroes?.createOrder(Number(desc), Number.parseInt(priceListing));
 			setOpenProcess(false)
 			if (resp) {
 				toast('Create Order success');
@@ -214,7 +214,7 @@ function DetailNft(props) {
 
 							<div className='wrapper__right-listBtn'>
 								{ownerNft == principal?.toString() ? (
-									<div className='wrapper__right-leftBtn' onClick={handleOpen}>
+									<div className='wrapper__right-leftBtn' onClick={!dataOrder ? handleOpen : listTing}>
 										{!dataOrder
 											? 'Listing NFT'
 											: 'Cancel listing  ' + `${Number(dataOrder?.price)} ATD`}

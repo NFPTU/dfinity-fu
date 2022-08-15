@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
 	Btn,
 	BtnList,
@@ -51,6 +51,7 @@ import { withContext } from '../../../hooks';
 import CardNft from '../../../components/card-nft';
 import Skeleton from '@mui/material/Skeleton';
 import Stack from '@mui/material/Stack';
+import { toast } from 'react-toastify';
 
 function Farming(props) {
 	const { setOpenProcess, tabMarketFooter } = props;
@@ -75,6 +76,8 @@ function Farming(props) {
 	const [check, setCheck] = useState(false);
 
 	const [inKingdom, setInKingdom] = useState('');
+
+	const completedCount = useRef(false)
 
 	const getNFTByType = (type) => {
 		return listNFt.filter((el) => el.attributes[0].value === type);
@@ -170,6 +173,7 @@ function Farming(props) {
 			);
 			await onGetData();
 			setOpenProcess(false);
+			toast('Claim Successfully !!!');
 			setOpen(false);
 		} catch (err) {
 			console.log(err);
@@ -186,6 +190,7 @@ function Farming(props) {
 			);
 
 			setOpenProcess(false);
+			toast('Dig Nest Successfully !!!');
 			setOpen(false);
 			onGetData();
 		} catch (er) {
@@ -211,11 +216,19 @@ function Farming(props) {
 				</ListResource>
 				<Countdown
 					date={Date.now() + getRemainingTime(item.claimTimeStamp) * 1000}
+					onComplete={(props) => onCompleteCount(props.completed)}
 				/>
 				<Button name='Claim' onClick={() => onClaimFarm(item)} />
 			</>
 		);
 	};
+
+	const onCompleteCount = (props) => {
+		completedCount.current = props
+		toast('Farm resource successfully!!!');
+	};
+
+	console.log('completedCount', completedCount.current)
 
 	useEffect(() => {
 		if (principal && superheroes) {

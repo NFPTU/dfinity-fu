@@ -146,7 +146,7 @@ function Market(props) {
 		console.log('currentIndex', currentIndex)
 		console.log('newChecked', newChecked)
 
-		// setChecked(newChecked);
+		setChecked(newChecked);
 	};
 
 	//Filter data by rarity checkbox:
@@ -159,15 +159,15 @@ function Market(props) {
 			const getDataByFilter = () => {
 				for (const key of checked) {
 					const arrFilter = filterDataOrigin?.filter(
-						(item) => item?.attributes[1]?.value === key
+						(item) => item?.token?.attributes[1]?.value === key
 					);
 
 					if (arrFilter?.length !== 0) {
-						newArr.push(arrFilter);
+						newArr.push(...arrFilter);
 					}
 				}
 
-				return newArr.flat();
+				return newArr;
 			};
 
 			const filterByRarity = checked && getDataByFilter();

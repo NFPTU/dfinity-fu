@@ -30,6 +30,7 @@ import { withContext } from '../../../hooks';
 import CardNft from '../../../components/card-nft';
 import Skeleton from '@mui/material/Skeleton';
 import Stack from '@mui/material/Stack';
+import { toast } from 'react-toastify';
 
 function Kingdom(props) {
 	const { setOpenProcess } = props;
@@ -77,6 +78,7 @@ function Kingdom(props) {
 			cardSelected.tokenId[0]
 		);
 		setOpenProcess(false);
+		toast('Stake Land Successfully !!!');
 		setOpen(false);
 		onGetData();
 	};
