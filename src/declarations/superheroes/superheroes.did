@@ -277,6 +277,7 @@ type AntKingdoms =
    stakeNestInLand: (TokenIndex__1, TokenIndex__1) -> (Result_3);
    stakeQueenInNest: (TokenIndex__1, TokenIndex__1) -> (Result_3);
    supply: (TokenIdentifier__1) -> (Result_4) query;
+   swapGoldToToken: (nat) -> (Result);
    transfer: (principal, TokenIndex__1) -> (Result);
    unStakeLandToKingdom: (TokenIndex__1, TokenIndex__1) -> (Result);
    unStakeNestInLand: (TokenIndex__1, TokenIndex__1) -> (Result_3);

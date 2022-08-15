@@ -521,9 +521,9 @@ private let NFT_RARITY : [Text] =   ["Common","Uncommon","Rare", "Epec", "Legend
     
     public shared(msg) func buy(orderId: Nat): async Result.Result<Nat, Text> {
         let tokenActor: TokenActor = actor(Principal.toText(paymentToken));
-var orderData = switch(orders.get(orderId)) {
-            case (?order) order;
-      case (_) return #err("no order");
+        var orderData = switch(orders.get(orderId)) {
+                    case (?order) order;
+              case (_) return #err("no order");
   };
   
         switch(await tokenActor.transferFrom(msg.caller, Principal.fromActor(this), orderData.price)) {
@@ -983,7 +983,7 @@ var orderData = switch(orders.get(orderId)) {
   };
 
   public shared(msg) func upgradeLevelNest(nestTokenId: TokenIndex): async Result.Result<MetadataExt, Text>  {
-    if(checkTypeToken(nestTokenId,NFT_TYPE[0]) == true and _isOwnerOf(nestTokenId, Principal.toText(msg.caller)) == true) {
+    if(checkTypeToken(nestTokenId,"Nest") == true and _isOwnerOf(nestTokenId, Principal.toText(msg.caller)) == true) {
       var tokenData = switch(_metadata.get(nestTokenId)) {
         case (?metadata)  {
           var newDetail: DetailNFT = metadata.0.detail;
@@ -1134,6 +1134,32 @@ return tokens[4];
               return #ok(true);
             };
         };        
+  };
+
+  public shared(msg) func swapGoldToToken(amount: Nat): async Result.Result<Bool, Text> {
+     switch (users.get(Principal.toText(msg.caller))) {
+            case (?user) {
+           
+              var isUpdate = updateUserResource(Principal.toText(msg.caller), {gold= Float.fromInt(amount); soil=0; leaf= 0; food= 0}); 
+              if(isUpdate) {
+                var amountToken = amount / 10;
+                 let tokenActor: TokenActor = actor(Principal.toText(paymentToken));
+                switch(await tokenActor.transfer(msg.caller, amountToken)) {
+                case(#Ok(id)) {
+                return #ok(true);
+                };
+                 case(#Err(e)) {
+                    return #err("payment failed");
+                };
+              };
+            } else {
+              throw Error.reject("No resource");
+            }
+            };
+            case _ {
+              throw Error.reject("No user");
+            };
+     };
   };
 
   public shared(msg) func stakeLandToKingdom(landTokenId: TokenIndex, kingdomTokenId: TokenIndex) : async Result.Result<Bool, Text> {

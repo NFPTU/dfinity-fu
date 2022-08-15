@@ -55,6 +55,12 @@ function GameFooter(props) {
 			title: 'Battle',
 			to: '/battle',
 		},
+		{
+			id: 9,
+			imgUrl: '/images/footer/breed.png',
+			title: 'Swap',
+			to: '/swap',
+		},
 	];
 
 	return (

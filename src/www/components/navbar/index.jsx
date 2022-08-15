@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
 	Search,
 	AccountCircleOutlined,
@@ -30,7 +30,9 @@ import {
 	ConnectDialog,
 	Connect2ICProvider,
 	useConnect,
+	useCanister
 } from '@connect2ic/react';
+import { Principal } from '@dfinity/principal';
 
 function Navbar(props) {
 	const { principal, isConnected, disconnect } = useConnect();
@@ -38,6 +40,8 @@ function Navbar(props) {
 	const { prinpId, setPrinpId, logout } = props;
 
 	const walletAddress = prinpId?.toString();
+	const [balance, setbalance] = useState(0);
+	const [token] = useCanister('token');
 
 	const onConnectWallet = async () => {
 		try {
@@ -65,6 +69,18 @@ function Navbar(props) {
 	const scrollToTop = () => {
 		window.scrollTo({ top: 0, behavior: 'smooth' });
 	};
+
+	useEffect(async() => {
+		if(principal && token) {
+			getBalance()
+		}
+	}, [principal, token]);
+
+	const getBalance = async () => {
+		const res2 = await token.balanceOf(Principal.fromText(principal?.toString()));
+		console.log(res2);
+		setbalance(res2)
+	}
 
 	return (
 		<Container>
@@ -123,7 +139,7 @@ function Navbar(props) {
 
 								<OptionItem>
 									<Balance>
-										<BalanceNumber>0</BalanceNumber>
+										<BalanceNumber>{Number(balance) || 0}</BalanceNumber>
 										<IcpLogo
 											src='https://cryptologos.cc/logos/internet-computer-icp-logo.png'
 											alt=''

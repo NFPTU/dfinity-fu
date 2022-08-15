@@ -45,6 +45,7 @@ export interface AntKingdoms {
       Result_3
     >,
   'supply' : (arg_0: TokenIdentifier__1) => Promise<Result_4>,
+  'swapGoldToToken' : (arg_0: bigint) => Promise<Result>,
   'transfer' : (arg_0: Principal, arg_1: TokenIndex__1) => Promise<Result>,
   'unStakeLandToKingdom' : (
       arg_0: TokenIndex__1,

@@ -238,6 +238,7 @@ export const idlFactory = ({ IDL }) => {
         [],
       ),
     'supply' : IDL.Func([TokenIdentifier__1], [Result_4], ['query']),
+    'swapGoldToToken' : IDL.Func([IDL.Nat], [Result], []),
     'transfer' : IDL.Func([IDL.Principal, TokenIndex__1], [Result], []),
     'unStakeLandToKingdom' : IDL.Func(
         [TokenIndex__1, TokenIndex__1],

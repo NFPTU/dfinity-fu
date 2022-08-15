@@ -23,6 +23,7 @@ const Market = lazy(() => import("./market"))
 const Inventory = lazy(() => import("./inventory"))
 const Battle = lazy(() => import("./game/battle"))
 const DetailMarket = lazy(() => import("./detail-market"))
+const Swap = lazy(() => import("./game/swap"))
 
 const routes = [
     {
@@ -100,6 +101,13 @@ const routes = [
         exact: true,
         public: true,
         component: Battle,
+        layout: GameLayout
+    },
+    {
+        path: "/swap",
+        exact: true,
+        public: true,
+        component: Swap,
         layout: GameLayout
     },
     {
