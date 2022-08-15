@@ -15,6 +15,6 @@ export const tabs = [
         id: 3,
         type: "game",
         name: "Game",
-        link: '/'
+        link: '/kingdom'
     },
 ]

@@ -10,52 +10,190 @@ import { useCanister, useConnect } from '@connect2ic/react';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { Link } from 'react-router-dom';
+import Skeleton from '@mui/material/Skeleton';
+import Stack from '@mui/material/Stack';
+import { withContext } from '../../hooks';
+import { GridLoader } from 'react-spinners';
+import { Link, useNavigate } from 'react-router-dom';
 
-function Market() {
-	const [tab, setTab] = useState('lands');
+function Market(props) {
+	const { tabGameHeader, marketData } = props;
+
+	let navigate = useNavigate();
+
+	const [tab, setTab] = useState('Land');
 	const [classesTabLine, setClassesTabLine] = useState('tab-line');
+
 	const [queenNFT, setQueenNFT] = useState({});
 	const [data, setData] = useState([]);
+	const [filterData, setFilterData] = useState([]);
+	const [pageData, setPageData] = useState([]);
+
+	const [filterDataOrigin, setFilterDataOrigin] = useState([]);
+
+	const [page, setPage] = useState(1);
+
+	const [isOwned, setIsOwned] = useState(true);
+
+	const [checked, setChecked] = useState([]);
+
 	const [superheroes, { loading, error }] = useCanister('superheroes');
 	const { principal, isConnected, disconnect } = useConnect();
 
-	//Get All NFT
-	const onGetAllOrders = async () => {
-		const resp = await superheroes?.getAllOrders();
-		console.log('getAllOrders', resp)
-		setData(resp?.ok)
+	const handleClickCard = (tokenId) => {
+		console.log('tokenId', tokenId)
+
+		navigate(`/detail/${tokenId}`, {
+			state: {
+				link: 'market'
+			},
+		});
+	};
+
+	const handleClickTab = (value) => {
+		setTab(value);
+		localStorage.setItem('tabFooterActive', JSON.stringify('Kingdom'));
+	};
+
+	//=============== PAGINATION ===================
+	const numberNftPerPage = 8;
+	const numberPage = Math.ceil(filterData?.length / numberNftPerPage);
+
+	const handleChangePagination = (event, value) => {
+		setPage(value);
 	};
 
 	useEffect(() => {
-		onGetAllOrders()
-	}, [superheroes])
+		const indexOfLastNFT = page * numberNftPerPage;
+		const indexOfFirstNFT = indexOfLastNFT - numberNftPerPage;
+		if (page >= 1) {
+			const newData = filterData?.slice(indexOfFirstNFT, indexOfLastNFT);
+			if (isOwned) {
+				setPageData(
+					newData?.filter((data) => data?.owner?._isPrincipal === true)
+				);
+			} else {
+				setPageData(
+					newData?.filter((data) => data?.owner?._isPrincipal === false)
+				);
+			}
+		}
+	}, [filterData, isOwned, numberNftPerPage, page, tab, tabGameHeader]);
+
+	//===============================================
+
+	//================ Function =====================
+	const handleChangeOwned = (e) => {
+		setIsOwned(e.target.checked);
+	};
+
+	const clearFilter = () => {
+		setIsOwned(false);
+	};
+	//===============================================
+
+	//Get All NFT
+	// const onGetAllOrders = async () => {
+	// 	const resp = await superheroes?.getAllOrders();
+	// 	console.log('getAllOrders', resp);
+	// 	setData(resp?.ok);
+	// };
+
+	//Filter NFT by type
+	const getNFTByType = (type) => {
+		if (marketData) {
+			const listNFT = marketData?.filter((el) => {
+				return el?.token?.attributes[0]?.value === type;
+			});
+			return listNFT;
+		}
+	};
+
+	//Get list NFT by type:
+	const onGetDataByType = () => {
+		const data = tab && getNFTByType(tab);
+
+		setFilterData(data && data);
+		setFilterDataOrigin(data && data);
+	};
 
 	useEffect(() => {
-		if (tab === 'lands') {
-			setClassesTabLine('tab-line tab-line-1');
+		onGetDataByType();
+	}, [superheroes, principal, tab]);
+
+	useEffect(() => {
+		if (tab === 'Land') {
+			setClassesTabLine('tab-line tab-line-market-1');
 		}
-		if (tab === 'nests') {
-			setClassesTabLine('tab-line tab-line-2');
+		if (tab === 'Nest') {
+			setClassesTabLine('tab-line tab-line-market-2');
 		}
-		if (tab === 'queen') {
-			setClassesTabLine('tab-line tab-line-3');
-		}
-		if (tab === 'ants') {
-			setClassesTabLine('tab-line tab-line-4');
+		if (tab === 'Queen') {
+			setClassesTabLine('tab-line tab-line-market-3');
 		}
 	}, [tab]);
 
+	const handleToggle = (value) => {
+		const currentIndex = checked?.indexOf(value);
+		const newChecked = [...checked];
+
+		if (currentIndex === -1) {
+			newChecked.push(value);
+		} else {
+			newChecked.splice(currentIndex, 1);
+		}
+
+		console.log('currentIndex', currentIndex)
+		console.log('newChecked', newChecked)
+
+		setChecked(newChecked);
+	};
+
+	//Filter data by rarity checkbox:
+	useEffect(() => {
+		let mounted = true;
+		let newArr = [];
+		const data = getNFTByType(tab);
+
+		if (mounted) {
+			const getDataByFilter = () => {
+				for (const key of checked) {
+					const arrFilter = filterDataOrigin?.filter(
+						(item) => item?.token?.attributes[1]?.value === key
+					);
+
+					if (arrFilter?.length !== 0) {
+						newArr.push(...arrFilter);
+					}
+				}
+
+				return newArr;
+			};
+
+			const filterByRarity = checked && getDataByFilter();
+
+			checked?.length !== 0
+				? setFilterData(filterByRarity)
+				: setFilterData(data);
+		}
+
+		return () => (mounted = false);
+	}, [superheroes, principal, checked]);
+
+
 	return (
-		<div className='container'>
-			<div className='wrapper'>
+		<div className='market-container'>
+			<div className='market-wrapper'>
 				<div className='tabs-list'>
 					<div className='tabs-list-wrapper'>
 						{tabs.map((item, index) => (
 							<div
-								onClick={() => setTab(item.type)}
+								onClick={() => handleClickTab(item.type)}
 								key={index}
 								className={
-									item.type === tab ? 'tab-item tab-itemActive' : 'tab-item'
+									item.type === tab
+										? 'tab-market-item tab-market-itemActive'
+										: 'tab-market-item'
 								}>
 								<img src={item.icon} alt='' />
 								<div className='tab-item-name'>{item.name}</div>
@@ -76,10 +214,12 @@ function Market() {
 								<p>Filter</p>
 							</div>
 
-							<div className='filter__top-clear'>Clear Filter</div>
+							<div onClick={clearFilter} className='filter__top-clear'>
+								Clear Filter
+							</div>
 						</div>
 
-						<div className='filter__item'>
+						{/* <div className='filter__item'>
 							<div className='filter__item-input'>
 								<input placeholder='Search by ID' name='id' type='text' />
 								<Search sx={{ color: '#e1e2e9', marginRight: '10px' }} />
@@ -92,29 +232,23 @@ function Market() {
 								<option value='highest_price'>Highest Price</option>
 								<option value='lowest_price'>Lowest Price</option>
 							</select>
-						</div>
+						</div> */}
 
-						<div className='filter__item'>
-							<div className='filter__item-checkbox'>
-								<div className='filter__item-checkbox-title'>Rarity</div>
-								<div className='filter__item-checkbox-list'>
+						<div className='filter__itemMarket'>
+							<div className='filter__itemMarket-checkbox'>
+								<div className='filter__itemMarket-checkbox-title'>Rarity</div>
+								<div className='filter__itemMarket-checkbox-list'>
 									{rarity.map((item, index) => (
-										<div key={index} className='filter__item-checkbox-item'>
-											<input type='checkbox' id={item.type} name={item.type} />
-											<label htmlFor={item.type}>{item.name}</label>
-										</div>
-									))}
-								</div>
-							</div>
-						</div>
-
-						<div className='filter__item'>
-							<div className='filter__item-checkbox'>
-								<div className='filter__item-checkbox-title'>Rarity</div>
-								<div className='filter__item-checkbox-list'>
-									{rarity.map((item, index) => (
-										<div key={index} className='filter__item-checkbox-item'>
-											<input type='checkbox' id={item.type} name={item.type} />
+										<div key={index} className='filter__itemMarket-checkbox-item'>
+											<input
+												type='checkbox'
+												id={item.type}
+												name={item.type}
+												onChange={() => handleToggle(item.name)}
+												checked={
+													checked?.indexOf(item.name) === -1 ? false : true
+												}
+											/>
 											<label htmlFor={item.type}>{item.name}</label>
 										</div>
 									))}
@@ -123,53 +257,87 @@ function Market() {
 						</div>
 					</div>
 
-					<div className='body__right'>
-						<div className='body__right-top'>
-							<div className='body__right-top-item'>
-								<p>Owned</p>
-								<label className='switch'>
-									<input type='checkbox' />
-									<span className='slider'></span>
-								</label>
+					<div
+						className={
+							!loading ? 'body__right' : 'body__right body__right-loading'
+						}>
+						{loading ? (
+							<div>
+								<GridLoader color={'#e89f01'} />
 							</div>
-
-							<div className='body__right-top-item'>
+						) : (
+							<>
+								<div className='body__right-top'>
+									<div className='body__right-top-item'>
+										<p>Owned</p>
+										<label className='switch'>
+											<input
+												type='checkbox'
+												checked={isOwned}
+												onChange={(e) => handleChangeOwned(e)}
+											/>
+											<span className='slider'></span>
+										</label>
+									</div>
+									{/* <div className='body__right-top-item'>
 								<p>My Offers</p>
 								<label className='switch'>
 									<input type='checkbox' />
 									<span className='slider'></span>
 								</label>
-							</div>
-						</div>
+							</div> */}
+								</div>
 
-						<div className='body__right-top-card'>
-							{data?.map((item, index) => (
-								<Link to={`/detail/${item?.token?.tokenId[0]}`} style={{color: 'inherit', textDecoration: 'none'}}>
-									<div className='body__right-top-cardItem'>
-										<NewCard width='244' height='380' data={item?.token}/>
+								<div className='body__right-top-card'>
+									{marketData &&
+										(pageData?.length !== 0 ? (
+											pageData?.map((item, index) => {
+												console.log('item', item)
+												return (
+													<div 
+													onClick={() => handleClickCard(item?.token?.tokenId[0])}
+													className='body__right-top-cardItem'>
+														<NewCard
+															link='market'
+															width='244'
+															height='380'
+															data={item?.token}
+														/>
+													</div>
+												)
+											})
+										) : (
+											<div style={{ color: 'white', fontSize: '20px' }}>
+												There are currently no products, please come back later
+												!!!
+											</div>
+										))}
+								</div>
+
+								{pageData?.length !== 0 && (
+									<div className='pagination'>
+										<Pagination
+											count={numberPage}
+											page={page}
+											onChange={handleChangePagination}
+											color='secondary'
+											shape='rounded'
+											// variant='outlined'
+											renderItem={(item) => (
+												<PaginationItem
+													style={{ color: 'white' }}
+													components={{
+														previous: ArrowBackIcon,
+														next: ArrowForwardIcon,
+													}}
+													{...item}
+												/>
+											)}
+										/>
 									</div>
-								</Link>
-							))}
-						</div>
-
-						<div className='pagination'>
-							<Pagination
-								count={10}
-								color='secondary'
-								shape='rounded'
-								// variant='outlined'
-								renderItem={(item) => (
-									<PaginationItem
-										style={{ color: 'white' }}
-										components={{
-											previous: ArrowBackIcon,
-											next: ArrowForwardIcon,
-										}}
-										{...item}
-									/>
 								)}
-							/>
-						</div>
+							</>
+						)}
 					</div>
 				</div>
 			</div>
@@ -177,4 +345,4 @@ function Market() {
 	);
 }
 
-export default Market;
+export default withContext(Market);

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Card from '../../../components/game/card-origin';
 import {
 	Btn,
@@ -43,8 +43,12 @@ function Breeding(props) {
 	const [completedCount, setCompletedCount] = useState(false);
 	const [listNest, setListNest] = useState([]);
 
+	const [inNest, setInNest] = useState('')
+
 	const [superheroes, { loading, error }] = useCanister('superheroes');
 	const { principal, isConnected, disconnect } = useConnect();
+
+	const completedCountRef = useRef(false)
 
 	const toastEmitter = async (type, message) => {
 		switch (type) {
@@ -80,9 +84,16 @@ function Breeding(props) {
 	//Get All NFT
 	const onGetData = async () => {
 		const resp = await superheroes?.getUserTokens(principal?.toString());
+		const queenNFTs = resp?.ok.filter((el) => el.attributes[0].value === 'Queen');
+
+		const inNest = resp?.ok?.find((el) => el.tokenId[0] == queenNFTs[0]?.detail?.queen?.inNest[0]);
+
+		setInNest(inNest)
 		await onGetAvailWorker();
 		setData(resp?.ok);
 	};
+
+	console.log('inNest', inNest)
 
 	//Filter NFT by type
 	const getNFTByType = (type) => {
@@ -96,6 +107,7 @@ function Breeding(props) {
 		const listNFT = data?.find((el) => el.tokenId[0] == id);
 		return listNFT;
 	};
+
 
 	//Get Queen NFT:
 	const getQueenNFT = () => {
@@ -170,6 +182,7 @@ function Breeding(props) {
 		setOpenProcess(true);
 		const res = await superheroes.upgradeLevelQueen(listQ[0]?.tokenId[0]);
 		setOpenProcess(false);
+		toast('Upgrade queen successfully!!!');
 	};
 
 	const onBreeding = async (e) => {
@@ -182,9 +195,13 @@ function Breeding(props) {
 	};
 
 	const onCompleteCount = (props) => {
-		setCompletedCount(true);
+		setCompletedCount(props);
+
+		completedCountRef.current = props
 		toastEmitter('success', 'Breeding successfully !!!');
 	};
+
+	console.log('completedCountRef', completedCountRef)
 
 	const onGetAvailWorker = async () => {
 		const resp = await superheroes?.getUserAvailableWorker(
@@ -206,6 +223,7 @@ function Breeding(props) {
 			getListNest();
 		}
 	}, [data]);
+
 
 	return (
 		<>
@@ -251,6 +269,7 @@ function Breeding(props) {
 										<InfoBodyLeftItem>Rarity:</InfoBodyLeftItem>
 										<InfoBodyLeftItem>Food Per Worker:</InfoBodyLeftItem>
 										<InfoBodyLeftItem>Breed Worker Time:</InfoBodyLeftItem>
+										<InfoBodyLeftItem>In Nest:</InfoBodyLeftItem>
 									</InfoBodyLeft>
 
 									<InfoBodyRight>
@@ -268,6 +287,9 @@ function Breeding(props) {
 														queenNFT?.detail?.queen?.info?.breedWorkerTime
 												  )
 												: 0}
+										</InfoBodyRightItem>
+										<InfoBodyRightItem>
+											{inNest?.name}
 										</InfoBodyRightItem>
 									</InfoBodyRight>
 								</InfoBody>
@@ -292,9 +314,9 @@ function Breeding(props) {
 						<BtnList>
 							<Btn
 								onClick={onBreeding}
-								// disabled={
-								// 	queenNFT?.detail?.queen?.breedingWorkerId && !completedCount
-								// }
+								disabled={
+									queenNFT?.detail?.queen?.breedingWorkerId && !completedCount
+								}
 							>
 								{!queenNFT?.detail?.queen?.breedingWorkerId
 									? 'Breeding'

@@ -69,7 +69,7 @@ const routes = [
         layout: GameLayout
     },
     {
-        path: "/",
+        path: "/kingdom",
         exact: true,
         public: true,
         component: Kingdom,
@@ -138,7 +138,7 @@ const routes = [
         component: ListNft
     },
     {
-        path: "/admin",
+        path: "/",
         exact: true,
         public: true,
         component: Admin,

@@ -16,13 +16,7 @@ export const tabs = [
         type: "Queen",
         name: "Queen",
         icon: "https://marketplace.monsterra.io/images/collection-icon/landplots.svg"
-    },
-    {
-        id: 4,
-        type: "Worker",
-        name: "Worker Ants",
-        icon: "https://marketplace.monsterra.io/images/collection-icon/landplots.svg"
-    },
+    }
 ]
 
 export const rarity = [

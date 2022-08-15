@@ -4,10 +4,10 @@ export const Container = styled.div`
     background-image: url('/images/background-board.png');
     background-size: cover;
     background-repeat: no-repeat;
-    background-position: 50%;
+    background-position: 50% 35%;
     position: relative;
     margin: auto;
-    width: 67rem;
+    width: 63rem;
     transition: all .2s ease-in-out;
     -webkit-user-select: none;
     -ms-user-select: none;
@@ -15,13 +15,13 @@ export const Container = styled.div`
     z-index: 6;
     -webkit-animation-name: slideup;
     animation-name: slideup;
-    height: 62rem;
+    height: 60rem;
 `
 
 export const Wrapper = styled.div`
    position: absolute;
    display: flex;
-   top: 44%;
+   top: 55%;
    left: 50%;
    transform: translate(-50%, -50%);
    width: 55rem;

@@ -1,54 +1,48 @@
 export const tabs = [
     {
         id: 1,
-        type: "lands",
+        type: "Land",
         name: "Lands",
         icon: "https://marketplace.monsterra.io/images/collection-icon/landplots.svg"
     },
     {
         id: 2,
-        type: "nests",
+        type: "Nest",
         name: "Nests",
         icon: "https://marketplace.monsterra.io/images/collection-icon/landplots.svg"
     },
     {
         id: 3,
-        type: "queen",
+        type: "Queen",
         name: "Queen",
         icon: "https://marketplace.monsterra.io/images/collection-icon/landplots.svg"
-    },
-    {
-        id: 4,
-        type: "ants",
-        name: "Ants",
-        icon: "https://marketplace.monsterra.io/images/collection-icon/landplots.svg"
-    },
+    }
 ]
 
 export const rarity = [
     {
         id: 1,
-        type: "common",
+        type: "commonM",
         name: "Common"
     },
     {
         id: 2,
-        type: "rare",
+        type: "rareM",
         name: "Rare"
     },
     {
         id: 3,
-        type: "epic",
+        type: "epicM",
         name: "Epic"
     },
     {
         id: 4,
-        type: "uncommon",
+        type: "uncommonM",
         name: "Uncommon"
     },
     {
         id: 5,
-        type: "legendary",
+        type: "legendaryM",
         name: "Legendary"
     },
 ]
