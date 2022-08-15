@@ -4,10 +4,10 @@ export const Container = styled.div`
     background-image: url('/images/background-board.png');
     background-size: cover;
     background-repeat: no-repeat;
-    background-position: 50%;
+    background-position: 50% 35%;
     position: relative;
     margin: auto;
-    width: 60rem;
+    width: 63rem;
     transition: all .2s ease-in-out;
     -webkit-user-select: none;
     -ms-user-select: none;
@@ -22,7 +22,7 @@ export const Wrapper = styled.div`
    position: absolute;
    display: flex;
    align-items: center; 
-   top: 39%;
+   top: 45%;
    left: 50%;
    transform: translate(-50%, -50%);
    width: 55rem;
@@ -44,30 +44,34 @@ export const ListMiniCard = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
+    height: 326px;
+    background-color: #f3d8af;
+    padding-right: 10px;
+    border-radius: 6px;
     overflow: scroll;
     overflow-x: hidden;
     //Display elements from right to left:
     direction: rtl;
     scrollbar-width: thin;
     position: absolute;
-    top: 0;
+    top: 100px;
     bottom: 0;
     transition: all .2s ease-in-out;
-    left: 0;
-    z-index: 1;
+    left: 45px;
+    z-index: 100;
 `
 
 export const CardImg = styled.img`
     cursor: pointer;
-    width: 55px;
-    height: 6.5rem;
-    padding: 10px 0;
+    width: 62px;
+    height: 100px;
+    padding: 2px 0;
 `
 
 export const CardWrapper = styled.div`
     height: 380px;
     width: 280px;
-    margin-left: 62px;
+    margin-left: 105px;
     margin-top: 96px;
 `
 
@@ -79,7 +83,7 @@ export const Right = styled.div`
     background-color: rgba(233,225,214,.6);
     border-radius: 5px;
     padding: 10px 10px;
-    margin-left: -62px;
+    margin-left: -25px;
 `
 
 export const Info = styled.div`

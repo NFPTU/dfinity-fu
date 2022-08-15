@@ -1,16 +1,29 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Container, Image, Item, Title } from './game-footer.elements';
 import { Link } from 'react-router-dom';
+import { withContext } from '../../hooks';
 
-function GameFooter() {
-	const [active, setAvtive] = useState('Home');
+function GameFooter(props) {
+	const { tabMarketFooter, setTabMarketFooter } = props
+
+	// const [active, setAvtive] = useState('Kingdom');
+
+	const handleActive = (value) => {
+		setTabMarketFooter(value);
+		const tabFooterActive = JSON.stringify(value);
+		localStorage.setItem('tabFooterActive', tabFooterActive);
+	}
+
+	useEffect(() => {
+		localStorage.setItem('tabFooterActive', JSON.stringify('Kingdom'));
+	}, [])
 
 	const items = [
 		{
 			id: 6,
 			imgUrl: '/images/footer/breed.png',
 			title: 'Kingdom',
-			to: '/',
+			to: '/kingdom',
 		},
 		{
 			id: 4,
@@ -56,8 +69,8 @@ function GameFooter() {
 				<Link to={item.to} style={{ textDecoration: 'none', color: 'black' }}>
 					<Item
 						key={index}
-						onClick={() => setAvtive(item.title)}
-						active={active === item.title ? true : false}>
+						onClick={() => handleActive(item.title)}
+						active={item.title === tabMarketFooter  ? true : false}>
 						<Image src={item.imgUrl} alt='' />
 						<Title>{item.title}</Title>
 					</Item>
@@ -67,4 +80,4 @@ function GameFooter() {
 	);
 }
 
-export default GameFooter;
+export default withContext(GameFooter);

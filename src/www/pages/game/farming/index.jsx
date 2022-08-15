@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
 	Btn,
 	BtnList,
@@ -51,10 +51,12 @@ import { withContext } from '../../../hooks';
 import CardNft from '../../../components/card-nft';
 import Skeleton from '@mui/material/Skeleton';
 import Stack from '@mui/material/Stack';
+import { toast } from 'react-toastify';
 
 function Farming(props) {
-	const { setOpenProcess } = props;
+	const { setOpenProcess, tabMarketFooter } = props;
 
+	const [listNftNest, setListNftNest] = useState([]);
 	const [listNFtLand, setlistNFtLand] = useState([]);
 	const [listNFt, setListNFt] = useState([]);
 	const [cardSelected, setCardSelected] = useState();
@@ -73,15 +75,32 @@ function Farming(props) {
 
 	const [check, setCheck] = useState(false);
 
-	console.log('re-render nay', cardSelected);
+	const [inKingdom, setInKingdom] = useState('');
+
+	const completedCount = useRef(false)
+
+	const getNFTByType = (type) => {
+		return listNFt.filter((el) => el.attributes[0].value === type);
+	};
+
+	const getNFTById = (id) => {
+		const listNFTs = listNFt?.find((el) => el.tokenId[0] == id);
+		return listNFTs;
+	};
+
+
 	const onGetData = async () => {
 		const resp = await superheroes?.getUserTokens(principal?.toString());
 		const listLand = resp?.ok.filter((el) => el.attributes[0].value === 'Land');
-		//console.log(resp, listLand[0]);
+		const listNest = resp?.ok.filter((el) => el.attributes[0].value === 'Nest');
+		const inKingdom = resp?.ok.filter((el) => el.attributes[0].value === 'Kingdom');
+
 		await onGetAvailWorker();
 		setListNFt(resp?.ok);
 		setCardSelected(listLand[0]);
 		setlistNFtLand(listLand);
+		setListNftNest(listNest);
+		setInKingdom(inKingdom);
 	};
 
 	const onGetAvailWorker = async () => {
@@ -90,20 +109,10 @@ function Farming(props) {
 		);
 		setListWorker(resp?.ok);
 		setRemainWorker(resp?.ok.length);
-		//console.log(resp);
 	};
-
-	useEffect(() => {
-		if (principal && superheroes) {
-			//console.log(superheroes);
-			onGetData();
-		}
-	}, [principal, superheroes]);
 
 	const onChangeCard = (item) => {
 		setCardSelected(item);
-
-		//console.log('cardSelected when click mini card:', cardSelected);
 	};
 
 	const onClickFarm = async () => {
@@ -119,7 +128,6 @@ function Farming(props) {
 			(previousValue, currentValue) => previousValue + currentValue,
 			0
 		);
-		//console.log(selectedWorker);
 		const remainW = listWorker.length - selectedWorker;
 		if (value - valueResource[item] <= remainW) {
 			setRemainWorker(remainW);
@@ -153,7 +161,6 @@ function Farming(props) {
 			.slice(0, valueResource.gold)
 			.map((el) => el.tokenId[0]);
 		farmRequest.countIds = listWorker.length - remainWorker;
-		//console.log(farmRequest);
 		return farmRequest;
 	};
 
@@ -166,6 +173,7 @@ function Farming(props) {
 			);
 			await onGetData();
 			setOpenProcess(false);
+			toast('Claim Successfully !!!');
 			setOpen(false);
 		} catch (err) {
 			console.log(err);
@@ -180,9 +188,9 @@ function Farming(props) {
 				nest?.tokenId[0],
 				cardSelected.tokenId[0]
 			);
-			//console.log('res', res);
 
 			setOpenProcess(false);
+			toast('Dig Nest Successfully !!!');
 			setOpen(false);
 			onGetData();
 		} catch (er) {
@@ -194,12 +202,7 @@ function Farming(props) {
 		return <Btn onClick={() => onStakeNestInLand(land)}>Dig</Btn>;
 	};
 
-	const getNFTByType = (type) => {
-		return listNFt.filter((el) => el.attributes[0].value === type);
-	};
-
 	const resourceItem = (item) => {
-		//console.log(item);
 		return (
 			<>
 				<ListResource>
@@ -213,18 +216,32 @@ function Farming(props) {
 				</ListResource>
 				<Countdown
 					date={Date.now() + getRemainingTime(item.claimTimeStamp) * 1000}
+					onComplete={(props) => onCompleteCount(props.completed)}
 				/>
 				<Button name='Claim' onClick={() => onClaimFarm(item)} />
 			</>
 		);
 	};
 
+	const onCompleteCount = (props) => {
+		completedCount.current = props
+		toast('Farm resource successfully!!!');
+	};
+
+	console.log('completedCount', completedCount.current)
+
+	useEffect(() => {
+		if (principal && superheroes) {
+			onGetData();
+		}
+	}, [principal, superheroes]);
+
 	return (
 		<Container>
 			<Wrapper>
 				<Left>
 					<LeftWrapper>
-						{/* <ListMiniCard>
+						<ListMiniCard>
 							{listNFtLand.map((el) => (
 								<CardImg
 									onClick={() => onChangeCard(el)}
@@ -232,7 +249,7 @@ function Farming(props) {
 									alt=''
 								/>
 							))}
-						</ListMiniCard> */}
+						</ListMiniCard>
 						<CardWrapper>
 							{!cardSelected ? (
 								<Stack spacing={1}>
@@ -268,6 +285,7 @@ function Farming(props) {
 								<InfoBodyLeft>
 									<InfoBodyLeftItem>Rarity:</InfoBodyLeftItem>
 									<InfoBodyLeftItem>Farming Time:</InfoBodyLeftItem>
+									<InfoBodyLeftItem>In Kingdom:</InfoBodyLeftItem>
 								</InfoBodyLeft>
 
 								<InfoBodyRight>
@@ -278,6 +296,9 @@ function Farming(props) {
 										{cardSelected?.detail?.land?.info?.farmingTime
 											? toHHMMSS(cardSelected?.detail?.land?.info?.farmingTime)
 											: 0}
+									</InfoBodyRightItem>
+									<InfoBodyRightItem>
+										{inKingdom && inKingdom[0]?.name}
 									</InfoBodyRightItem>
 								</InfoBodyRight>
 							</InfoBody>
@@ -322,14 +343,10 @@ function Farming(props) {
 						);
 					})}
 
-					{cardSelected?.detail?.land?.inKingdom ? (
-						<BtnList>
-							<Button onClick={onClickFarm}>Farm</Button>
-							<Button onClick={() => setOpen(true)}>Dig Nest</Button>
-						</BtnList>
-					) : (
-						''
-					)}
+					<BtnList>
+						<Button onClick={onClickFarm}>Farm</Button>
+						<Button onClick={() => setOpen(true)}>Dig Nest</Button>
+					</BtnList>
 
 					<Dialog onClose={handleClose} open={showFarmDialog}>
 						{listWorker?.length ? (

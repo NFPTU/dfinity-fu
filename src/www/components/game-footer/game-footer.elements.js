@@ -16,7 +16,7 @@ export const Item = styled.div`
     flex-direction: column;
     align-items: center;
     margin-right: 10px;
-    opacity: ${(props) => props.active ? '1' : '0.7'};
+    opacity: ${(props) => props.active ? '1' : '0.6'};
     transform: ${(props) => props.active === true ? 'scale(1.1)' : 'scale(1)'};
     transition: all 0.25s ease;
     margin-right: 100px;
