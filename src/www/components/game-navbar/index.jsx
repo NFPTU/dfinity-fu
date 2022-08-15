@@ -45,7 +45,7 @@ function GameNavbar(props) {
 	};
 
 	useEffect(async() => {
-		if(principal & token) {
+		if(principal && token) {
 			getBalance()
 		}
 	}, [principal, token]);

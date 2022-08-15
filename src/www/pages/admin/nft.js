@@ -902,11 +902,11 @@ export const metadata = [
 
 export const levelData = [
 	{
-		type: "Queen",
+		name: "Queen",
 		info: [
 			{
 				rarity: "Common",
-				data: [
+				info: [
 					{
 						level: 1, costResource: {
 							gold: 15,
@@ -1006,7 +1006,7 @@ export const levelData = [
 			},
 			{
 				rarity: "Uncommon",
-				data: [
+				info: [
 					{
 						level: 1, costResource: {
 							gold: 15,
@@ -1106,7 +1106,7 @@ export const levelData = [
 			},
 			{
 				rarity: "Rare",
-				data: [
+				info: [
 					{
 						level: 1, costResource: {
 							gold: 15,
@@ -1206,7 +1206,7 @@ export const levelData = [
 			},
 			{
 				rarity: "Epic",
-				data: [
+				info: [
 					{
 						level: 1, costResource: {
 							gold: 15,
@@ -1306,7 +1306,7 @@ export const levelData = [
 			},
 			{
 				rarity: "Legendary",
-				data: [
+				info: [
 					{
 						level: 1, costResource: {
 							gold: 15,
@@ -1407,343 +1407,342 @@ export const levelData = [
 		]
 	},
 	{
-		type: "Nest",
+		name: "Nest",
 		info: [
 			{
-			rarity: "Common",
-			data: [{
-				level: 1, costResource: {
-					gold: 15,
-					leaf: 35,
-					food: 45,
-					soil: 0,
-				},
-				nextLevel: {
-					queen: {
-						'limit': 11
+				rarity: "Common",
+				info: [{
+					level: 1, costResource: {
+						gold: 15,
+						leaf: 35,
+						food: 45,
+						soil: 0,
+					},
+					nextLevel: {
+						nest: {
+							'limit': 11
+						}
 					}
-				}
+				},
+				{
+					level: 2, costResource: {
+						gold: 15,
+						leaf: 35,
+						food: 45,
+						soil: 0,
+					},
+					nextLevel: {
+						nest: {
+							'limit': 12
+						}
+					}
+				},
+				{
+					level: 3, costResource: {
+						gold: 15,
+						leaf: 35,
+						food: 45,
+						soil: 0,
+					},
+					nextLevel: {
+						nest: {
+							'limit': 13
+						}
+					}
+				},
+				{
+					level: 4, costResource: {
+						gold: 15,
+						leaf: 35,
+						food: 45,
+						soil: 0,
+					},
+					nextLevel: {
+						nest: {
+							'limit': 15
+						}
+					}
+				}, {
+					level: 5, costResource: {
+						gold: 15,
+						leaf: 35,
+						food: 45,
+						soil: 0,
+					},
+					nextLevel: {
+						nest: {
+							'limit': 16
+						}
+					}
+				}]
 			},
 			{
-				level: 2, costResource: {
-					gold: 15,
-					leaf: 35,
-					food: 45,
-					soil: 0,
-				},
-				nextLevel: {
-					queen: {
-						'limit': 12
+				rarity: "Uncommon",
+				info: [{
+					level: 1, costResource: {
+						gold: 15,
+						leaf: 35,
+						food: 45,
+						soil: 0,
+					},
+					nextLevel: {
+						nest: {
+							'limit': 11
+						}
 					}
-				}
-			},
-			{
-				level: 3, costResource: {
-					gold: 15,
-					leaf: 35,
-					food: 45,
-					soil: 0,
 				},
-				nextLevel: {
-					queen: {
-						'limit': 13
+				{
+					level: 2, costResource: {
+						gold: 15,
+						leaf: 35,
+						food: 45,
+						soil: 0,
+					},
+					nextLevel: {
+						nest: {
+							'limit': 12
+						}
 					}
-				}
-			},
-			{
-				level: 4, costResource: {
-					gold: 15,
-					leaf: 35,
-					food: 45,
-					soil: 0,
 				},
-				nextLevel: {
-					queen: {
-						'limit': 15
+				{
+					level: 3, costResource: {
+						gold: 15,
+						leaf: 35,
+						food: 45,
+						soil: 0,
+					},
+					nextLevel: {
+						nest: {
+							'limit': 13
+						}
 					}
-				}
+				},
+				{
+					level: 4, costResource: {
+						gold: 15,
+						leaf: 35,
+						food: 45,
+						soil: 0,
+					},
+					nextLevel: {
+						nest: {
+							'limit': 15
+						}
+					}
+				}, {
+					level: 5, costResource: {
+						gold: 15,
+						leaf: 35,
+						food: 45,
+						soil: 0,
+					},
+					nextLevel: {
+						nest: {
+							'limit': 16
+						}
+					}
+				}]
 			}, {
-				level: 5, costResource: {
-					gold: 15,
-					leaf: 35,
-					food: 45,
-					soil: 0,
-				},
-				nextLevel: {
-					queen: {
-						'limit': 16
+				rarity: "Rare",
+				info: [{
+					level: 1, costResource: {
+						gold: 15,
+						leaf: 35,
+						food: 45,
+						soil: 0,
+					},
+					nextLevel: {
+						nest: {
+							'limit': 11
+						}
 					}
-				}
-			}]
-		},
-		{
-			rarity: "Uncommon",
-			data: [{
-				level: 1, costResource: {
-					gold: 15,
-					leaf: 35,
-					food: 45,
-					soil: 0,
 				},
-				nextLevel: {
-					queen: {
-						'limit': 11
+				{
+					level: 2, costResource: {
+						gold: 15,
+						leaf: 35,
+						food: 45,
+						soil: 0,
+					},
+					nextLevel: {
+						nest: {
+							'limit': 12
+						}
 					}
-				}
+				},
+				{
+					level: 3, costResource: {
+						gold: 15,
+						leaf: 35,
+						food: 45,
+						soil: 0,
+					},
+					nextLevel: {
+						nest: {
+							'limit': 13
+						}
+					}
+				},
+				{
+					level: 4, costResource: {
+						gold: 15,
+						leaf: 35,
+						food: 45,
+						soil: 0,
+					},
+					nextLevel: {
+						nest: {
+							'limit': 15
+						}
+					}
+				}, {
+					level: 5, costResource: {
+						gold: 15,
+						leaf: 35,
+						food: 45,
+						soil: 0,
+					},
+					nextLevel: {
+						nest: {
+							'limit': 16
+						}
+					}
+				}]
 			},
 			{
-				level: 2, costResource: {
-					gold: 15,
-					leaf: 35,
-					food: 45,
-					soil: 0,
-				},
-				nextLevel: {
-					queen: {
-						'limit': 12
+				rarity: "Epic",
+				info: [{
+					level: 1, costResource: {
+						gold: 15,
+						leaf: 35,
+						food: 45,
+						soil: 0,
+					},
+					nextLevel: {
+						nest: {
+							'limit': 11
+						}
 					}
-				}
+				},
+				{
+					level: 2, costResource: {
+						gold: 15,
+						leaf: 35,
+						food: 45,
+						soil: 0,
+					},
+					nextLevel: {
+						nest: {
+							'limit': 12
+						}
+					}
+				},
+				{
+					level: 3, costResource: {
+						gold: 15,
+						leaf: 35,
+						food: 45,
+						soil: 0,
+					},
+					nextLevel: {
+						nest: {
+							'limit': 13
+						}
+					}
+				},
+				{
+					level: 4, costResource: {
+						gold: 15,
+						leaf: 35,
+						food: 45,
+						soil: 0,
+					},
+					nextLevel: {
+						nest: {
+							'limit': 15
+						}
+					}
+				}, {
+					level: 5, costResource: {
+						gold: 15,
+						leaf: 35,
+						food: 45,
+						soil: 0,
+					},
+					nextLevel: {
+						nest: {
+							'limit': 16
+						}
+					}
+				}]
 			},
 			{
-				level: 3, costResource: {
-					gold: 15,
-					leaf: 35,
-					food: 45,
-					soil: 0,
-				},
-				nextLevel: {
-					queen: {
-						'limit': 13
+				rarity: "Legendary",
+				info: [{
+					level: 1, costResource: {
+						gold: 15,
+						leaf: 35,
+						food: 45,
+						soil: 0,
+					},
+					nextLevel: {
+						nest: {
+							'limit': 11
+						}
 					}
-				}
-			},
-			{
-				level: 4, costResource: {
-					gold: 15,
-					leaf: 35,
-					food: 45,
-					soil: 0,
 				},
-				nextLevel: {
-					queen: {
-						'limit': 15
+				{
+					level: 2, costResource: {
+						gold: 15,
+						leaf: 35,
+						food: 45,
+						soil: 0,
+					},
+					nextLevel: {
+						nest: {
+							'limit': 12
+						}
 					}
-				}
-			}, {
-				level: 5, costResource: {
-					gold: 15,
-					leaf: 35,
-					food: 45,
-					soil: 0,
 				},
-				nextLevel: {
-					queen: {
-						'limit': 16
+				{
+					level: 3, costResource: {
+						gold: 15,
+						leaf: 35,
+						food: 45,
+						soil: 0,
+					},
+					nextLevel: {
+						nest: {
+							'limit': 13
+						}
 					}
-				}
-			}]
-		},{
-			rarity: "Rare",
-			data: [{
-				level: 1, costResource: {
-					gold: 15,
-					leaf: 35,
-					food: 45,
-					soil: 0,
 				},
-				nextLevel: {
-					queen: {
-						'limit': 11
+				{
+					level: 4, costResource: {
+						gold: 15,
+						leaf: 35,
+						food: 45,
+						soil: 0,
+					},
+					nextLevel: {
+						nest: {
+							'limit': 15
+						}
 					}
-				}
-			},
-			{
-				level: 2, costResource: {
-					gold: 15,
-					leaf: 35,
-					food: 45,
-					soil: 0,
-				},
-				nextLevel: {
-					queen: {
-						'limit': 12
+				}, {
+					level: 5, costResource: {
+						gold: 15,
+						leaf: 35,
+						food: 45,
+						soil: 0,
+					},
+					nextLevel: {
+						nest: {
+							'limit': 16
+						}
 					}
-				}
-			},
-			{
-				level: 3, costResource: {
-					gold: 15,
-					leaf: 35,
-					food: 45,
-					soil: 0,
-				},
-				nextLevel: {
-					queen: {
-						'limit': 13
-					}
-				}
-			},
-			{
-				level: 4, costResource: {
-					gold: 15,
-					leaf: 35,
-					food: 45,
-					soil: 0,
-				},
-				nextLevel: {
-					queen: {
-						'limit': 15
-					}
-				}
-			}, {
-				level: 5, costResource: {
-					gold: 15,
-					leaf: 35,
-					food: 45,
-					soil: 0,
-				},
-				nextLevel: {
-					queen: {
-						'limit': 16
-					}
-				}
-			}]
-		},
-		{
-			rarity: "Epic",
-			data: [{
-				level: 1, costResource: {
-					gold: 15,
-					leaf: 35,
-					food: 45,
-					soil: 0,
-				},
-				nextLevel: {
-					queen: {
-						'limit': 11
-					}
-				}
-			},
-			{
-				level: 2, costResource: {
-					gold: 15,
-					leaf: 35,
-					food: 45,
-					soil: 0,
-				},
-				nextLevel: {
-					queen: {
-						'limit': 12
-					}
-				}
-			},
-			{
-				level: 3, costResource: {
-					gold: 15,
-					leaf: 35,
-					food: 45,
-					soil: 0,
-				},
-				nextLevel: {
-					queen: {
-						'limit': 13
-					}
-				}
-			},
-			{
-				level: 4, costResource: {
-					gold: 15,
-					leaf: 35,
-					food: 45,
-					soil: 0,
-				},
-				nextLevel: {
-					queen: {
-						'limit': 15
-					}
-				}
-			}, {
-				level: 5, costResource: {
-					gold: 15,
-					leaf: 35,
-					food: 45,
-					soil: 0,
-				},
-				nextLevel: {
-					queen: {
-						'limit': 16
-					}
-				}
-			}]
-		},
-		,
-		{
-			rarity: "Legendary",
-			data: [{
-				level: 1, costResource: {
-					gold: 15,
-					leaf: 35,
-					food: 45,
-					soil: 0,
-				},
-				nextLevel: {
-					queen: {
-						'limit': 11
-					}
-				}
-			},
-			{
-				level: 2, costResource: {
-					gold: 15,
-					leaf: 35,
-					food: 45,
-					soil: 0,
-				},
-				nextLevel: {
-					queen: {
-						'limit': 12
-					}
-				}
-			},
-			{
-				level: 3, costResource: {
-					gold: 15,
-					leaf: 35,
-					food: 45,
-					soil: 0,
-				},
-				nextLevel: {
-					queen: {
-						'limit': 13
-					}
-				}
-			},
-			{
-				level: 4, costResource: {
-					gold: 15,
-					leaf: 35,
-					food: 45,
-					soil: 0,
-				},
-				nextLevel: {
-					queen: {
-						'limit': 15
-					}
-				}
-			}, {
-				level: 5, costResource: {
-					gold: 15,
-					leaf: 35,
-					food: 45,
-					soil: 0,
-				},
-				nextLevel: {
-					queen: {
-						'limit': 16
-					}
-				}
-			}]
-		}
-	]
+				}]
+			}
+		]
 	}
 ]
