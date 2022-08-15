@@ -38,17 +38,18 @@ function Swap(props) {
 		isConnecting,
 	} = useConnect();
 
-	const getBalance = () => {
+	const getBalance = async  () => {
 		const res2 = await token?.balanceOf(Principal.fromText(principal?.toString()));
-		setUniAmount(res2);
-		setWethAmount(resource?.gold)
+		setUniAmount(Number(res2));
+		setWethAmount(Number(resource?.gold))
 	}
 
 	useEffect(async () => {
+		console.log(principal && token);
 		if (principal && token) {
 			getBalance()
 		}
-	}, [principal, token]);
+	}, [principal, token, resource]);
 
 	const getSwapPrice = (inputAmount) => {
 		setInputAmount(inputAmount)
