@@ -45,6 +45,7 @@ export const ListMiniCard = styled.div`
     flex-direction: column;
     align-items: center;
     height: 326px;
+    min-width: 80px;
     background-color: #f3d8af;
     padding-right: 10px;
     border-radius: 6px;

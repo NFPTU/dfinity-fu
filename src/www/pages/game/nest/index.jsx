@@ -30,26 +30,55 @@ import CardNft from '../../../components/card-nft';
 import Skeleton from '@mui/material/Skeleton';
 import Stack from '@mui/material/Stack';
 import { toast } from 'react-toastify';
+import Swal from 'sweetalert2';
+import { levelData } from '../../admin/nft';
 
 function Nest(props) {
-	const { setOpenProcess } = props;
+	const { setOpenProcess, resource } = props;
 
 	const [listNFt, setListNFt] = useState([]);
 	const [listNest, setListNest] = useState([]);
 	const [cardSelected, setCardSelected] = useState();
 	const [open, setOpen] = useState(false);
+	const [resourceUpgrade, setResourceUpgrade] = useState({});
 
 	const [inLand, setInLand] = useState('');
 
 	const [superheroes, { loading, error }] = useCanister('superheroes');
 	const { principal } = useConnect();
 
-	console.log('listNest', listNest[0]?.detail?.nest?.inLand[0]);
+	useEffect(() => {
+		const getResourceUpgrade = (name, rarity, level) => {
+			const infoArr = levelData.reduce((total, current) => {
+				return current.name !== name ? [...total] : [...total, current];
+			}, []);
+
+			const listLevel = infoArr[0]?.info?.reduce((total, current) => {
+				return current.rarity !== rarity
+					? [...total]
+					: [...total, current.info];
+			}, []);
+
+			const listResource = listLevel[0]?.reduce((total, current) => {
+				return current.level !== level
+					? [...total]
+					: [...total, current.costResource];
+			}, []);
+
+			setResourceUpgrade(listResource && listResource[0]);
+		};
+
+		getResourceUpgrade('Nest', 'Rare', 2);
+	}, []);
+
+	console.log('resourceUpgrade', resourceUpgrade);
 
 	const onGetData = async () => {
 		const resp = await superheroes?.getUserTokens(principal?.toString());
 		const listNest = resp?.ok.filter((el) => el.attributes[0].value === 'Nest');
-		const inLand = resp?.ok?.find((el) => el.tokenId[0] == listNest[0]?.detail?.nest?.inLand[0]);
+		const inLand = resp?.ok?.find(
+			(el) => el.tokenId[0] == listNest[0]?.detail?.nest?.inLand[0]
+		);
 
 		setInLand(inLand);
 		setListNFt(resp?.ok);
@@ -89,13 +118,44 @@ function Nest(props) {
 		return listNFT;
 	};
 
+	const confirmDialog = async () => {
+		Swal.fire({
+			title: 'Do you want to upgrade nest now?',
+			showDenyButton: false,
+			showCancelButton: true,
+			confirmButtonText: 'Ok',
+			html: `
+			<h2><b>Amount of resources needed to upgrade</b></h2><br />
+			<div style={{color: 'red'}}>food ${resourceUpgrade?.food}</div>
+			<div>gold ${resourceUpgrade?.gold}</div>
+			<div>leaf ${resourceUpgrade?.leaf}</div>
+			<div>soil ${resourceUpgrade?.soil}</div>
+			`,
+		}).then((result) => {
+			/* Read more about isConfirmed, isDenied below */
+			if (result.isConfirmed) {
+				onUpgrade();
+			} else if (result.isDenied) {
+			}
+		});
+	};
 
 	const onUpgrade = async (e) => {
-		const listNest = getNFTByType('Nest');
-		setOpenProcess(true);
-		const res = await superheroes.upgradeLevelNest(listNest[0]?.tokenId[0]);
-		setOpenProcess(false);
-		toast('Upgrade resource successfully!!!');
+		if (
+			resource?.food < resourceUpgrade?.food ||
+			resource?.gold < resourceUpgrade?.gold ||
+			resource?.leaf < resourceUpgrade?.leaf ||
+			resource?.soil < resourceUpgrade?.soil
+		) {
+			toast('You do not have enough resource to upgrade!!!');
+		} else {
+			const listNest = getNFTByType('Nest');
+			setOpenProcess(true);
+			const res = await superheroes.upgradeLevelNest(listNest[0]?.tokenId[0]);
+			setOpenProcess(false);
+			await onGetData();
+			toast('Upgrade resource successfully!!!');
+		}
 	};
 
 	useEffect(() => {
@@ -111,13 +171,23 @@ function Nest(props) {
 					<Left>
 						<LeftWrapper>
 							<ListMiniCard>
-								{listNest.map((el) => (
-									<CardImg
-										onClick={() => onChangeCard(el)}
-										src={el.image}
-										alt=''
-									/>
-								))}
+								{!listNest ? (
+									<Stack spacing={1}>
+										<Skeleton
+											variant='rectangular'
+											width={60}
+											height={'100%'}
+										/>
+									</Stack>
+								) : (
+									listNest.map((el) => (
+										<CardImg
+											onClick={() => onChangeCard(el)}
+											src={el.image}
+											alt=''
+										/>
+									))
+								)}
 							</ListMiniCard>
 							<CardWrapper>
 								{cardSelected ? (
@@ -180,12 +250,15 @@ function Nest(props) {
 						</Info>
 
 						<BtnList>
-							<Btn onClick={onUpgrade}>Upgrade</Btn>
+							<Btn onClick={confirmDialog}>Upgrade</Btn>
 							<Btn onClick={() => setOpen(true)}>Add Queen</Btn>
 						</BtnList>
 					</Right>
 				</Wrapper>
-				<PopupList open={open} setOpen={setOpen}>
+				<PopupList
+					dialogTitle={'Choose queen to add into nest'}
+					open={open}
+					setOpen={setOpen}>
 					{getNFTByType('Queen').map((el, index) => {
 						if (el?.detail?.queen?.inNest[0]) return;
 						return (

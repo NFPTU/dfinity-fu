@@ -15,12 +15,15 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   '& .MuiDialogContent-root': {
     padding: theme.spacing(2),
     minWidth: '600px',
+    display: 'flex',
+    alignItems: 'center',
+    flexWrap: 'wrap',
   },
   '& .MuiDialogActions-root': {
     padding: theme.spacing(1),
   },
   '& .MuiDialogContent-dividers': {
-    marginTop: '20px'
+   
   }
 }));
 
@@ -28,7 +31,7 @@ const BootstrapDialogTitle = (props) => {
   const { children, onClose, ...other } = props;
 
   return (
-    <DialogTitle sx={{ m: 0, p: 2 }} {...other}>
+    <DialogTitle sx={{ m: 0, p: 2, fontWeight: 'bold', fontFamily: 'inherit' }} {...other}>
       {children}
       {onClose ? (
         <IconButton
@@ -54,7 +57,7 @@ BootstrapDialogTitle.propTypes = {
 };
 
 export default function PopupList(props) {
-  const { open, setOpen, children, maxWidth, handleClosePopup } = props
+  const { open, setOpen, children, maxWidth, handleClosePopup, dialogTitle } = props
 
   const handleClose = () => {
     setOpen(false);
@@ -72,6 +75,7 @@ export default function PopupList(props) {
         maxWidth={maxWidth}
       >
         <BootstrapDialogTitle id="customized-dialog-title" onClose={handleClose}>
+          {dialogTitle}
         </BootstrapDialogTitle>
         <DialogContent dividers>{children[0] ? children : 'No item found!'}</DialogContent>
 

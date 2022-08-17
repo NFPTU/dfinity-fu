@@ -32,6 +32,8 @@ import CardNft from '../../../components/card-nft';
 import Skeleton from '@mui/material/Skeleton';
 import Stack from '@mui/material/Stack';
 import { toast } from 'react-toastify';
+import Swal from 'sweetalert2';
+import { levelData } from '../../admin/nft';
 
 function Breeding(props) {
 	const { setOpenProcess, resource } = props;
@@ -43,12 +45,40 @@ function Breeding(props) {
 	const [completedCount, setCompletedCount] = useState(false);
 	const [listNest, setListNest] = useState([]);
 
-	const [inNest, setInNest] = useState('')
+	const [inNest, setInNest] = useState('');
+
+	const [resourceUpgrade, setResourceUpgrade] = useState({});
 
 	const [superheroes, { loading, error }] = useCanister('superheroes');
 	const { principal, isConnected, disconnect } = useConnect();
 
-	const completedCountRef = useRef(false)
+	const completedCountRef = useRef(false);
+
+	useEffect(() => {
+		const getResourceUpgrade = (name, rarity, level) => {
+			const infoArr = levelData.reduce((total, current) => {
+				return current.name !== name ? [...total] : [...total, current];
+			}, []);
+
+			const listLevel = infoArr[0]?.info?.reduce((total, current) => {
+				return current.rarity !== rarity
+					? [...total]
+					: [...total, current.info];
+			}, []);
+
+			const listResource = listLevel[0]?.reduce((total, current) => {
+				return current.level !== level
+					? [...total]
+					: [...total, current.costResource];
+			}, []);
+
+			setResourceUpgrade(listResource && listResource[0]);
+		};
+
+		getResourceUpgrade('Queen', 'Common', 2);
+	}, []);
+
+	console.log('resourceUpgrade', resourceUpgrade);
 
 	const toastEmitter = async (type, message) => {
 		switch (type) {
@@ -84,16 +114,18 @@ function Breeding(props) {
 	//Get All NFT
 	const onGetData = async () => {
 		const resp = await superheroes?.getUserTokens(principal?.toString());
-		const queenNFTs = resp?.ok.filter((el) => el.attributes[0].value === 'Queen');
+		const queenNFTs = resp?.ok.filter(
+			(el) => el.attributes[0].value === 'Queen'
+		);
 
-		const inNest = resp?.ok?.find((el) => el.tokenId[0] == queenNFTs[0]?.detail?.queen?.inNest[0]);
+		const inNest = resp?.ok?.find(
+			(el) => el.tokenId[0] == queenNFTs[0]?.detail?.queen?.inNest[0]
+		);
 
-		setInNest(inNest)
+		setInNest(inNest);
 		await onGetAvailWorker();
 		setData(resp?.ok);
 	};
-
-	console.log('inNest', inNest)
 
 	//Filter NFT by type
 	const getNFTByType = (type) => {
@@ -107,7 +139,6 @@ function Breeding(props) {
 		const listNFT = data?.find((el) => el.tokenId[0] == id);
 		return listNFT;
 	};
-
 
 	//Get Queen NFT:
 	const getQueenNFT = () => {
@@ -153,11 +184,10 @@ function Breeding(props) {
 				const listQ = getNFTByType('Queen');
 				const res = await superheroes.breedAntWorkder(listQ[0]?.tokenId[0]);
 				setOpenProcess(false);
+				toastEmitter('success', 'Breading successfully');
 			}
 		}
 	};
-
-	console.log('completedCount', completedCount);
 
 	const onClaimWorker = async (e) => {
 		if (!completedCount) {
@@ -177,12 +207,59 @@ function Breeding(props) {
 		}
 	};
 
+	const confirmDialogUpdate = async () => {
+		Swal.fire({
+			title: 'Do you want to upgrade queen now?',
+			showDenyButton: false,
+			showCancelButton: true,
+			confirmButtonText: 'Ok',
+			html: `
+			<h2><b>Amount of resources needed to upgrade</b></h2><br />
+			<div style={{color: 'red'}}>food ${resourceUpgrade?.food}</div>
+			<div>gold ${resourceUpgrade?.gold}</div>
+			<div>leaf ${resourceUpgrade?.leaf}</div>
+			<div>soil ${resourceUpgrade?.soil}</div>
+			`,
+		}).then((result) => {
+			/* Read more about isConfirmed, isDenied below */
+			if (result.isConfirmed) {
+				onUpgrade();
+			} else if (result.isDenied) {
+			}
+		});
+	};
+
 	const onUpgrade = async (e) => {
-		const listQ = getNFTByType('Queen');
-		setOpenProcess(true);
-		const res = await superheroes.upgradeLevelQueen(listQ[0]?.tokenId[0]);
-		setOpenProcess(false);
-		toast('Upgrade queen successfully!!!');
+		if (
+			resource?.food < resourceUpgrade?.food ||
+			resource?.gold < resourceUpgrade?.gold ||
+			resource?.leaf < resourceUpgrade?.leaf ||
+			resource?.soil < resourceUpgrade?.soil
+		) {
+			toast('You do not have enough resource to upgrade!!!');
+		} else {
+			const listQ = getNFTByType('Queen');
+			setOpenProcess(true);
+			const res = await superheroes.upgradeLevelQueen(listQ[0]?.tokenId[0]);
+			setOpenProcess(false);
+			await onGetData();
+			toast('Upgrade queen successfully!!!');
+		}
+	};
+
+	const confirmDialogBreeding = async () => {
+		Swal.fire({
+			title: 'Do you want to breeding now?',
+			showDenyButton: false,
+			showCancelButton: true,
+			confirmButtonText: 'Ok',
+		}).then((result) => {
+			/* Read more about isConfirmed, isDenied below */
+			if (result.isConfirmed) {
+				onBreedingWorker();
+			} else if (result.isDenied) {
+			}
+		});
 	};
 
 	const onBreeding = async (e) => {
@@ -197,11 +274,9 @@ function Breeding(props) {
 	const onCompleteCount = (props) => {
 		setCompletedCount(props);
 
-		completedCountRef.current = props
+		completedCountRef.current = props;
 		toastEmitter('success', 'Breeding successfully !!!');
 	};
-
-	console.log('completedCountRef', completedCountRef)
 
 	const onGetAvailWorker = async () => {
 		const resp = await superheroes?.getUserAvailableWorker(
@@ -223,7 +298,6 @@ function Breeding(props) {
 			getListNest();
 		}
 	}, [data]);
-
 
 	return (
 		<>
@@ -288,9 +362,7 @@ function Breeding(props) {
 												  )
 												: 0}
 										</InfoBodyRightItem>
-										<InfoBodyRightItem>
-											{inNest?.name}
-										</InfoBodyRightItem>
+										<InfoBodyRightItem>{inNest?.name}</InfoBodyRightItem>
 									</InfoBodyRight>
 								</InfoBody>
 							)}
@@ -316,13 +388,12 @@ function Breeding(props) {
 								onClick={onBreeding}
 								disabled={
 									queenNFT?.detail?.queen?.breedingWorkerId && !completedCount
-								}
-							>
+								}>
 								{!queenNFT?.detail?.queen?.breedingWorkerId
 									? 'Breeding'
 									: 'Claim'}
 							</Btn>
-							<Btn onClick={onUpgrade}>Upgrade</Btn>
+							<Btn onClick={confirmDialogUpdate}>Upgrade</Btn>
 						</BtnList>
 					</Right>
 				</Wrapper>
