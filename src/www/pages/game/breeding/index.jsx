@@ -49,6 +49,7 @@ function Breeding(props) {
 	const [worker, setWorker] = useState();
 	const [completedCount, setCompletedCount] = useState(false);
 	const [listNest, setListNest] = useState([]);
+	const [cardSelected, setCardSelected] = useState();
 
 	const [inNest, setInNest] = useState('');
 
@@ -58,6 +59,10 @@ function Breeding(props) {
 	const { principal, isConnected, disconnect } = useConnect();
 
 	const completedCountRef = useRef(false);
+
+	const onChangeCard = (item) => {
+		setCardSelected(item);
+	};
 
 	useEffect(() => {
 		const getResourceUpgrade = (name, rarity, level) => {
@@ -150,6 +155,7 @@ function Breeding(props) {
 		const queen = getNFTByType('Queen');
 		setWorker(getNFTById(queen[0]?.detail?.queen?.breedingWorkerId));
 		setQueenNFT(queen && queen[0]);
+		setCardSelected(queen && queen[0])
 		setListQueenMiniCard(queen && queen)
 	};
 
@@ -175,7 +181,7 @@ function Breeding(props) {
 
 	//===================== Call Superheroes ==========================
 	const onBreedingWorker = async () => {
-		const foodNeeded = queenNFT?.detail?.queen?.info?.resourcePerWorker?.food;
+		const foodNeeded = cardSelected?.detail?.queen?.info?.resourcePerWorker?.food;
 		const limitWorkerInNest = Number(listNest[0]?.detail?.nest?.limit);
 		if (resource?.food < foodNeeded) {
 			toastEmitter('warn', 'You need more food to breeding');
@@ -205,7 +211,7 @@ function Breeding(props) {
 				!getRemainingTime(worker?.detail?.worker?.breedTimestamp)
 			) {
 				setOpenProcess(true);
-				const res = await superheroes.claimWorkerEgg(queenNFT?.tokenId[0]);
+				const res = await superheroes.claimWorkerEgg(cardSelected?.tokenId[0]);
 				await onGetData();
 				setOpenProcess(false);
 				toastEmitter('success', 'Claim egg successfully !!!');
@@ -269,7 +275,7 @@ function Breeding(props) {
 	};
 
 	const onBreeding = async (e) => {
-		if (!queenNFT?.detail?.queen?.breedingWorkerId) {
+		if (!cardSelected?.detail?.queen?.breedingWorkerId) {
 			await onBreedingWorker();
 		} else {
 			await onClaimWorker();
@@ -338,21 +344,21 @@ function Breeding(props) {
 							)}
 						</ListMiniCard>
 						<CardWrapper>
-							{!queenNFT ? (
+							{!cardSelected ? (
 								<Stack spacing={1}>
 									<Skeleton variant='text' width={240} height={15} />
 									<Skeleton variant='text' width={240} height={15} />
 									<Skeleton variant='rectangular' width={240} height={245} />
 								</Stack>
 							) : (
-								<CardNft data={queenNFT} heightImg={160} />
+								<CardNft data={cardSelected} heightImg={160} />
 							)}
 						</CardWrapper>
 					</LeftWrapper>
 
 					<Right>
 						<Info>
-							{!queenNFT ? (
+							{!cardSelected ? (
 								<Stack spacing={1} sx={{ marginBottom: '10px' }}>
 									<Skeleton variant='text' width={380} height={10} />
 									<Skeleton variant='text' width={380} height={10} />
@@ -362,13 +368,13 @@ function Breeding(props) {
 									<Type>Queen</Type>
 									<Level>
 										{'Level'}:{' '}
-										{(queenNFT?.detail?.queen?.level &&
-											Number(queenNFT?.detail?.queen?.level)) ||
+										{(cardSelected?.detail?.queen?.level &&
+											Number(cardSelected?.detail?.queen?.level)) ||
 											1}
 									</Level>
 								</InfoTop>
 							)}
-							{!queenNFT ? (
+							{!cardSelected ? (
 								<Stack spacing={1}>
 									<Skeleton variant='rectangular' width={380} height={80} />
 								</Stack>
@@ -383,17 +389,17 @@ function Breeding(props) {
 
 									<InfoBodyRight>
 										<InfoBodyRightItem>
-											{(queenNFT?.attributes &&
-												queenNFT?.attributes[1]?.value) ||
+											{(cardSelected?.attributes &&
+												cardSelected?.attributes[1]?.value) ||
 												'Uncommon'}
 										</InfoBodyRightItem>
 										<InfoBodyRightItem>
-											{queenNFT?.detail?.queen?.info?.resourcePerWorker?.food}
+											{cardSelected?.detail?.queen?.info?.resourcePerWorker?.food}
 										</InfoBodyRightItem>
 										<InfoBodyRightItem>
-											{queenNFT?.detail?.queen?.info?.breedWorkerTime
+											{cardSelected?.detail?.queen?.info?.breedWorkerTime
 												? toHHMMSS(
-														queenNFT?.detail?.queen?.info?.breedWorkerTime
+														cardSelected?.detail?.queen?.info?.breedWorkerTime
 												  )
 												: 0}
 										</InfoBodyRightItem>
@@ -422,9 +428,9 @@ function Breeding(props) {
 							<Btn
 								onClick={onBreeding}
 								disabled={
-									queenNFT?.detail?.queen?.breedingWorkerId && !completedCount
+									cardSelected?.detail?.queen?.breedingWorkerId && !completedCount
 								}>
-								{!queenNFT?.detail?.queen?.breedingWorkerId
+								{!cardSelected?.detail?.queen?.breedingWorkerId
 									? 'Breeding'
 									: 'Claim'}
 							</Btn>
