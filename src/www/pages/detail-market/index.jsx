@@ -81,8 +81,8 @@ function DetailNft(props) {
 		if (
 			itemNft &&
 			ownerNft == principal?.toString() &&
-			(itemNft?.detail?.queen?.inNest?.length > 0 ||
-				itemNft?.detail?.nest?.inLand?.length > 0 ||
+			(itemNft?.detail?.queen?.inNest?.length >= 1 &&  itemNft?.detail?.queen?.inNest[0] !== 0||
+				itemNft?.detail?.nest?.inLand?.length >= 1 && itemNft?.detail?.nest?.inLand[0] !== 0||
 				itemNft?.detail?.land?.inKingdom > 0)
 		) {
 			setneedUn(true);
