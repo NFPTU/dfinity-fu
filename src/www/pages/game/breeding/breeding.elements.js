@@ -35,6 +35,47 @@ export const Left = styled.div`
    margin-left: 87px;
 `
 
+export const LeftWrapper = styled.div`
+   width: 100%;
+   height: 100%;
+`
+
+export const ListMiniCard = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 326px;
+    min-width: 80px;
+    background-color: #f3d8af;
+    padding-right: 10px;
+    border-radius: 6px;
+    overflow: scroll;
+    overflow-x: hidden;
+    //Display elements from right to left:
+    direction: rtl;
+    scrollbar-width: thin;
+    position: absolute;
+    top: 100px;
+    bottom: 0;
+    transition: all .2s ease-in-out;
+    left: 69px;
+    z-index: 100;
+`
+
+export const CardImg = styled.img`
+    cursor: pointer;
+    width: 62px;
+    height: 100px;
+    padding: 2px 0;
+`
+
+export const CardWrapper = styled.div`
+    height: 380px;
+    width: 280px;
+    margin-left: 140px;
+    margin-top: 96px;
+`
+
 export const Right = styled.div`
     display: flex;
     flex-direction: column;

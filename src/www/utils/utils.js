@@ -15,3 +15,7 @@ export const toHHMMSS = function (time) {
     if (seconds < 10) {seconds = "0"+seconds;}
     return  minutes + 'm' + seconds + 's';
 }
+
+export const roundToTwoDecimal = (number) => {
+    return Math.round((number + Number.EPSILON) * 100) / 100
+}
