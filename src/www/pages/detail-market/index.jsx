@@ -110,8 +110,8 @@ function DetailNft(props) {
 			}
 		} else {
 			if (
-				itemNft?.detail?.queen?.inNest?.length > 0 ||
-				itemNft?.detail?.nest?.inLand?.length > 0 ||
+				itemNft?.detail?.queen?.inNest?.length >= 1 &&  itemNft?.detail?.queen?.inNest[0] !== 0||
+				itemNft?.detail?.nest?.inLand?.length >= 1 && itemNft?.detail?.nest?.inLand[0] !== 0||
 				itemNft?.detail?.land?.inKingdom > 0
 			) {
 				toast('You need unstake');
