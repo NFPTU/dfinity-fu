@@ -9,13 +9,29 @@ function GameFooter(props) {
 	// const [active, setAvtive] = useState('Kingdom');
 
 	const handleActive = (value) => {
-		setTabMarketFooter(value);
-		const tabFooterActive = JSON.stringify(value);
-		localStorage.setItem('tabFooterActive', tabFooterActive);
+		if (value === 'Marketplace') {
+			sessionStorage.setItem('tabFooterActive', 'Kingdom');
+		} else {
+			setTabMarketFooter(value);
+			const tabFooterActive = value;
+			sessionStorage.setItem('tabFooterActive', tabFooterActive);
+		}
 	}
 
 	useEffect(() => {
-		localStorage.setItem('tabFooterActive', JSON.stringify('Kingdom'));
+		let mounted = true
+		if (mounted) {
+			const tabFooterFromStorage = sessionStorage.getItem('tabFooterActive');
+			if (tabFooterFromStorage) {
+				setTabMarketFooter(tabFooterFromStorage);
+			} else {
+				sessionStorage.setItem('tabFooterActive', 'Kingdom');
+				setTabMarketFooter('Kingdom');
+			}
+		}
+
+		return () => mounted = false;
+
 	}, [])
 
 	const items = [
@@ -70,7 +86,7 @@ function GameFooter(props) {
 					<Item
 						key={index}
 						onClick={() => handleActive(item.title)}
-						active={item.title === tabMarketFooter  ? true : false}>
+						active={item.title === tabMarketFooter ? true : false}>
 						<Image src={item.imgUrl} alt='' />
 						<Title>{item.title}</Title>
 					</Item>

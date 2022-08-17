@@ -34,33 +34,49 @@ function GameHeader(props) {
 		return () => clearTimeout(timerId);
 	};
 
-	useEffect(async() => {
-		if(principal && token) {
+	useEffect(async () => {
+		if (principal && token) {
 			getBalance()
 		}
 	}, [principal, token]);
 
 	const getBalance = async () => {
 		const res2 = await token.balanceOf(Principal.fromText(principal?.toString()));
-		console.log(res2);
 		setbalance(res2)
 	}
 
 	const handleChangeTabItem = (item) => {
-		setTabGameHeader(item)
-		const tabGameHeaderActive = JSON.stringify(item);
-		localStorage.setItem('tabGameHeaderActive', tabGameHeaderActive);
+		if (item === 'game') {
+			sessionStorage.setItem('tabGameHeaderActive', 'market');
+		} else {
+			setTabGameHeader(item)
+			sessionStorage.setItem('tabGameHeaderActive', item);
+		}
+
 	}
 
 	useEffect(() => {
-		localStorage.setItem('tabGameHeaderActive', JSON.stringify('market'));
+		let mounted = true;
+		if (mounted) {
+			const tabHeaderFromStorage = sessionStorage.getItem('tabGameHeaderActive');
+			if (tabHeaderFromStorage) {
+				setTabGameHeader(tabHeaderFromStorage)
+			} else {
+				sessionStorage.setItem('tabGameHeaderActive', 'market');
+				setTabGameHeader('market')
+			}
+		}
+
+		return () => {
+			mounted = false;
+		}
 	}, [])
 
 	return (
 		<div className='header'>
 			<div className='header__wrapper'>
 				<div className='header__wrapper-left'>
-					
+
 
 					<div className='header__wrapper-list'>
 						{tabs.map((item, key) => (
@@ -99,7 +115,7 @@ function GameHeader(props) {
 							alt='copy-icon'
 						/>
 					</div>
-				
+
 				</div>
 			</div>
 		</div>

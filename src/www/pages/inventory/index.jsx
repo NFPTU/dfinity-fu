@@ -21,7 +21,7 @@ function Inventory(props) {
 	const [tab, setTab] = useState('Land');
 	const [classesTabLine, setClassesTabLine] = useState('tab-line');
 
-	// const [data, setData] = useState([]);
+	//const [data, setData] = useState([]);
 	const [filterData, setFilterData] = useState([]);
 	const [pageData, setPageData] = useState([]);
 
@@ -33,9 +33,6 @@ function Inventory(props) {
 
 	const [superheroes, { loading, error }] = useCanister('superheroes');
 	const { principal, isConnected, disconnect } = useConnect();
-
-	const tabItemHeader = JSON.parse(localStorage.getItem('tabItemHeader'));
-	const tabItemIventory = JSON.parse(localStorage.getItem('tabItemIventory'));
 
 	const handleClickCard = (tokenId) => {
 		navigate(`/detail/${tokenId}`, {
@@ -80,11 +77,6 @@ function Inventory(props) {
 		return listNFT;
 	};
 
-	//Get All NFT
-	const onGetData = async () => {
-		const resp = await superheroes?.getUserTokens(principal?.toString());
-		setData(resp?.ok);
-	};
 
 	//Get list NFT by type:
 	const onGetDataByType = () => {
@@ -95,9 +87,6 @@ function Inventory(props) {
 	};
 
 	//===================== SIDE EFFECT =======================
-	useEffect(() => {
-		onGetData();
-	}, [superheroes, principal]);
 
 	useEffect(() => {
 		onGetDataByType();
@@ -119,8 +108,7 @@ function Inventory(props) {
 
 	const handleChangeTab = (item) => {
 		setTab(item);
-		const tabItem = JSON.stringify(item);
-		localStorage.setItem('tabItemInventory', tabItem);
+		sessionStorage.setItem('tabItemInventory', item);
 	};
 
 	const handleToggle = (value) => {
@@ -133,13 +121,9 @@ function Inventory(props) {
 			newChecked.splice(currentIndex, 1);
 		}
 
-		console.log('newChecked', newChecked);
-
 		setChecked(newChecked);
 	};
 
-	console.log('checked', checked);
-	console.log('pageData', pageData);
 
 	//Filter data by rarity checkbox:
 	useEffect(() => {
@@ -183,7 +167,7 @@ function Inventory(props) {
 								key={index}
 								className={
 									item.type ===
-									JSON.parse(localStorage.getItem('tabItemIventory'))
+									sessionStorage.getItem('tabItemIventory')
 										? 'tab-item tab-itemActive'
 										: 'tab-item'
 								}>
