@@ -31,7 +31,17 @@ function DetailNft(props) {
 
 	const [open, setOpen] = useState(false);
 
-	const handleOpen = () => setOpen(true);
+	const handleOpen = () => {
+		if (
+			itemNft?.detail?.queen?.inNest?.length > 0 ||
+			itemNft?.detail?.nest?.inLand?.length > 0 ||
+			itemNft?.detail?.land?.inKingdom > 0
+		) {
+			toast('You need unstake');
+			return;
+		}
+		setOpen(true)
+	}
 	const handleClose = () => setOpen(false);
 
 	const [tab, setTab] = useState('description');

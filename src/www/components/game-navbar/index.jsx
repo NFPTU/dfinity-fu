@@ -12,6 +12,7 @@ import Resource from './resource';
 import { useCanister, useConnect } from '@connect2ic/react';
 import { withContext } from '../../hooks';
 import { Principal } from '@dfinity/principal';
+import { roundToTwoDecimal } from '../../utils/utils';
 
 function GameNavbar(props) {
 	const { resource, setResource, prinpId, logout } = props;
@@ -61,16 +62,16 @@ function GameNavbar(props) {
 			<Wrapper>
 				<Resource
 					img={'/images/navbar/icons/gold.png'}
-					resource={resource?.gold}
+					resource={roundToTwoDecimal(resource?.gold)}
 				/>
 				<Resource
 					img={'/images/navbar/icons/soil.png'}
-					resource={resource?.soil}
+					resource={roundToTwoDecimal(resource?.soil)}
 				/>
 				
 				<Resource
 					img={'/images/navbar/icons/food.png'}
-					resource={resource?.food}
+					resource={roundToTwoDecimal(resource?.food)}
 				/>
 				<TitleWrapper>
 					<Background src={'/images/sidebarButton.png'} alt='background' />
@@ -79,12 +80,12 @@ function GameNavbar(props) {
 				</TitleWrapper>
 				<Resource
 					img={'/images/navbar/icons/leaf.png'}
-					resource={resource?.leaf}
+					resource={roundToTwoDecimal(resource?.leaf)}
 				/>
 
 				<Resource
 					img={'/images/navbar/ant-token.jpg'}
-					resource={Number(balance)}
+					resource={roundToTwoDecimal(Number(balance))}
 				/>
 				<WalletAddress onClick={onDisconnect}>
 					{principal?.toString()?.slice(0, 3)} ...{' '}

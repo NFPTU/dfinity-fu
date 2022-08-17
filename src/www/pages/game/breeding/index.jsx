@@ -21,6 +21,10 @@ import {
 	Second,
 	Type,
 	Wrapper,
+	CardImg,
+	CardWrapper,
+	LeftWrapper,
+	ListMiniCard
 } from './breeding.elements';
 import { useCanister, useConnect } from '@connect2ic/react';
 import { getRemainingTime, toHHMMSS } from '../../../utils/utils';
@@ -39,6 +43,7 @@ function Breeding(props) {
 	const { setOpenProcess, resource } = props;
 	const [data, setData] = useState([]);
 	const [queenNFT, setQueenNFT] = useState({});
+	const [listQueenMiniCard, setListQueenMiniCard] = useState([]);
 	const [listWorkerNFT, setListWorkerNFT] = useState([]);
 	const [remainWorker, setRemainWorker] = useState([]);
 	const [worker, setWorker] = useState();
@@ -145,6 +150,7 @@ function Breeding(props) {
 		const queen = getNFTByType('Queen');
 		setWorker(getNFTById(queen[0]?.detail?.queen?.breedingWorkerId));
 		setQueenNFT(queen && queen[0]);
+		setListQueenMiniCard(queen && queen)
 	};
 
 	//Get List Nest:
@@ -303,7 +309,7 @@ function Breeding(props) {
 		<>
 			<Container>
 				<Wrapper>
-					<Left>
+					{/* <Left>
 						{queenNFT ? (
 							<CardNft data={queenNFT} />
 						) : (
@@ -313,7 +319,36 @@ function Breeding(props) {
 								<Skeleton variant='rectangular' width={240} height={245} />
 							</Stack>
 						)}
-					</Left>
+					</Left> */}
+
+					<LeftWrapper>
+						<ListMiniCard>
+							{!listQueenMiniCard ? (
+								<Stack spacing={1}>
+									<Skeleton variant='rectangular' width={60} height={'100%'} />
+								</Stack>
+							) : (
+								listQueenMiniCard.map((el) => (
+									<CardImg
+										onClick={() => onChangeCard(el)}
+										src={el.image}
+										alt=''
+									/>
+								))
+							)}
+						</ListMiniCard>
+						<CardWrapper>
+							{!queenNFT ? (
+								<Stack spacing={1}>
+									<Skeleton variant='text' width={240} height={15} />
+									<Skeleton variant='text' width={240} height={15} />
+									<Skeleton variant='rectangular' width={240} height={245} />
+								</Stack>
+							) : (
+								<CardNft data={queenNFT} heightImg={160} />
+							)}
+						</CardWrapper>
+					</LeftWrapper>
 
 					<Right>
 						<Info>
