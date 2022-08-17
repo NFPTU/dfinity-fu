@@ -52,7 +52,7 @@ function Market(props) {
 
 	const handleClickTab = (value) => {
 		setTab(value);
-		localStorage.setItem('tabFooterActive', JSON.stringify('Kingdom'));
+		sessionStorage.setItem('tabFooterActive', 'Kingdom');
 	};
 
 	//=============== PAGINATION ===================
