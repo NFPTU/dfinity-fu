@@ -33,6 +33,7 @@ function NewCard(props) {
 	useEffect(() => {
 		handleRarityType()
 	}, [rarity_type, data])
+
     
   return (
     <CardContainer width={width} height={height}>

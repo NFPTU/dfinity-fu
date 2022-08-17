@@ -20,47 +20,41 @@ function GameFooter(props) {
 
 	const items = [
 		{
-			id: 6,
+			id: 1,
 			imgUrl: '/images/footer/breed.png',
 			title: 'Kingdom',
 			to: '/kingdom',
 		},
 		{
-			id: 4,
+			id: 2,
 			imgUrl: '/images/footer/breed.png',
 			title: 'Land',
 			to: '/land',
 		},
 		{
-			id: 5,
+			id: 3,
 			imgUrl: '/images/footer/breed.png',
 			title: 'Nest',
 			to: '/nest',
 		},
 		{
-			id: 3,
+			id: 4,
 			imgUrl: '/images/footer/breed.png',
 			title: 'Queen',
 			to: '/queen',
 		},
 		{
-			id: 7,
+			id: 5,
 			imgUrl: '/images/footer/breed.png',
 			title: 'Marketplace',
 			to: '/market',
 		},
 		{
-			id: 8,
+			id: 6,
 			imgUrl: '/images/footer/breed.png',
 			title: 'Battle',
 			to: '/battle',
-		},
-		{
-			id: 9,
-			imgUrl: '/images/footer/breed.png',
-			title: 'Swap',
-			to: '/swap',
-		},
+		}
 	];
 
 	return (
