@@ -16,7 +16,7 @@ export const rarity_type = [
     },
     {
         id: 4,
-        type: 'Epec',
+        type: 'Epic',
         src: '/images/card/rarity/epic.png'
     },
     {

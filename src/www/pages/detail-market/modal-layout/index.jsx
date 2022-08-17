@@ -2,7 +2,7 @@ import React from 'react';
 import DisabledByDefaultIcon from '@mui/icons-material/DisabledByDefault';
 import './modal-layout.css';
 
-function ModalLayout({ children, handleClose, listTing }) {
+function ModalLayout({ children, handleClose, listTing, src }) {
 	const handleClickApprove = (e) => {
     e.preventDefault();
     listTing()
@@ -25,8 +25,8 @@ function ModalLayout({ children, handleClose, listTing }) {
 				<div className='modal__container-body'>
 					<div className='modal__container-body-left'>
 						<img
-							src='https://monsterra-market.s3.ap-southeast-1.amazonaws.com/plots/pasture-tectos-1.webp'
-							alt='nft'
+							src={src}
+							alt='image-nft'
 						/>
 					</div>
 

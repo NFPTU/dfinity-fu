@@ -78,7 +78,7 @@ function Market(props) {
 				);
 			}
 		}
-	}, [filterData, isOwned, numberNftPerPage, page, tab, tabGameHeader]);
+	}, [superheroes, principal, filterData, isOwned, numberNftPerPage, page, tab, tabGameHeader, filterDataOrigin]);
 
 	//===============================================
 
@@ -88,7 +88,8 @@ function Market(props) {
 	};
 
 	const clearFilter = () => {
-		setIsOwned(false);
+		setIsOwned(true);
+		setChecked([]);
 	};
 	//===============================================
 
@@ -178,7 +179,7 @@ function Market(props) {
 		}
 
 		return () => (mounted = false);
-	}, [superheroes, principal, checked]);
+	}, [superheroes, principal, checked, filterDataOrigin]);
 
 
 	return (

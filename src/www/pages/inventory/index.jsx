@@ -67,7 +67,7 @@ function Inventory(props) {
 			const newData = filterData?.slice(indexOfFirstNFT, indexOfLastNFT);
 			setPageData(newData);
 		}
-	}, [filterData, numberNftPerPage, page, tab]);
+	}, [filterData, numberNftPerPage, page, tab, filterDataOrigin]);
 
 	//===============================================
 	//=============== HANDLE NFT ====================

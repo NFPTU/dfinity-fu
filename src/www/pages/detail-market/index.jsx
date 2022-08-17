@@ -12,6 +12,7 @@ import Box from '@mui/material/Box';
 import ModalLayout from './modal-layout';
 import Modal from '@mui/material/Modal';
 import { withContext } from '../../hooks';
+import { useNavigate } from 'react-router-dom';
 
 const style = {
 	position: 'absolute',
@@ -45,14 +46,13 @@ function DetailNft(props) {
 	const [ownerNft, setownerNft] = useState();
 	const [needUn, setneedUn] = useState(false);
 
-	console.log('needUn', needUn)
-
 	const [priceListing, setPriceListing] = useState('');
 
 	const { state } = useLocation();
 
+	const navigate = useNavigate();
+
 	useEffect(async () => {
-		console.log(desc, principal);
 		if (desc && principal && superheroes) {
 			getData();
 		}
@@ -61,23 +61,19 @@ function DetailNft(props) {
 	const getData = async () => {
 		const respo = await superheroes?.getAllOrders();
 		let itemorder = respo?.ok.find((el) => el?.token?.tokenId[0] == desc);
-		console.log('getAllOrders', respo);
 		if (itemorder) {
 			setDataOrder(itemorder);
 			setItemNft(itemorder?.token);
 			setownerNft(itemorder?.owner.toString());
 		} else {
 			const resp = await superheroes?.getUserTokens(principal?.toString());
-			console.log(resp);
 			let item = resp?.ok.find((el) => el?.tokenId[0] == desc);
 			setItemNft(item);
-			console.log(item);
 			setownerNft(principal?.toString());
 		}
 	};
 
 	useEffect(async () => {
-		console.log(itemNft, itemNft?.detail?.land?.inKingdom != 0);
 		if (
 			itemNft &&
 			ownerNft == principal?.toString() &&
@@ -108,6 +104,9 @@ function DetailNft(props) {
 			if (resp) {
 				toast('Cancel Order success');
 				getData();
+				setTimeout(() => {
+					navigate('/inventory');
+				}, 1000)
 			}
 		} else {
 			if (
@@ -124,6 +123,9 @@ function DetailNft(props) {
 			if (resp) {
 				toast('Create Order success');
 				getData();
+				setTimeout(() => {
+					navigate('/market');
+				}, 1000)
 			}
 		}
 	};
@@ -169,13 +171,14 @@ function DetailNft(props) {
 			Principal.fromText(process.env.SUPERHEROES_CANISTER_ID),
 			99999999
 		);
-		console.log(resp1);
 		const resp = await superheroes?.buy(Number(dataOrder?.index));
 		if (resp) {
 			toast('Buy success');
 		}
 		getData();
 	};
+
+	console.log('itemNft', itemNft)
 
 	return (
 		<div className='detail-market-container'>
@@ -310,10 +313,10 @@ function DetailNft(props) {
 				aria-labelledby='modal-modal-title'
 				aria-describedby='modal-modal-description'>
 				<Box sx={style}>
-					<ModalLayout handleClose={handleClose} listTing={listTing}>
+					<ModalLayout src={itemNft?.image} handleClose={handleClose} listTing={listTing}>
 						<div className='modal__container-body-rightTop'>
-							<div className='modal__container-body-rightTop-name'>Habitat</div>
-							<div className='modal__container-body-rightTop-id'>#12345</div>
+							<div className='modal__container-body-rightTop-name'>{itemNft?.name}</div>
+							<div className='modal__container-body-rightTop-id'>#{itemNft?.tokenId}</div>
 						</div>
 
 						<div className='modal__container-body-rightMid'>
@@ -327,7 +330,7 @@ function DetailNft(props) {
 							</div>
 							<div className='modal__container-body-rightMid-right'>
 								<div className='modal__container-body-rightMid-right-item'>
-									Queen
+									{itemNft?.attributes[0]?.value}
 								</div>
 								<div className='modal__container-body-rightMid-right-item'>
 									x1
