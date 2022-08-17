@@ -33,7 +33,7 @@ function LoginGame(props) {
 			const res = await superheroes.getUserInfo(principal?.toString());
 			console.log('info', res);
 			if (res) {
-				navigate('/');
+				navigate('/kingdom');
 			} else {
 				navigate('/home-claim');
 			}

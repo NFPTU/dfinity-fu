@@ -23,9 +23,23 @@ const Market = lazy(() => import("./market"))
 const Inventory = lazy(() => import("./inventory"))
 const Battle = lazy(() => import("./game/battle"))
 const DetailMarket = lazy(() => import("./detail-market"))
-const Swap = lazy(() => import("./game/swap"))
+const Swap = lazy(() => import("./swap"))
 
 const routes = [
+    {
+        path: "/",
+        exact: true,
+        public: true,
+        component: LoginGame,
+        layout: null
+    },
+    {
+        path: "/admin",
+        exact: true,
+        public: true,
+        component: Admin,
+        layout: MarketLayout
+    },
     {
         path: "/queen",
         exact: true,
@@ -108,7 +122,7 @@ const routes = [
         exact: true,
         public: true,
         component: Swap,
-        layout: GameLayout
+        layout: GameLayoutHeader
     },
     {
         path: "/login",
@@ -136,13 +150,6 @@ const routes = [
         exact: true,
         public: true,
         component: ListNft
-    },
-    {
-        path: "/",
-        exact: true,
-        public: true,
-        component: Admin,
-        layout: MarketLayout
     }
 ]
 

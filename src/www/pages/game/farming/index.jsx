@@ -52,6 +52,7 @@ import CardNft from '../../../components/card-nft';
 import Skeleton from '@mui/material/Skeleton';
 import Stack from '@mui/material/Stack';
 import { toast } from 'react-toastify';
+import Swal from 'sweetalert2'
 
 function Farming(props) {
 	const { setOpenProcess, tabMarketFooter } = props;
@@ -77,7 +78,7 @@ function Farming(props) {
 
 	const [inKingdom, setInKingdom] = useState('');
 
-	const completedCount = useRef(false)
+	const completedCount = useRef(false);
 
 	const getNFTByType = (type) => {
 		return listNFt.filter((el) => el.attributes[0].value === type);
@@ -88,12 +89,13 @@ function Farming(props) {
 		return listNFTs;
 	};
 
-
 	const onGetData = async () => {
 		const resp = await superheroes?.getUserTokens(principal?.toString());
 		const listLand = resp?.ok.filter((el) => el.attributes[0].value === 'Land');
 		const listNest = resp?.ok.filter((el) => el.attributes[0].value === 'Nest');
-		const inKingdom = resp?.ok.filter((el) => el.attributes[0].value === 'Kingdom');
+		const inKingdom = resp?.ok.filter(
+			(el) => el.attributes[0].value === 'Kingdom'
+		);
 
 		await onGetAvailWorker();
 		setListNFt(resp?.ok);
@@ -119,8 +121,19 @@ function Farming(props) {
 		setShowFarmDialog(true);
 	};
 
-	const handleClose = () => {
+	const handleClose = async () => {
 		setShowFarmDialog(false);
+
+		const resp = await superheroes?.getUserAvailableWorker(
+			principal?.toString()
+		);
+		setRemainWorker(resp?.ok.length);
+		setValueResource({
+			food: 0,
+			gold: 0,
+			leaf: 0,
+			soil: 0,
+		})
 	};
 
 	const onChangeSlide = (item, value) => {
@@ -135,6 +148,23 @@ function Farming(props) {
 		}
 	};
 
+	const confirmDialog = async () => {
+		setShowFarmDialog(false);
+		Swal.fire({
+			title: 'Do you want to farm resource now?',
+			showDenyButton: false,
+			showCancelButton: true,
+			confirmButtonText: 'Ok',
+		}).then((result) => {
+			/* Read more about isConfirmed, isDenied below */
+			if (result.isConfirmed) {
+				onSubmitFarm()
+			} else if (result.isDenied) {
+				setShowFarmDialog(false);
+			}
+		});
+	};
+
 	const onSubmitFarm = async () => {
 		setOpenProcess(true);
 		const resp = await superheroes?.workerFarmInLand(
@@ -143,6 +173,7 @@ function Farming(props) {
 		);
 		await onGetData();
 		setOpenProcess(false);
+		toast('Farming..., please wait for timeout to claim resource !!!');
 		setShowFarmDialog(false);
 	};
 
@@ -224,11 +255,11 @@ function Farming(props) {
 	};
 
 	const onCompleteCount = (props) => {
-		completedCount.current = props
+		completedCount.current = props;
 		toast('Farm resource successfully!!!');
 	};
 
-	console.log('completedCount', completedCount.current)
+	console.log('completedCount', completedCount.current);
 
 	useEffect(() => {
 		if (principal && superheroes) {
@@ -242,13 +273,19 @@ function Farming(props) {
 				<Left>
 					<LeftWrapper>
 						<ListMiniCard>
-							{listNFtLand.map((el) => (
-								<CardImg
-									onClick={() => onChangeCard(el)}
-									src={el.image}
-									alt=''
-								/>
-							))}
+							{!listNFtLand ? (
+								<Stack spacing={1}>
+									<Skeleton variant='rectangular' width={60} height={'100%'} />
+								</Stack>
+							) : (
+								listNFtLand.map((el) => (
+									<CardImg
+										onClick={() => onChangeCard(el)}
+										src={el.image}
+										alt=''
+									/>
+								))
+							)}
 						</ListMiniCard>
 						<CardWrapper>
 							{!cardSelected ? (
@@ -389,7 +426,7 @@ function Farming(props) {
 										img={'/images/navbar/icons/leaf.png'}
 									/>
 								</Stack>
-								<Button name={'Farm'} onClick={onSubmitFarm} />
+								<Button name={'Farm'} onClick={confirmDialog} />
 								Idle: {remainWorker}
 							</DialogContent>
 						) : (
@@ -398,7 +435,7 @@ function Farming(props) {
 					</Dialog>
 				</Right>
 			</Wrapper>
-			<PopupList open={open} setOpen={setOpen}>
+			<PopupList dialogTitle={"Choose nest to dig nest into land"} open={open} setOpen={setOpen}>
 				{getNFTByType('Nest').map((el, index) => {
 					if (el?.detail?.nest?.inLand[0]) return;
 					return (

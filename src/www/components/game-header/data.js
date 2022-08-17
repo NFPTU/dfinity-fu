@@ -13,6 +13,12 @@ export const tabs = [
     },
     {
         id: 3,
+        type: "swap",
+        name: "Swap",
+        link: '/swap'
+    },
+    {
+        id: 4,
         type: "game",
         name: "Game",
         link: '/kingdom'

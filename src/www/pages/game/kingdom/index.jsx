@@ -156,17 +156,19 @@ function Kingdom(props) {
 						</BtnList>
 					</Right>
 				</Wrapper>
-				<PopupList open={open} setOpen={setOpen}>
+				<PopupList dialogTitle={"Choose land to expand into kingdom"} open={open} setOpen={setOpen}>
 					{listLand.map((el, index) => {
 						const tokenId = el?.tokenId[0];
 						if (el?.detail?.land?.inKingdom) return;
 						return (
-							<CardNft
-								key={index}
-								data={el}
-								footer={() => rendterBtn(el)}
-								alt=''
-							/>
+							<div style={{marginLeft: '15px'}}>
+								<CardNft
+									key={index}
+									data={el}
+									footer={() => rendterBtn(el)}
+									alt=''
+								/>
+							</div>
 						);
 					})}
 				</PopupList>
