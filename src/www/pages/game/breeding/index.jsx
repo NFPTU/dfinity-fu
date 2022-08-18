@@ -52,8 +52,6 @@ function Breeding(props) {
 	const [superheroes, { loading, error }] = useCanister('superheroes');
 	const { principal, isConnected, disconnect } = useConnect();
 
-	const completedCountRef = useRef(false);
-
 	useEffect(() => {
 		const getResourceUpgrade = (name, rarity, level) => {
 			const infoArr = levelData.reduce((total, current) => {
@@ -76,9 +74,8 @@ function Breeding(props) {
 		};
 
 		getResourceUpgrade('Queen', 'Common', 2);
-	}, []);
 
-	console.log('resourceUpgrade', resourceUpgrade);
+	}, []);
 
 	const toastEmitter = async (type, message) => {
 		switch (type) {
@@ -273,8 +270,6 @@ function Breeding(props) {
 
 	const onCompleteCount = (props) => {
 		setCompletedCount(props);
-
-		completedCountRef.current = props;
 		toastEmitter('success', 'Breeding successfully !!!');
 	};
 
@@ -377,7 +372,13 @@ function Breeding(props) {
 											getRemainingTime(worker?.detail?.worker?.breedTimestamp) *
 												1000
 										}
-										onComplete={(props) => onCompleteCount(props.completed)}
+										onComplete={(props) => {
+											onCompleteCount(props.completed)
+										}}
+										onMount={(props) => {
+											const isCompleted = props.completed;
+											if(isCompleted) setCompletedCount(isCompleted);
+										}}
 									/>
 								</CountdownInside>
 							</CountdownWrapper>
