@@ -39,6 +39,7 @@ function Nest(props) {
 	const [listNFt, setListNFt] = useState([]);
 	const [listNest, setListNest] = useState([]);
 	const [cardSelected, setCardSelected] = useState();
+	const [cardMiniActive, setCardMiniActive] = useState();
 	const [open, setOpen] = useState(false);
 	const [resourceUpgrade, setResourceUpgrade] = useState({});
 
@@ -71,7 +72,6 @@ function Nest(props) {
 		getResourceUpgrade('Nest', 'Rare', 2);
 	}, []);
 
-	console.log('resourceUpgrade', resourceUpgrade);
 
 	const onGetData = async () => {
 		const resp = await superheroes?.getUserTokens(principal?.toString());
@@ -83,6 +83,7 @@ function Nest(props) {
 		setInLand(inLand);
 		setListNFt(resp?.ok);
 		setCardSelected(listNest[0]);
+		setCardMiniActive(listNest[0]?.tokenId[0]);
 		setListNest(listNest);
 	};
 
@@ -98,7 +99,7 @@ function Nest(props) {
 				cardSelected?.tokenId[0]
 			);
 		} catch (er) {
-			console.log(er);
+			
 		}
 		setOpenProcess(false);
 		onGetData();
@@ -107,6 +108,7 @@ function Nest(props) {
 
 	const onChangeCard = (item) => {
 		setCardSelected(item);
+		setCardMiniActive(item?.tokenId[0]);
 	};
 
 	const getNFTByType = (type) => {
@@ -181,10 +183,14 @@ function Nest(props) {
 									</Stack>
 								) : (
 									listNest.map((el) => (
-										<CardImg
-											onClick={() => onChangeCard(el)}
-											src={el.image}
-											alt=''
+										<CardNft
+											active={cardMiniActive === el?.tokenId[0] ? true : false}
+											onChangeCard={onChangeCard}
+											data={el}
+											width={62}
+											height={100}
+											heightImg={60}
+											miniCard={true}
 										/>
 									))
 								)}
