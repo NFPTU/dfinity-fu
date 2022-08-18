@@ -37,6 +37,8 @@ function Market(props) {
 
 	const [checked, setChecked] = useState([]);
 
+	const [dataOrder, setDataOrder] = useState();
+
 	const [superheroes, { loading, error }] = useCanister('superheroes');
 	const { principal, isConnected, disconnect } = useConnect();
 
@@ -95,9 +97,8 @@ function Market(props) {
 
 	//Get All NFT
 	// const onGetAllOrders = async () => {
-	// 	const resp = await superheroes?.getAllOrders();
-	// 	console.log('getAllOrders', resp);
-	// 	setData(resp?.ok);
+	// 	const respo = await superheroes?.getAllOrders();
+	// 	let itemorder = respo?.ok.find((el) => el?.token?.tokenId[0] == desc);
 	// };
 
 	//Filter NFT by type
@@ -293,7 +294,7 @@ function Market(props) {
 									{marketData &&
 										(pageData?.length !== 0 ? (
 											pageData?.map((item, index) => {
-												console.log('item', item)
+											
 												return (
 													<div 
 													onClick={() => handleClickCard(item?.token?.tokenId[0])}
@@ -303,6 +304,7 @@ function Market(props) {
 															width='244'
 															height='380'
 															data={item?.token}
+															price={Number(item?.price)}
 														/>
 													</div>
 												)

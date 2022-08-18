@@ -30,6 +30,12 @@ import {
 	ResourceQuantity,
 	ResourceTitle,
 	CountdownInside,
+	ResourceFarmPerTime,
+	ResourceItemName,
+	ResourceItemValue,
+	ResourceItemm,
+	ResourceFarmPerTimeTitle,
+	ResourceItemImg
 } from './farming.elements';
 import './farming.css';
 import { listMiniCard } from './mockData';
@@ -52,7 +58,8 @@ import CardNft from '../../../components/card-nft';
 import Skeleton from '@mui/material/Skeleton';
 import Stack from '@mui/material/Stack';
 import { toast } from 'react-toastify';
-import Swal from 'sweetalert2'
+import Swal from 'sweetalert2';
+import { roundToTwoDecimal } from '../../../utils/utils';
 
 function Farming(props) {
 	const { setOpenProcess, tabMarketFooter } = props;
@@ -70,6 +77,7 @@ function Farming(props) {
 	});
 	const [listWorker, setListWorker] = useState([]);
 	const [remainWorker, setRemainWorker] = useState([]);
+	const [resourceFarmPerTime, setResourceFarmPerTime] = useState({});
 	const [superheroes, { loading, error }] = useCanister('superheroes');
 	const { principal } = useConnect();
 	const [open, setOpen] = useState(false);
@@ -139,8 +147,11 @@ function Farming(props) {
 			principal?.toString()
 		);
 		setListWorker(resp?.ok);
+		setResourceFarmPerTime(resp?.ok[0]?.detail?.worker?.info?.farmPerTime)
 		setRemainWorker(resp?.ok.length);
 	};
+
+	console.log('resourceFarmPerTime', resourceFarmPerTime)
 
 	const onChangeCard = (item) => {
 		setCardSelected(item);
@@ -173,6 +184,7 @@ function Farming(props) {
 			(previousValue, currentValue) => previousValue + currentValue,
 			0
 		);
+		
 		const remainW = listWorker.length - selectedWorker;
 		if (value - valueResource[item] <= remainW) {
 			setRemainWorker(remainW);
@@ -245,7 +257,6 @@ function Farming(props) {
 			}
 
 		} catch (err) {
-			console.log(err);
 			setOpenProcess(false);
 		}
 	};
@@ -263,7 +274,6 @@ function Farming(props) {
 			setOpen(false);
 			onGetData();
 		} catch (er) {
-			console.log(er);
 		}
 	};
 
@@ -407,7 +417,7 @@ function Farming(props) {
 								</ResourceQuantity>
 							</ResourceItem>
 							<ResourceItem>
-								<ResourceImg src='/images/navbar/icons/leaf.png' alt='' />
+								<ResourceImg src='/images/navbar/icons/leaf.jpeg' alt='' />
 								<ResourceQuantity>
 									{cardSelected?.detail?.land?.resource?.leaf || 0}
 								</ResourceQuantity>
@@ -466,11 +476,34 @@ function Farming(props) {
 										handleSliderChange={(event, newValue) => {
 											onChangeSlide('leaf', newValue);
 										}}
-										img={'/images/navbar/icons/leaf.png'}
+										img={'/images/navbar/icons/leaf.jpeg'}
 									/>
 								</Stack>
 								<Button name={'Farm'} onClick={confirmDialog} />
 								Idle: {remainWorker}
+								<ResourceFarmPerTimeTitle>List resource farm per time</ResourceFarmPerTimeTitle>
+								<ResourceFarmPerTime>
+									<ResourceItemm>
+										<ResourceItemName>Food:</ResourceItemName>
+										<ResourceItemValue>{roundToTwoDecimal(resourceFarmPerTime?.food * valueResource?.food)}</ResourceItemValue>
+										<ResourceItemImg src={'/images/navbar/icons/food.png'} alt="resource item img"/>
+									</ResourceItemm>
+									<ResourceItem>
+										<ResourceItemName>Gold:</ResourceItemName>
+										<ResourceItemValue>{roundToTwoDecimal(resourceFarmPerTime?.gold * valueResource?.gold)}</ResourceItemValue>
+										<ResourceItemImg src={'/images/navbar/icons/gold.png'} alt="resource item img"/>
+									</ResourceItem>
+									<ResourceItem>
+										<ResourceItemName>Soil:</ResourceItemName>
+										<ResourceItemValue>{roundToTwoDecimal(resourceFarmPerTime?.soil * valueResource?.soil)}</ResourceItemValue>
+										<ResourceItemImg src={'/images/navbar/icons/soil.png'} alt="resource item img"/>
+									</ResourceItem>
+									<ResourceItem>
+										<ResourceItemName>Leaf:</ResourceItemName>
+										<ResourceItemValue>{roundToTwoDecimal(resourceFarmPerTime?.leaf * valueResource?.leaf)}</ResourceItemValue>
+										<ResourceItemImg src={'/images/navbar/icons/leaf.jpeg'} alt="resource item img"/>
+									</ResourceItem>
+								</ResourceFarmPerTime>
 							</DialogContent>
 						) : (
 							<div>You need more ant worker!</div>

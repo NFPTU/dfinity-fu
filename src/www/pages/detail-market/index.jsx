@@ -31,7 +31,17 @@ function DetailNft(props) {
 
 	const [open, setOpen] = useState(false);
 
-	const handleOpen = () => setOpen(true);
+	const handleOpen = () => {
+		if (
+			itemNft?.detail?.queen?.inNest?.length > 0 ||
+			itemNft?.detail?.nest?.inLand?.length > 0 ||
+			itemNft?.detail?.land?.inKingdom > 0
+		) {
+			toast('You need unstake');
+			return;
+		}
+		setOpen(true)
+	}
 	const handleClose = () => setOpen(false);
 
 	const [tab, setTab] = useState('description');
@@ -104,9 +114,6 @@ function DetailNft(props) {
 			if (resp) {
 				toast('Cancel Order success');
 				getData();
-				setTimeout(() => {
-					navigate('/inventory');
-				}, 1000)
 			}
 		} else {
 			if (
@@ -123,9 +130,6 @@ function DetailNft(props) {
 			if (resp) {
 				toast('Create Order success');
 				getData();
-				setTimeout(() => {
-					navigate('/market');
-				}, 1000)
 			}
 		}
 	};
@@ -167,13 +171,15 @@ function DetailNft(props) {
 	};
 
 	const buyNft = async () => {
+		setOpenProcess(true)
 		const resp1 = await token?.approve(
 			Principal.fromText(process.env.SUPERHEROES_CANISTER_ID),
 			99999999
 		);
 		const resp = await superheroes?.buy(Number(dataOrder?.index));
+		setOpenProcess(false)
 		if (resp) {
-			toast('Buy success');
+			toast('Buy NFT successfully !!!');
 		}
 		getData();
 	};
