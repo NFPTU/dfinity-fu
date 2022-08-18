@@ -35,7 +35,7 @@ import {
 	ResourceItemValue,
 	ResourceItemm,
 	ResourceFarmPerTimeTitle,
-	ResourceItemImg
+	ResourceItemImg,
 } from './farming.elements';
 import './farming.css';
 import { listMiniCard } from './mockData';
@@ -68,6 +68,7 @@ function Farming(props) {
 	const [listNFtLand, setlistNFtLand] = useState([]);
 	const [listNFt, setListNFt] = useState([]);
 	const [cardSelected, setCardSelected] = useState();
+	const [cardMiniActive, setCardMiniActive] = useState();
 	const [showFarmDialog, setShowFarmDialog] = useState();
 	const [valueResource, setValueResource] = useState({
 		food: 0,
@@ -137,6 +138,7 @@ function Farming(props) {
 		await onGetAvailWorker();
 		setListNFt(resp?.ok);
 		setCardSelected(listLand[0]);
+		setCardMiniActive(listLand[0]?.tokenId[0]);
 		setlistNFtLand(listLand);
 		setListNftNest(listNest);
 		setInKingdom(inKingdom);
@@ -147,20 +149,17 @@ function Farming(props) {
 			principal?.toString()
 		);
 		setListWorker(resp?.ok);
-		setResourceFarmPerTime(resp?.ok[0]?.detail?.worker?.info?.farmPerTime)
+		setResourceFarmPerTime(resp?.ok[0]?.detail?.worker?.info?.farmPerTime);
 		setRemainWorker(resp?.ok.length);
 	};
 
-	console.log('resourceFarmPerTime', resourceFarmPerTime)
-
 	const onChangeCard = (item) => {
 		setCardSelected(item);
+		setCardMiniActive(item?.tokenId[0]);
 	};
 
+
 	const onClickFarm = async () => {
-		if(!isClaim || !isCompletedCount) {
-			toastEmitter("warn", "you need to wait to time out or claim Resource before farm again");
-		}
 		setShowFarmDialog(true);
 	};
 
@@ -176,7 +175,7 @@ function Farming(props) {
 			gold: 0,
 			leaf: 0,
 			soil: 0,
-		})
+		});
 	};
 
 	const onChangeSlide = (item, value) => {
@@ -184,7 +183,7 @@ function Farming(props) {
 			(previousValue, currentValue) => previousValue + currentValue,
 			0
 		);
-		
+
 		const remainW = listWorker.length - selectedWorker;
 		if (value - valueResource[item] <= remainW) {
 			setRemainWorker(remainW);
@@ -202,7 +201,7 @@ function Farming(props) {
 		}).then((result) => {
 			/* Read more about isConfirmed, isDenied below */
 			if (result.isConfirmed) {
-				onSubmitFarm()
+				onSubmitFarm();
 			} else if (result.isDenied) {
 				setShowFarmDialog(false);
 			}
@@ -273,8 +272,7 @@ function Farming(props) {
 			toastEmitter("success", "Dig Nest Successfully !!!");
 			setOpen(false);
 			onGetData();
-		} catch (er) {
-		}
+		} catch (er) {}
 	};
 
 	const rendterBtn = (land) => {
@@ -313,7 +311,6 @@ function Farming(props) {
 		toast('Farm resource successfully!!!');
 	};
 
-
 	useEffect(() => {
 		if (principal && superheroes) {
 			onGetData();
@@ -332,10 +329,14 @@ function Farming(props) {
 								</Stack>
 							) : (
 								listNFtLand.map((el) => (
-									<CardImg
-										onClick={() => onChangeCard(el)}
-										src={el.image}
-										alt=''
+									<CardNft
+										active={cardMiniActive === el?.tokenId[0] ? true : false}
+										onChangeCard={onChangeCard}
+										data={el}
+										width={62}
+										height={100}
+										heightImg={60}
+										miniCard={true}
 									/>
 								))
 							)}
@@ -439,7 +440,7 @@ function Farming(props) {
 					</BtnList>
 
 					<Dialog onClose={handleClose} open={showFarmDialog}>
-						{listWorker?.length ? (
+						{listWorker?.length && (
 							<DialogContent>
 								<Stack sx={{ height: 300 }} spacing={1} direction='row'>
 									<SliderItem
@@ -481,37 +482,68 @@ function Farming(props) {
 								</Stack>
 								<Button name={'Farm'} onClick={confirmDialog} />
 								Idle: {remainWorker}
-								<ResourceFarmPerTimeTitle>List resource farm per time</ResourceFarmPerTimeTitle>
+								<ResourceFarmPerTimeTitle>
+									List resource farm per time
+								</ResourceFarmPerTimeTitle>
 								<ResourceFarmPerTime>
 									<ResourceItemm>
 										<ResourceItemName>Food:</ResourceItemName>
-										<ResourceItemValue>{roundToTwoDecimal(resourceFarmPerTime?.food * valueResource?.food)}</ResourceItemValue>
-										<ResourceItemImg src={'/images/navbar/icons/food.png'} alt="resource item img"/>
+										<ResourceItemValue>
+											{roundToTwoDecimal(
+												resourceFarmPerTime?.food * valueResource?.food
+											)}
+										</ResourceItemValue>
+										<ResourceItemImg
+											src={'/images/navbar/icons/food.png'}
+											alt='resource item img'
+										/>
 									</ResourceItemm>
 									<ResourceItem>
 										<ResourceItemName>Gold:</ResourceItemName>
-										<ResourceItemValue>{roundToTwoDecimal(resourceFarmPerTime?.gold * valueResource?.gold)}</ResourceItemValue>
-										<ResourceItemImg src={'/images/navbar/icons/gold.png'} alt="resource item img"/>
+										<ResourceItemValue>
+											{roundToTwoDecimal(
+												resourceFarmPerTime?.gold * valueResource?.gold
+											)}
+										</ResourceItemValue>
+										<ResourceItemImg
+											src={'/images/navbar/icons/gold.png'}
+											alt='resource item img'
+										/>
 									</ResourceItem>
 									<ResourceItem>
 										<ResourceItemName>Soil:</ResourceItemName>
-										<ResourceItemValue>{roundToTwoDecimal(resourceFarmPerTime?.soil * valueResource?.soil)}</ResourceItemValue>
-										<ResourceItemImg src={'/images/navbar/icons/soil.png'} alt="resource item img"/>
+										<ResourceItemValue>
+											{roundToTwoDecimal(
+												resourceFarmPerTime?.soil * valueResource?.soil
+											)}
+										</ResourceItemValue>
+										<ResourceItemImg
+											src={'/images/navbar/icons/soil.png'}
+											alt='resource item img'
+										/>
 									</ResourceItem>
 									<ResourceItem>
 										<ResourceItemName>Leaf:</ResourceItemName>
-										<ResourceItemValue>{roundToTwoDecimal(resourceFarmPerTime?.leaf * valueResource?.leaf)}</ResourceItemValue>
-										<ResourceItemImg src={'/images/navbar/icons/leaf.jpeg'} alt="resource item img"/>
+										<ResourceItemValue>
+											{roundToTwoDecimal(
+												resourceFarmPerTime?.leaf * valueResource?.leaf
+											)}
+										</ResourceItemValue>
+										<ResourceItemImg
+											src={'/images/navbar/icons/leaf.jpeg'}
+											alt='resource item img'
+										/>
 									</ResourceItem>
 								</ResourceFarmPerTime>
 							</DialogContent>
-						) : (
-							<div>You need more ant worker!</div>
 						)}
 					</Dialog>
 				</Right>
 			</Wrapper>
-			<PopupList dialogTitle={"Choose nest to dig nest into land"} open={open} setOpen={setOpen}>
+			<PopupList
+				dialogTitle={'Choose nest to dig nest into land'}
+				open={open}
+				setOpen={setOpen}>
 				{getNFTByType('Nest').map((el, index) => {
 					if (el?.detail?.nest?.inLand[0]) return;
 					return (

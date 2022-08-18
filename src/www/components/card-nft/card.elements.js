@@ -9,28 +9,34 @@ export const CardContainer = styled.div`
   border-radius: 0.5rem; //9px
   ${({size}) => size =="small" ? `width: 160px;
   height:150px;`: ''}
+  margin-top: ${({miniCard}) => miniCard ? '5px' : ''};
+  border: ${({active}) => active ? '2px solid red' : '2px solid transparent'}
 `;
 
 export const CardWrapper = styled.div`
   display: flex;
   flex-direction: column;
+  width: 100%;
 `;
 
 export const Top = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 8px;
+  padding: 4px 8px;
   color: #ffffff;
   font-weight: 400;
   font-size: 1rem;
 `;
 
 export const Type = styled.div`
-  
+  display: ${({miniCard}) => miniCard ? 'none' : ''};
 `;
 
-export const Id = styled.div``;
+export const Id = styled.div`
+  font-size: ${({miniCard}) => miniCard ? '9px' : ''};
+  font-size: ${({queen}) => queen ? '8px' : '9px'};
+`;
 
 export const Body = styled.div`
     background: #141416;
@@ -52,6 +58,7 @@ export const BodyWrapperTop = styled.div`
     font-weight: 400;
     font-size: 1.1rem;
     position: absolute;
+    display: ${({miniCard}) => miniCard ? 'none' : ''};
 `;
 
 export const Level = styled.div``;
@@ -70,8 +77,9 @@ export const RarityImg = styled.img`
 export const CardImg = styled.img`
   width: fit-content;
   height: ${({height}) => height?(height + 'px'): '230px'};
-  ${({size}) => size =="small" ? `height:90px;`: ''}
-`;
+  ${({size}) => size =="small" ? `height:90px;`: ''};
+  padding-bottom: ${({active}) => active ? '5px' : ''};
+`
 
 export const Footer = styled.div`
     position: absolute;
