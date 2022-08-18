@@ -83,11 +83,11 @@ function Farming(props) {
 	const { principal } = useConnect();
 	const [open, setOpen] = useState(false);
 
-	const [check, setCheck] = useState(false);
-
 	const [inKingdom, setInKingdom] = useState('');
 
-	const completedCount = useRef(false);
+	const [isCompletedCount, setIsCompletedCount] = useState(true);
+
+	const [isClaim, setIsClaim] = useState(true); 
 
 	const getNFTByType = (type) => {
 		return listNFt.filter((el) => el.attributes[0].value === type);
@@ -96,6 +96,35 @@ function Farming(props) {
 	const getNFTById = (id) => {
 		const listNFTs = listNFt?.find((el) => el.tokenId[0] == id);
 		return listNFTs;
+	};
+
+	const toastEmitter = async (type, message) => {
+		switch (type) {
+			case 'warn':
+				toast.warn(message, {
+					position: 'top-right',
+					autoClose: 5000,
+					hideProgressBar: false,
+					closeOnClick: true,
+					pauseOnHover: true,
+					draggable: true,
+					progress: undefined,
+				});
+				break;
+
+			case 'success':
+				toast.success(message, {
+					position: 'top-right',
+					autoClose: 5000,
+					hideProgressBar: false,
+					closeOnClick: true,
+					pauseOnHover: true,
+					draggable: true,
+					progress: undefined,
+				});
+			default:
+				break;
+		}
 	};
 
 	const onGetData = async () => {
@@ -131,11 +160,7 @@ function Farming(props) {
 
 
 	const onClickFarm = async () => {
-		if (listWorker?.length) {
-			setShowFarmDialog(true);
-		} else {
-			toast('you need more ant worker !!!');
-		}
+		setShowFarmDialog(true);
 	};
 
 	const handleClose = async () => {
@@ -191,7 +216,7 @@ function Farming(props) {
 		);
 		await onGetData();
 		setOpenProcess(false);
-		toast('Farming..., please wait for timeout to claim resource !!!');
+		toastEmitter("warn", "Farming..., please wait for timeout to claim resource !!!");
 		setShowFarmDialog(false);
 	};
 
@@ -215,15 +240,21 @@ function Farming(props) {
 
 	const onClaimFarm = async (item) => {
 		try {
-			setOpenProcess(true);
-			const resp = await superheroes?.claimResourceInLand(
-				cardSelected.tokenId[0],
-				item.id
-			);
-			await onGetData();
-			setOpenProcess(false);
-			toast('Claim Successfully !!!');
-			setOpen(false);
+			if (!isCompletedCount) {
+				toastEmitter('warn', 'You need to wait for the time out to claim');
+			} else {
+				setOpenProcess(true);
+				const resp = await superheroes?.claimResourceInLand(
+					cardSelected.tokenId[0],
+					item.id
+				);
+				await onGetData();
+				setOpenProcess(false);
+				setIsClaim(true);
+				toastEmitter("success", "Claim Successfully !!!");
+				setOpen(false);
+			}
+
 		} catch (err) {
 			setOpenProcess(false);
 		}
@@ -238,7 +269,7 @@ function Farming(props) {
 			);
 
 			setOpenProcess(false);
-			toast('Dig Nest Successfully !!!');
+			toastEmitter("success", "Dig Nest Successfully !!!");
 			setOpen(false);
 			onGetData();
 		} catch (er) {}
@@ -261,16 +292,22 @@ function Farming(props) {
 					})}
 				</ListResource>
 				<Countdown
+				onStart={(props) =>  setIsCompletedCount(false)}
 					date={Date.now() + getRemainingTime(item.claimTimeStamp) * 1000}
 					onComplete={(props) => onCompleteCount(props.completed)}
+					onMount={(props) => {
+						setIsCompletedCount(props.completed);
+
+					}}
 				/>
-				<Button name='Claim' onClick={() => onClaimFarm(item)} />
+				<Button name='Claim' disabled={!isCompletedCount} onClick={() => onClaimFarm(item)} />
 			</>
 		);
 	};
 
 	const onCompleteCount = (props) => {
-		completedCount.current = props;
+		setIsCompletedCount(props);
+		setIsClaim(false);
 		toast('Farm resource successfully!!!');
 	};
 
@@ -398,7 +435,7 @@ function Farming(props) {
 					})}
 
 					<BtnList>
-						<Button onClick={onClickFarm}>Farm</Button>
+						<Button disabled={!isCompletedCount || !isClaim} onClick={onClickFarm}>Farm</Button>
 						<Button onClick={() => setOpen(true)}>Dig Nest</Button>
 					</BtnList>
 

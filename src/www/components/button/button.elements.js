@@ -20,6 +20,6 @@ export const Btn = styled.button`
     display: flex;
     align-items: center;
     justify-content: center;
-    //Disable button
-    /* filter: grayscale(1); */
+    filter: ${({ disabled }) => disabled ? 'grayscale(1)' : ''};
+    cursor: ${({ disabled }) => !disabled ? 'pointer' : 'not-allowed'}
 `
