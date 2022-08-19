@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import './market.css';
-import { Search, Landscape } from '@mui/icons-material/';
 import { tabs, rarity } from './data';
 import Pagination from '@mui/material/Pagination';
 import PaginationItem from '@mui/material/PaginationItem';
-import Stack from '@mui/material/Stack';
 import NewCard from '../../components/test/new-card';
 import { useCanister, useConnect } from '@connect2ic/react';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
@@ -18,6 +16,7 @@ import { GridLoader } from 'react-spinners';
 import { Link, useNavigate } from 'react-router-dom';
 import useDebounce from './hooks';
 import { Cancel } from '@mui/icons-material';
+import { Search, Landscape } from '@mui/icons-material';
 
 function Market(props) {
 	const { tabGameHeader, marketData } = props;
@@ -27,8 +26,6 @@ function Market(props) {
 	const [tab, setTab] = useState('Land');
 	const [classesTabLine, setClassesTabLine] = useState('tab-line');
 
-	const [queenNFT, setQueenNFT] = useState({});
-	const [data, setData] = useState([]);
 	const [filterData, setFilterData] = useState([]);
 	const [pageData, setPageData] = useState([]);
 

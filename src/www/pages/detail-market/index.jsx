@@ -33,8 +33,8 @@ function DetailNft(props) {
 
 	const handleOpen = () => {
 		if (
-			itemNft?.detail?.queen?.inNest?.length > 0 ||
-			itemNft?.detail?.nest?.inLand?.length > 0 ||
+			itemNft?.detail?.queen?.inNest?.length >= 1 &&  itemNft?.detail?.queen?.inNest[0] !== 0 ||
+			itemNft?.detail?.nest?.inLand?.length >= 1 && itemNft?.detail?.nest?.inLand[0] !== 0 ||
 			itemNft?.detail?.land?.inKingdom > 0
 		) {
 			toast('You need unstake');
@@ -124,10 +124,8 @@ function DetailNft(props) {
 			}
 		} else {
 			if (
-				(itemNft?.detail?.queen?.inNest?.length >= 1 &&
-					itemNft?.detail?.queen?.inNest[0] !== 0) ||
-				(itemNft?.detail?.nest?.inLand?.length >= 1 &&
-					itemNft?.detail?.nest?.inLand[0] !== 0) ||
+				itemNft?.detail?.queen?.inNest?.length >= 1 &&  itemNft?.detail?.queen?.inNest[0] !== 0||
+				itemNft?.detail?.nest?.inLand?.length >= 1 && itemNft?.detail?.nest?.inLand[0] !== 0||
 				itemNft?.detail?.land?.inKingdom > 0
 			) {
 				toast('You need unstake');
@@ -142,6 +140,7 @@ function DetailNft(props) {
 			if (resp) {
 				toast('Create Order success');
 				getData();
+				setOpen(false);
 			}
 		}
 	};
@@ -196,7 +195,7 @@ function DetailNft(props) {
 		getData();
 	};
 
-	console.log('itemNft', itemNft);
+	console.log('itemNft', itemNft)
 
 	return (
 		<div className='detail-market-container'>
