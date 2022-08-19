@@ -160,7 +160,13 @@ function Farming(props) {
 
 
 	const onClickFarm = async () => {
-		setShowFarmDialog(true);
+
+		if(!isClaim || !isCompletedCount) {
+			toastEmitter("warn", "you need to wait to time out or claim Resource before farm again");
+		}else {
+			setShowFarmDialog(true);
+		}
+
 	};
 
 	const handleClose = async () => {
@@ -216,7 +222,6 @@ function Farming(props) {
 		);
 		await onGetData();
 		setOpenProcess(false);
-		toastEmitter("warn", "Farming..., please wait for timeout to claim resource !!!");
 		setShowFarmDialog(false);
 	};
 
@@ -292,13 +297,13 @@ function Farming(props) {
 					})}
 				</ListResource>
 				<Countdown
-				onStart={(props) =>  setIsCompletedCount(false)}
+					onStart={(props) => {  
+						if(props.completed) {
+							setIsClaim(false);
+						}
+						setIsCompletedCount(props.completed)}}
 					date={Date.now() + getRemainingTime(item.claimTimeStamp) * 1000}
 					onComplete={(props) => onCompleteCount(props.completed)}
-					onMount={(props) => {
-						setIsCompletedCount(props.completed);
-
-					}}
 				/>
 				<Button name='Claim' disabled={!isCompletedCount} onClick={() => onClaimFarm(item)} />
 			</>

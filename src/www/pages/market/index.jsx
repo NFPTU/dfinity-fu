@@ -1,16 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import './market.css';
-import { Search, Landscape } from '@mui/icons-material/';
 import { tabs, rarity } from './data';
 import Pagination from '@mui/material/Pagination';
 import PaginationItem from '@mui/material/PaginationItem';
-import Stack from '@mui/material/Stack';
 import NewCard from '../../components/test/new-card';
 import { useCanister, useConnect } from '@connect2ic/react';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import { Link } from 'react-router-dom';
-import Skeleton from '@mui/material/Skeleton';
 import Stack from '@mui/material/Stack';
 import { withContext } from '../../hooks';
 import { GridLoader } from 'react-spinners';
@@ -24,8 +20,6 @@ function Market(props) {
 	const [tab, setTab] = useState('Land');
 	const [classesTabLine, setClassesTabLine] = useState('tab-line');
 
-	const [queenNFT, setQueenNFT] = useState({});
-	const [data, setData] = useState([]);
 	const [filterData, setFilterData] = useState([]);
 	const [pageData, setPageData] = useState([]);
 
@@ -43,8 +37,6 @@ function Market(props) {
 	const { principal, isConnected, disconnect } = useConnect();
 
 	const handleClickCard = (tokenId) => {
-		console.log('tokenId', tokenId)
-
 		navigate(`/detail/${tokenId}`, {
 			state: {
 				link: 'market'
@@ -144,9 +136,6 @@ function Market(props) {
 		} else {
 			newChecked.splice(currentIndex, 1);
 		}
-
-		console.log('currentIndex', currentIndex)
-		console.log('newChecked', newChecked)
 
 		setChecked(newChecked);
 	};
