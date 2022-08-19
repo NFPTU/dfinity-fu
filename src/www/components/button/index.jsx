@@ -9,7 +9,7 @@ function Button(props) {
 
 	return (
 		<>
-				<Btn disabled={disabled} onClick={onClick}>
+				<Btn disabledd={disabled} onClick={onClick}>
 					{name||children}
 				</Btn>
 		</>
