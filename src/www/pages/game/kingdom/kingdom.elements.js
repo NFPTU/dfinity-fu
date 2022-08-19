@@ -233,7 +233,8 @@ export const ListLand = styled.div`
 
 export const ListLandWrapper = styled.div`
     width: 100%;
-    height: 100%;
+    height: 280px;
+    overflow-y: auto;
     padding: 10px;
     border-radius: 9px;
     display: flex;
@@ -244,4 +245,7 @@ export const ListLandTitle = styled.div`
     font-size: 23px;
     color: #923935;
 `
+
+//List All Land:
+
 

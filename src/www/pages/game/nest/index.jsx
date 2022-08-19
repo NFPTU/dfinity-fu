@@ -102,6 +102,7 @@ function Nest(props) {
 			
 		}
 		setOpenProcess(false);
+		toast('Add queen successfully!!!');
 		onGetData();
 		setOpen(false);
 	};
@@ -182,8 +183,9 @@ function Nest(props) {
 										/>
 									</Stack>
 								) : (
-									listNest.map((el) => (
+									listNest.map((el, index) => (
 										<CardNft
+											key={index}
 											active={cardMiniActive === el?.tokenId[0] ? true : false}
 											onChangeCard={onChangeCard}
 											data={el}

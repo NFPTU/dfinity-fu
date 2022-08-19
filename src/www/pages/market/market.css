@@ -309,6 +309,10 @@ input:checked + .slider:before {
   margin-top: 30px;
 }
 
+.filter__item {
+  margin-top: 20px;
+}
+
 html *::-webkit-scrollbar {
   border-radius: 0;
   width: 8px;

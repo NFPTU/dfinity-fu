@@ -45,7 +45,6 @@ function Kingdom(props) {
 
 	const onGetData = async () => {
 		const resp = await superheroes?.getUserTokens(principal?.toString());
-		console.log(resp);
 		const listNest = resp?.ok.filter(
 			(el) => el.attributes[0].value === 'Kingdom'
 		);
@@ -56,12 +55,9 @@ function Kingdom(props) {
 
 	const onChangeCard = (item) => {
 		setCardSelected(item);
-
-		console.log('cardSelected when click mini card:', cardSelected);
 	};
 
 	const handleClickMiniCard = (data) => {
-		console.log('hi');
 		onChangeCard(data);
 
 		setCardSelectedId(data?.tokenId[0]);
@@ -138,7 +134,9 @@ function Kingdom(props) {
 										const tokenId = el?.tokenId[0];
 										if (!el?.detail?.land?.inKingdom) return;
 										return (
+											<>
 											<CardNft key={index} data={el} alt='' size='small' />
+											</>
 										);
 									})
 								) : (

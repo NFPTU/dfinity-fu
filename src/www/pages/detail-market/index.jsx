@@ -40,8 +40,8 @@ function DetailNft(props) {
 			toast('You need unstake');
 			return;
 		}
-		setOpen(true)
-	}
+		setOpen(true);
+	};
 	const handleClose = () => setOpen(false);
 
 	const [tab, setTab] = useState('description');
@@ -55,6 +55,7 @@ function DetailNft(props) {
 	const [dataOrder, setDataOrder] = useState();
 	const [ownerNft, setownerNft] = useState();
 	const [needUn, setneedUn] = useState(false);
+	const [resourceLand, setResourceLand] = useState({});
 
 	const [priceListing, setPriceListing] = useState('');
 
@@ -71,14 +72,18 @@ function DetailNft(props) {
 	const getData = async () => {
 		const respo = await superheroes?.getAllOrders();
 		let itemorder = respo?.ok.find((el) => el?.token?.tokenId[0] == desc);
+
+		console.log('itemorder', itemorder);
 		if (itemorder) {
 			setDataOrder(itemorder);
 			setItemNft(itemorder?.token);
+			setResourceLand(itemorder?.token?.detail?.land?.resource);
 			setownerNft(itemorder?.owner.toString());
 		} else {
 			const resp = await superheroes?.getUserTokens(principal?.toString());
 			let item = resp?.ok.find((el) => el?.tokenId[0] == desc);
 			setItemNft(item);
+			setResourceLand(item?.detail?.land?.resource);
 			setownerNft(principal?.toString());
 		}
 	};
@@ -87,8 +92,10 @@ function DetailNft(props) {
 		if (
 			itemNft &&
 			ownerNft == principal?.toString() &&
-			(itemNft?.detail?.queen?.inNest?.length >= 1 &&  itemNft?.detail?.queen?.inNest[0] !== 0||
-				itemNft?.detail?.nest?.inLand?.length >= 1 && itemNft?.detail?.nest?.inLand[0] !== 0||
+			((itemNft?.detail?.queen?.inNest?.length >= 1 &&
+				itemNft?.detail?.queen?.inNest[0] !== 0) ||
+				(itemNft?.detail?.nest?.inLand?.length >= 1 &&
+					itemNft?.detail?.nest?.inLand[0] !== 0) ||
 				itemNft?.detail?.land?.inKingdom > 0)
 		) {
 			setneedUn(true);
@@ -108,25 +115,30 @@ function DetailNft(props) {
 	//Function fot listing NFT:
 	const listTing = async () => {
 		if (dataOrder) {
-			setOpenProcess(true)
+			setOpenProcess(true);
 			const resp = await superheroes?.cancelOrder(Number(dataOrder?.index));
-			setOpenProcess(false)
+			setOpenProcess(false);
 			if (resp) {
 				toast('Cancel Order success');
 				getData();
 			}
 		} else {
 			if (
-				itemNft?.detail?.queen?.inNest?.length >= 1 &&  itemNft?.detail?.queen?.inNest[0] !== 0||
-				itemNft?.detail?.nest?.inLand?.length >= 1 && itemNft?.detail?.nest?.inLand[0] !== 0||
+				(itemNft?.detail?.queen?.inNest?.length >= 1 &&
+					itemNft?.detail?.queen?.inNest[0] !== 0) ||
+				(itemNft?.detail?.nest?.inLand?.length >= 1 &&
+					itemNft?.detail?.nest?.inLand[0] !== 0) ||
 				itemNft?.detail?.land?.inKingdom > 0
 			) {
 				toast('You need unstake');
 				return;
 			}
-			setOpenProcess(true)
-			const resp = await superheroes?.createOrder(Number(desc), Number.parseInt(priceListing));
-			setOpenProcess(false)
+			setOpenProcess(true);
+			const resp = await superheroes?.createOrder(
+				Number(desc),
+				Number.parseInt(priceListing)
+			);
+			setOpenProcess(false);
 			if (resp) {
 				toast('Create Order success');
 				getData();
@@ -136,32 +148,32 @@ function DetailNft(props) {
 
 	const unstake = async () => {
 		if (itemNft?.detail?.queen) {
-			setOpenProcess(true)
+			setOpenProcess(true);
 			const resp = await superheroes?.unStakeQueenInNest(
 				itemNft?.tokenId[0],
 				itemNft?.detail?.queen?.inNest[0]
 			);
-			setOpenProcess(false)
+			setOpenProcess(false);
 			if (resp) {
 				toast('Unstake queen success');
 			}
 		} else if (itemNft?.detail?.land) {
-			setOpenProcess(true)
+			setOpenProcess(true);
 			const resp = await superheroes?.unStakeLandToKingdom(
 				itemNft?.tokenId[0],
 				itemNft?.detail?.land?.inKingdom
 			);
-			setOpenProcess(false)
+			setOpenProcess(false);
 			if (resp) {
 				toast('Unstake land success');
 			}
 		} else if (itemNft?.detail?.nest) {
-			setOpenProcess(true)
+			setOpenProcess(true);
 			const resp = await superheroes?.unStakeNestInLand(
 				itemNft?.tokenId[0],
 				itemNft?.detail?.nest?.inLand[0]
 			);
-			setOpenProcess(false)
+			setOpenProcess(false);
 			if (resp) {
 				toast('Unstake nest success');
 			}
@@ -171,20 +183,20 @@ function DetailNft(props) {
 	};
 
 	const buyNft = async () => {
-		setOpenProcess(true)
+		setOpenProcess(true);
 		const resp1 = await token?.approve(
 			Principal.fromText(process.env.SUPERHEROES_CANISTER_ID),
 			99999999
 		);
 		const resp = await superheroes?.buy(Number(dataOrder?.index));
-		setOpenProcess(false)
+		setOpenProcess(false);
 		if (resp) {
 			toast('Buy NFT successfully !!!');
 		}
 		getData();
 	};
 
-	console.log('itemNft', itemNft)
+	console.log('itemNft', itemNft);
 
 	return (
 		<div className='detail-market-container'>
@@ -223,7 +235,9 @@ function DetailNft(props) {
 
 							<div className='wrapper__right-listBtn'>
 								{ownerNft == principal?.toString() ? (
-									<div className='wrapper__right-leftBtn' onClick={!dataOrder ? handleOpen : listTing}>
+									<div
+										className='wrapper__right-leftBtn'
+										onClick={!dataOrder ? handleOpen : listTing}>
 										{!dataOrder
 											? 'Listing NFT'
 											: 'Cancel listing  ' + `${Number(dataOrder?.price)} ATD`}
@@ -293,11 +307,57 @@ function DetailNft(props) {
 														Rare
 													</div>
 												</div>
+
+												{itemNft?.attributes[0]?.value === 'Land' && (
+													<>
+														<div className='wrapper__right-tab-item1-title mt-8'>
+															List resource land
+														</div>
+														<div className='resource__land-list'>
+															<div className='resource__land-item'>
+																<img
+																	src='/images/navbar/icons/gold.png'
+																	alt='gold'
+																/>
+																<div className='resource__land-value'>
+																	{resourceLand?.gold}
+																</div>
+															</div>
+															<div className='resource__land-item'>
+																<img
+																	src='/images/navbar/icons/soil.png'
+																	alt='soil'
+																/>
+																<div className='resource__land-value'>
+																	{resourceLand?.soil}
+																</div>
+															</div>
+															<div className='resource__land-item'>
+																<img
+																	src='/images/navbar/icons/food.png'
+																	alt='food'
+																/>
+																<div className='resource__land-value'>
+																	{resourceLand?.food}
+																</div>
+															</div>
+															<div className='resource__land-item'>
+																<img
+																	src='/images/navbar/icons/leaf.jpeg'
+																	alt='leaf'
+																/>
+																<div className='resource__land-value'>
+																	{resourceLand?.leaf}
+																</div>
+															</div>
+														</div>
+													</>
+												)}
 											</div>
 										</div>
 									)}
 
-									{tab === 'history' && (
+									{/* {tab === 'history' && (
 										<div className='wrapper__right-tab-item2'>
 											<div className='wrapper__right-tab-item2-top'>Stats</div>
 
@@ -305,7 +365,7 @@ function DetailNft(props) {
 												<div>stats</div>
 											</div>
 										</div>
-									)}
+									)} */}
 								</div>
 							</div>
 						</div>
@@ -319,10 +379,17 @@ function DetailNft(props) {
 				aria-labelledby='modal-modal-title'
 				aria-describedby='modal-modal-description'>
 				<Box sx={style}>
-					<ModalLayout src={itemNft?.image} handleClose={handleClose} listTing={listTing}>
+					<ModalLayout
+						src={itemNft?.image}
+						handleClose={handleClose}
+						listTing={listTing}>
 						<div className='modal__container-body-rightTop'>
-							<div className='modal__container-body-rightTop-name'>{itemNft?.name}</div>
-							<div className='modal__container-body-rightTop-id'>#{itemNft?.tokenId}</div>
+							<div className='modal__container-body-rightTop-name'>
+								{itemNft?.name}
+							</div>
+							<div className='modal__container-body-rightTop-id'>
+								#{itemNft?.tokenId}
+							</div>
 						</div>
 
 						<div className='modal__container-body-rightMid'>

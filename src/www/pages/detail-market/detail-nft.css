@@ -231,6 +231,33 @@
     color: white;
 }
 
+/* List resource */
+.mt-8 {
+  margin-top: 8px;
+}
+
+.resource__land-list {
+  display: flex;
+  align-items: center;
+  color: #ffffff;
+}
+
+.resource__land-item {
+  display: flex;
+  align-items: center;
+  margin-right: 10px;
+}
+
+.resource__land-item img {
+  width: 30px;
+  border-radius: 50%;
+  margin-right: 5px;
+}
+
+.resource__land-value {
+
+}
+
 html *::-webkit-scrollbar {
   border-radius: 0;
   width: 8px;
