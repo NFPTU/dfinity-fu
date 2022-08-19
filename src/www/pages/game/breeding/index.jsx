@@ -24,7 +24,7 @@ import {
 	CardImg,
 	CardWrapper,
 	LeftWrapper,
-	ListMiniCard
+	ListMiniCard,
 } from './breeding.elements';
 import { useCanister, useConnect } from '@connect2ic/react';
 import { getRemainingTime, toHHMMSS } from '../../../utils/utils';
@@ -50,6 +50,7 @@ function Breeding(props) {
 	const [completedCount, setCompletedCount] = useState(false);
 	const [listNest, setListNest] = useState([]);
 	const [cardSelected, setCardSelected] = useState();
+	const [cardMiniActive, setCardMiniActive] = useState();
 
 	const [inNest, setInNest] = useState('');
 
@@ -61,6 +62,7 @@ function Breeding(props) {
 
 	const onChangeCard = (item) => {
 		setCardSelected(item);
+		setCardMiniActive(item?.tokenId[0]);
 	};
 
 
@@ -86,8 +88,9 @@ function Breeding(props) {
 		};
 
 		getResourceUpgrade('Queen', 'Common', 2);
-
 	}, []);
+
+	console.log('resourceUpgrade', resourceUpgrade);
 
 	const toastEmitter = async (type, message) => {
 		switch (type) {
@@ -154,8 +157,9 @@ function Breeding(props) {
 		const queen = getNFTByType('Queen');
 		setWorker(getNFTById(queen[0]?.detail?.queen?.breedingWorkerId));
 		setQueenNFT(queen && queen[0]);
-		setCardSelected(queen && queen[0])
-		setListQueenMiniCard(queen && queen)
+		setCardSelected(queen && queen[0]);
+		setCardMiniActive(queen[0]?.tokenId[0]);
+		setListQueenMiniCard(queen && queen);
 	};
 
 	//Get List Nest:
@@ -180,7 +184,8 @@ function Breeding(props) {
 
 	//===================== Call Superheroes ==========================
 	const onBreedingWorker = async () => {
-		const foodNeeded = cardSelected?.detail?.queen?.info?.resourcePerWorker?.food;
+		const foodNeeded =
+			cardSelected?.detail?.queen?.info?.resourcePerWorker?.food;
 		const limitWorkerInNest = Number(listNest[0]?.detail?.nest?.limit);
 		if (resource?.food < foodNeeded) {
 			toastEmitter('warn', 'You need more food to breeding');
@@ -332,10 +337,15 @@ function Breeding(props) {
 								</Stack>
 							) : (
 								listQueenMiniCard.map((el) => (
-									<CardImg
-										onClick={() => onChangeCard(el)}
-										src={el.image}
-										alt=''
+									<CardNft
+										active={cardMiniActive === el?.tokenId[0] ? true : false}
+										onChangeCard={onChangeCard}
+										data={el}
+										width={62}
+										height={100}
+										heightImg={60}
+										miniCard={true}
+										queen={true}
 									/>
 								))
 							)}
@@ -391,7 +401,10 @@ function Breeding(props) {
 												'Uncommon'}
 										</InfoBodyRightItem>
 										<InfoBodyRightItem>
-											{cardSelected?.detail?.queen?.info?.resourcePerWorker?.food}
+											{
+												cardSelected?.detail?.queen?.info?.resourcePerWorker
+													?.food
+											}
 										</InfoBodyRightItem>
 										<InfoBodyRightItem>
 											{cardSelected?.detail?.queen?.info?.breedWorkerTime
@@ -431,7 +444,8 @@ function Breeding(props) {
 							<Btn
 								onClick={onBreeding}
 								disabled={
-									cardSelected?.detail?.queen?.breedingWorkerId && !completedCount
+									cardSelected?.detail?.queen?.breedingWorkerId &&
+									!completedCount
 								}>
 								{!cardSelected?.detail?.queen?.breedingWorkerId
 									? 'Breeding'

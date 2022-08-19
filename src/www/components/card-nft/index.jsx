@@ -21,11 +21,15 @@ import { rarity_type } from './rarity_type'
 function CardNft(props) {
 	const [rarityImg, setRarityImg] = useState('')
 
-	const { width, height, data, footer, size, heightImg } = props;
+	const { width, height, data, footer, size, heightImg, miniCard, onChangeCard, active, queen } = props;
 
 	const { attributes, description, detail, image, name, tokenId } = data;
 
 	const rarity = attributes && attributes[1]?.value
+
+	const handleClick = () => {
+		onChangeCard(data)
+	}
 
 	//Set url to image rarity card: 
 	const handleRarityType = () => {
@@ -39,22 +43,22 @@ function CardNft(props) {
 	}, [rarity, rarity_type])
 
 	return (
-		<CardContainer width={width} height={height} size={size}>
+		<CardContainer active={active} miniCard={miniCard} onClick={handleClick} width={width} height={height} size={size}>
 			<CardWrapper>
 				<Top>
-					<Type>{attributes && attributes[0]?.value}</Type>
-					<Id>{name}</Id>
+					<Type miniCard={miniCard}>{attributes && attributes[0]?.value}</Type>
+					<Id queen={queen} miniCard={miniCard}>{name}</Id>
 				</Top>
 
 				<Body>
 					<BodyWrapper>
-						<BodyWrapperTop>
+						<BodyWrapperTop miniCard={miniCard}>
 							{rarityImg && <Rarity size={size}>
 								<RarityImg src={rarityImg} alt='rarity' />
 							</Rarity>}
 						</BodyWrapperTop>
 						<CardImgWrapper>
-							<CardImg className="card-img" src={image} alt='' height={heightImg} size={size}/>
+							<CardImg active={active} miniCard={miniCard} className="card-img" src={image} alt='' height={heightImg} size={size}/>
 						</CardImgWrapper>
 					</BodyWrapper>
 				</Body>
