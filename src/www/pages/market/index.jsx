@@ -64,11 +64,11 @@ function Market(props) {
 			const newData = filterData?.slice(indexOfFirstNFT, indexOfLastNFT);
 			if (isOwned) {
 				setPageData(
-					newData?.filter((data) => data?.owner?._isPrincipal === true)
+					newData?.filter((data) => data?.owner?.toString() == principal.toString())
 				);
 			} else {
 				setPageData(
-					newData?.filter((data) => data?.owner?._isPrincipal === false)
+					newData?.filter((data) => data?.owner?.toString() != principal.toString())
 				);
 			}
 		}
