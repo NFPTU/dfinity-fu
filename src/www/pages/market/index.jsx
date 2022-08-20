@@ -33,6 +33,8 @@ function Market(props) {
 
 	const [page, setPage] = useState(1);
 
+	const [filterSearchData, setFilterSearchData] = useState([]);
+
 	const [isOwned, setIsOwned] = useState(true);
 
 	const [checked, setChecked] = useState([]);
@@ -109,7 +111,13 @@ function Market(props) {
 
 				console.log('filterById', filterById);
 
-				filterById ? setFilterData(filterById) : setFilterData(data);
+				if(filterById){
+					setFilterData(filterById)
+					setFilterSearchData(filterById)
+				}else{
+					setFilterData(data);
+					setFilterSearchData(data)
+				}
 
 				setTimeout(() => {
 					setLoadingSearch(false);
@@ -208,6 +216,7 @@ function Market(props) {
 		const data = tab && getNFTByType(tab);
 
 		setFilterData(data && data);
+		setFilterSearchData(data && data)
 		setFilterDataOrigin(data && data);
 	};
 
@@ -249,7 +258,7 @@ function Market(props) {
 		if (mounted) {
 			const getDataByFilter = () => {
 				for (const key of checked) {
-					const arrFilter = filterDataOrigin?.filter(
+					const arrFilter = filterSearchData?.filter(
 						(item) => item?.token?.attributes[1]?.value === key
 					);
 
@@ -264,8 +273,8 @@ function Market(props) {
 			const filterByRarity = checked && getDataByFilter();
 
 			checked?.length !== 0
-				? setPageData(filterByRarity)
-				: setPageData(data);
+				? setFilterData(filterByRarity)
+				: setFilterData(filterSearchData);
 		}
 
 		return () => (mounted = false);
