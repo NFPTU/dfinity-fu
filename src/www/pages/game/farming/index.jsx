@@ -160,7 +160,11 @@ function Farming(props) {
 
 
 	const onClickFarm = async () => {
-		setShowFarmDialog(true);
+		if (!isCompletedCount) {
+			toastEmitter('warn', 'You need to wait for the time out to farm');
+		}else{
+			setShowFarmDialog(true);
+		}
 	};
 
 	const handleClose = async () => {
