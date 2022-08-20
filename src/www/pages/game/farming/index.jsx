@@ -87,7 +87,9 @@ function Farming(props) {
 
 	const [isCompletedCount, setIsCompletedCount] = useState(true);
 
-	const [isClaim, setIsClaim] = useState(true); 
+	const [isClaim, setIsClaim] = useState(true);
+
+	const [isDisableFarmBtn, setIsDisableFarmBtn] = useState(true);
 
 	const getNFTByType = (type) => {
 		return listNFt.filter((el) => el.attributes[0].value === type);
@@ -158,11 +160,10 @@ function Farming(props) {
 		setCardMiniActive(item?.tokenId[0]);
 	};
 
-
 	const onClickFarm = async () => {
 		if (!isCompletedCount) {
 			toastEmitter('warn', 'You need to wait for the time out to farm');
-		}else{
+		} else {
 			setShowFarmDialog(true);
 		}
 	};
@@ -193,23 +194,36 @@ function Farming(props) {
 			setRemainWorker(remainW);
 			setValueResource((preValue) => ({ ...preValue, [item]: value }));
 		}
+
+		if(listWorker.length === remainW){
+			setIsDisableFarmBtn(true)
+		}else{
+			setIsDisableFarmBtn(false)
+		}
 	};
 
 	const confirmDialog = async () => {
-		setShowFarmDialog(false);
-		Swal.fire({
-			title: 'Do you want to farm resource now?',
-			showDenyButton: false,
-			showCancelButton: true,
-			confirmButtonText: 'Ok',
-		}).then((result) => {
-			/* Read more about isConfirmed, isDenied below */
-			if (result.isConfirmed) {
-				onSubmitFarm();
-			} else if (result.isDenied) {
-				setShowFarmDialog(false);
-			}
-		});
+		if (listWorker?.length === remainWorker) {
+			toastEmitter(
+				'warn',
+				'You must choose at least one ant to continue farming !!!'
+			);
+		} else {
+			setShowFarmDialog(false);
+			Swal.fire({
+				title: 'Do you want to farm resource now?',
+				showDenyButton: false,
+				showCancelButton: true,
+				confirmButtonText: 'Ok',
+			}).then((result) => {
+				/* Read more about isConfirmed, isDenied below */
+				if (result.isConfirmed) {
+					onSubmitFarm();
+				} else if (result.isDenied) {
+					setShowFarmDialog(false);
+				}
+			});
+		}
 	};
 
 	const onSubmitFarm = async () => {
@@ -254,10 +268,9 @@ function Farming(props) {
 				await onGetData();
 				setOpenProcess(false);
 				setIsClaim(true);
-				toastEmitter("success", "Claim Successfully !!!");
+				toastEmitter('success', 'Claim Successfully !!!');
 				setOpen(false);
 			}
-
 		} catch (err) {
 			setOpenProcess(false);
 		}
@@ -272,7 +285,7 @@ function Farming(props) {
 			);
 
 			setOpenProcess(false);
-			toastEmitter("success", "Dig Nest Successfully !!!");
+			toastEmitter('success', 'Dig Nest Successfully !!!');
 			setOpen(false);
 			onGetData();
 		} catch (er) {}
@@ -295,15 +308,20 @@ function Farming(props) {
 					})}
 				</ListResource>
 				<Countdown
-					onStart={(props) => {  
-						if(props.completed) {
+					onStart={(props) => {
+						if (props.completed) {
 							setIsClaim(false);
 						}
-						setIsCompletedCount(props.completed)}}
+						setIsCompletedCount(props.completed);
+					}}
 					date={Date.now() + getRemainingTime(item.claimTimeStamp) * 1000}
 					onComplete={(props) => onCompleteCount(props.completed)}
 				/>
-				<Button name='Claim' disabled={!isCompletedCount} onClick={() => onClaimFarm(item)} />
+				<Button
+					name='Claim'
+					disabled={!isCompletedCount}
+					onClick={() => onClaimFarm(item)}
+				/>
 			</>
 		);
 	};
@@ -439,7 +457,11 @@ function Farming(props) {
 					})}
 
 					<BtnList>
-						<Button disabled={!isCompletedCount || !isClaim} onClick={onClickFarm}>Farm</Button>
+						<Button
+							disabled={!isCompletedCount || !isClaim}
+							onClick={onClickFarm}>
+							Farm
+						</Button>
 						<Button onClick={() => setOpen(true)}>Dig Nest</Button>
 					</BtnList>
 
@@ -484,8 +506,8 @@ function Farming(props) {
 										img={'/images/navbar/icons/leaf.jpeg'}
 									/>
 								</Stack>
-								<Button name={'Farm'} onClick={confirmDialog} />
-								Idle: {remainWorker}
+								<Button disabled={isDisableFarmBtn}  name={'Farm'} onClick={confirmDialog} />
+								Worker Ants: {remainWorker}
 								<ResourceFarmPerTimeTitle>
 									List resource farm per time
 								</ResourceFarmPerTimeTitle>
