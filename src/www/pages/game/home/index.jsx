@@ -73,8 +73,12 @@ function Homeclaim(props) {
 						<TextBtn>Claim</TextBtn>
 					</BoxClaim>
 				</BoxClaimBorder>
-				<PopupList open={open} setOpen={setOpen} maxWidth={'lg'}
-					handleClosePopup={() => navigate('/')}
+				<PopupList
+				dialogTitle={'Welcome to Ants Kingdoms !!!'}
+				open={open} 
+				setOpen={setOpen} 
+				maxWidth={'lg'}
+				handleClosePopup={() => navigate('/kingdom')}
 				>
 					{listNFt.map((el, index) => {
 						if (el?.detail?.nest?.inLand[0]) return

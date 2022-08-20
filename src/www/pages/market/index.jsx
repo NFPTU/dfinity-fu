@@ -7,10 +7,16 @@ import NewCard from '../../components/test/new-card';
 import { useCanister, useConnect } from '@connect2ic/react';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import { Link } from 'react-router-dom';
+import ClipLoader from 'react-spinners/ClipLoader';
+import Skeleton from '@mui/material/Skeleton';
 import Stack from '@mui/material/Stack';
 import { withContext } from '../../hooks';
 import { GridLoader } from 'react-spinners';
 import { Link, useNavigate } from 'react-router-dom';
+import useDebounce from './hooks';
+import { Cancel } from '@mui/icons-material';
+import { Search, Landscape } from '@mui/icons-material';
 
 function Market(props) {
 	const { tabGameHeader, marketData } = props;
@@ -33,13 +39,95 @@ function Market(props) {
 
 	const [dataOrder, setDataOrder] = useState();
 
+	const [inputSearch, setInputSearch] = useState('');
+	const [loadingSearch, setLoadingSearch] = useState(false);
+
+	const [typeSortPrice, setTypeSortPrice] = useState('lowestPrice');
+
 	const [superheroes, { loading, error }] = useCanister('superheroes');
 	const { principal, isConnected, disconnect } = useConnect();
+
+	//==================== HANDLE FILTER ======================
+
+	const debounced = useDebounce(inputSearch, 500);
+
+	const handleClickCancel = () => {
+		setInputSearch('');
+	};
+
+	const handleInputChange = (e) => {
+		const searchValue = e.target.value;
+
+		if (!searchValue.startsWith(' ')) {
+			setInputSearch(searchValue);
+		}
+	};
+
+	const handleSortPrice = (e) => {
+		setTypeSortPrice(e.target.value);
+	};
+
+	//Filter by sort price:
+	useEffect(() => {
+		let mounted = true;
+
+		if (mounted) {
+			const handleFilter = async () => {
+				if (typeSortPrice === 'lowestPrice') {
+					setPageData((prev) =>
+						[...prev].sort((a, b) => Number(a?.price) - Number(b?.price))
+					);
+				}
+				if (typeSortPrice === 'highestPrice') {
+					setPageData((prev) =>
+						[...prev].sort((a, b) => Number(b?.price) - Number(a?.price))
+					);
+				}
+			};
+
+			handleFilter();
+		}
+
+		return () => (mounted = false);
+	}, [superheroes, principal, filterDataOrigin, typeSortPrice]);
+
+	//Filter by search id:
+	useEffect(() => {
+		let mounted = true;
+		const data = getNFTByType(tab);
+
+		if (mounted) {
+			const handleSearch = async () => {
+				setLoadingSearch(true);
+
+				const filterById = filterDataOrigin.filter((item) =>
+					item?.token?.tokenId[0]
+						.toString()
+						.toLowerCase()
+						.includes(debounced.toLowerCase())
+				);
+
+				console.log('filterById', filterById);
+
+				filterById ? setFilterData(filterById) : setFilterData(data);
+
+				setTimeout(() => {
+					setLoadingSearch(false);
+				}, 500);
+			};
+
+			handleSearch();
+		}
+
+		return () => (mounted = false);
+	}, [debounced]);
+
+	//===================================================================
 
 	const handleClickCard = (tokenId) => {
 		navigate(`/detail/${tokenId}`, {
 			state: {
-				link: 'market'
+				link: 'market',
 			},
 		});
 	};
@@ -72,7 +160,17 @@ function Market(props) {
 				);
 			}
 		}
-	}, [superheroes, principal, filterData, isOwned, numberNftPerPage, page, tab, tabGameHeader, filterDataOrigin]);
+	}, [
+		superheroes,
+		principal,
+		filterData,
+		isOwned,
+		numberNftPerPage,
+		page,
+		tab,
+		tabGameHeader,
+		filterDataOrigin,
+	]);
 
 	//===============================================
 
@@ -84,6 +182,8 @@ function Market(props) {
 	const clearFilter = () => {
 		setIsOwned(true);
 		setChecked([]);
+		setInputSearch('');
+		setTypeSortPrice('lowestPrice');
 	};
 	//===============================================
 
@@ -164,13 +264,12 @@ function Market(props) {
 			const filterByRarity = checked && getDataByFilter();
 
 			checked?.length !== 0
-				? setFilterData(filterByRarity)
-				: setFilterData(data);
+				? setPageData(filterByRarity)
+				: setPageData(data);
 		}
 
 		return () => (mounted = false);
 	}, [superheroes, principal, checked, filterDataOrigin]);
-
 
 	return (
 		<div className='market-container'>
@@ -210,27 +309,43 @@ function Market(props) {
 							</div>
 						</div>
 
-						{/* <div className='filter__item'>
+						<div className='filter__item'>
 							<div className='filter__item-input'>
-								<input placeholder='Search by ID' name='id' type='text' />
-								<Search sx={{ color: '#e1e2e9', marginRight: '10px' }} />
+								<input
+									value={inputSearch}
+									onChange={handleInputChange}
+									placeholder='Search by ID'
+									name='id'
+									type='text'
+								/>
+								{inputSearch && !loadingSearch && (
+									<Cancel
+										onClick={handleClickCancel}
+										sx={{ fontSize: '14px', color: 'white' }}
+									/>
+								)}
+								{loadingSearch && (
+									<ClipLoader color='grey' loading={true} size={14} />
+								)}
+								<Search sx={{ color: 'white', marginRight: '10px' }} />
 							</div>
 						</div>
 
 						<div className='filter__item'>
-							<select name='options' id='options'>
-								<option value='recently_added'>Recently Added</option>
-								<option value='highest_price'>Highest Price</option>
-								<option value='lowest_price'>Lowest Price</option>
+							<select name='price' id='price' onChange={handleSortPrice}>
+								<option value='lowestPrice'>Lowest Price</option>
+								<option value='highestPrice'>Highest Price</option>
 							</select>
-						</div> */}
+						</div>
 
 						<div className='filter__itemMarket'>
 							<div className='filter__itemMarket-checkbox'>
 								<div className='filter__itemMarket-checkbox-title'>Rarity</div>
 								<div className='filter__itemMarket-checkbox-list'>
 									{rarity.map((item, index) => (
-										<div key={index} className='filter__itemMarket-checkbox-item'>
+										<div
+											key={item.id}
+											className='filter__itemMarket-checkbox-item'>
 											<input
 												type='checkbox'
 												id={item.type}
@@ -283,11 +398,13 @@ function Market(props) {
 									{marketData &&
 										(pageData?.length !== 0 ? (
 											pageData?.map((item, index) => {
-											
 												return (
-													<div 
-													onClick={() => handleClickCard(item?.token?.tokenId[0])}
-													className='body__right-top-cardItem'>
+													<div
+														key={index}
+														onClick={() =>
+															handleClickCard(item?.token?.tokenId[0])
+														}
+														className='body__right-top-cardItem'>
 														<NewCard
 															link='market'
 															width='244'
@@ -296,7 +413,7 @@ function Market(props) {
 															price={Number(item?.price)}
 														/>
 													</div>
-												)
+												);
 											})
 										) : (
 											<div style={{ color: 'white', fontSize: '20px' }}>

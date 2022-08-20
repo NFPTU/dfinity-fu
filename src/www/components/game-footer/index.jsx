@@ -6,8 +6,6 @@ import { withContext } from '../../hooks';
 function GameFooter(props) {
 	const { tabMarketFooter, setTabMarketFooter } = props
 
-	// const [active, setAvtive] = useState('Kingdom');
-
 	const handleActive = (value) => {
 		if (value === 'Marketplace') {
 			sessionStorage.setItem('tabFooterActive', 'Kingdom');
@@ -76,9 +74,9 @@ function GameFooter(props) {
 	return (
 		<Container>
 			{items.map((item, index) => (
-				<Link to={item.to} style={{ textDecoration: 'none', color: 'black' }}>
+				<Link key={item.id} to={item.to} style={{ textDecoration: 'none', color: 'black' }}>
 					<Item
-						key={index}
+						key={item.id}
 						onClick={() => handleActive(item.title)}
 						active={item.title === tabMarketFooter ? true : false}>
 						<Image src={item.imgUrl} alt='' />

@@ -23,8 +23,6 @@ function NewCard(props) {
 
 	const { width, height, data, price } = props;
 
-	console.log('price', price);
-
 	//Set url to image rarity card:
 	const handleRarityType = () => {
 		const raNFT = data?.attributes[1]?.value;

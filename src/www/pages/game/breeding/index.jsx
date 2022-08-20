@@ -59,12 +59,10 @@ function Breeding(props) {
 	const [superheroes, { loading, error }] = useCanister('superheroes');
 	const { principal, isConnected, disconnect } = useConnect();
 
-
 	const onChangeCard = (item) => {
 		setCardSelected(item);
 		setCardMiniActive(item?.tokenId[0]);
 	};
-
 
 	useEffect(() => {
 		const getResourceUpgrade = (name, rarity, level) => {
@@ -89,8 +87,6 @@ function Breeding(props) {
 
 		getResourceUpgrade('Queen', 'Common', 2);
 	}, []);
-
-	console.log('resourceUpgrade', resourceUpgrade);
 
 	const toastEmitter = async (type, message) => {
 		switch (type) {
@@ -195,12 +191,14 @@ function Breeding(props) {
 					'warn',
 					'Can not breeding! The number of ant worker in the nest has reached the limit'
 				);
+				console.log('chay vao day 1');
 			} else {
 				setOpenProcess(true);
 				const listQ = getNFTByType('Queen');
 				const res = await superheroes.breedAntWorkder(listQ[0]?.tokenId[0]);
+				console.log('res', res);
 				setOpenProcess(false);
-				toastEmitter('success', 'Breading successfully');
+				console.log('chay vao day');
 			}
 		}
 	};
@@ -313,6 +311,8 @@ function Breeding(props) {
 		}
 	}, [data]);
 
+	console.log('worker', worker);
+
 	return (
 		<>
 			<Container>
@@ -336,8 +336,9 @@ function Breeding(props) {
 									<Skeleton variant='rectangular' width={60} height={'100%'} />
 								</Stack>
 							) : (
-								listQueenMiniCard.map((el) => (
+								listQueenMiniCard.map((el, index) => (
 									<CardNft
+										key={index}
 										active={cardMiniActive === el?.tokenId[0] ? true : false}
 										onChangeCard={onChangeCard}
 										data={el}
@@ -358,7 +359,7 @@ function Breeding(props) {
 									<Skeleton variant='rectangular' width={240} height={245} />
 								</Stack>
 							) : (
-								<CardNft data={cardSelected} heightImg={160} />
+								<CardNft miniCard={false} data={cardSelected} heightImg={160} />
 							)}
 						</CardWrapper>
 					</LeftWrapper>
@@ -429,11 +430,11 @@ function Breeding(props) {
 												1000
 										}
 										onComplete={(props) => {
-											onCompleteCount(props.completed)
+											onCompleteCount(props.completed);
 										}}
 										onMount={(props) => {
 											const isCompleted = props.completed;
-											if(isCompleted) setCompletedCount(isCompleted);
+											if (isCompleted) setCompletedCount(isCompleted);
 										}}
 									/>
 								</CountdownInside>

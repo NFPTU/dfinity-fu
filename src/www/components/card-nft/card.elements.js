@@ -7,10 +7,12 @@ export const CardContainer = styled.div`
   height: ${({height}) => height?(height + 'px'): '295px'};
   background: #1c2023;
   border-radius: 0.5rem; //9px
-  ${({size}) => size =="small" ? `width: 160px;
-  height:150px;`: ''}
+  ${({size}) => size =="small" ? `width: 145px;
+  height:132px;`: ''}
   margin-top: ${({miniCard}) => miniCard ? '5px' : ''};
-  border: ${({active}) => active ? '2px solid red' : '2px solid transparent'}
+  border: ${({active}) => active ? '2px solid red' : '2px solid transparent'};
+  margin-right: ${({size}) => size === "small" ? '6px' : ''};
+  margin-bottom: ${({size}) => size === "small" ? '6px' : ''}
 `;
 
 export const CardWrapper = styled.div`
@@ -34,8 +36,7 @@ export const Type = styled.div`
 `;
 
 export const Id = styled.div`
-  font-size: ${({miniCard}) => miniCard ? '9px' : ''};
-  font-size: ${({queen}) => queen ? '8px' : '9px'};
+  font-size: ${({miniCard}) => miniCard ? '8px' : '17px'};
 `;
 
 export const Body = styled.div`

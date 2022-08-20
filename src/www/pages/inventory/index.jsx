@@ -12,6 +12,9 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { Link, useNavigate } from 'react-router-dom';
 import { withContext } from '../../hooks';
 import { GridLoader } from 'react-spinners';
+import useDebounce from '../market/hooks';
+import { Cancel } from '@mui/icons-material';
+import ClipLoader from 'react-spinners/ClipLoader';
 
 function Inventory(props) {
 	const { data } = props;
@@ -31,8 +34,61 @@ function Inventory(props) {
 
 	const [checked, setChecked] = useState([]);
 
+	const [inputSearch, setInputSearch] = useState('');
+	const [loadingSearch, setLoadingSearch] = useState(false);
+
+	const [typeSortPrice, setTypeSortPrice] = useState('lowestPrice');
+
 	const [superheroes, { loading, error }] = useCanister('superheroes');
 	const { principal, isConnected, disconnect } = useConnect();
+
+	const debounced = useDebounce(inputSearch, 500);
+
+	const handleClickCancel = () => {
+		setInputSearch('');
+	};
+
+	const handleInputChange = (e) => {
+		const searchValue = e.target.value;
+
+		if (!searchValue.startsWith(' ')) {
+			setInputSearch(searchValue);
+		}
+	};
+
+	const handleSortPrice = (e) => {
+		setTypeSortPrice(e.target.value);
+	};
+
+
+	// //Filter by search id:
+	useEffect(() => {
+		let mounted = true;
+		const data = getNFTByType(tab);
+
+		if (mounted) {
+			const handleSearch = async () => {
+				setLoadingSearch(true);
+
+				const filterById = filterDataOrigin.filter((item) =>
+					item?.tokenId[0]
+						.toString()
+						.toLowerCase()
+						.includes(debounced.toLowerCase())
+				);
+
+				filterById ? setFilterData(filterById) : setFilterData(data);
+
+				setTimeout(() => {
+					setLoadingSearch(false);
+				}, 500);
+			};
+
+			handleSearch();
+		}
+
+		return () => (mounted = false);
+	}, [debounced]);
 
 	const handleClickCard = (tokenId) => {
 		navigate(`/detail/${tokenId}`, {
@@ -194,21 +250,28 @@ function Inventory(props) {
 								Clear Filter
 							</div>
 						</div>
-						{/* 
+						
 						<div className='filter__item'>
 							<div className='filter__item-input'>
-								<input placeholder='Search by ID' name='id' type='text' />
-								<Search sx={{ color: '#e1e2e9', marginRight: '10px' }} />
+								<input
+									value={inputSearch}
+									onChange={handleInputChange}
+									placeholder='Search by ID'
+									name='id'
+									type='text'
+								/>
+								{inputSearch && !loadingSearch && (
+									<Cancel
+										onClick={handleClickCancel}
+										sx={{ fontSize: '14px', color: 'white' }}
+									/>
+								)}
+								{loadingSearch && (
+									<ClipLoader color='grey' loading={true} size={14} />
+								)}
+								<Search sx={{ color: 'white', marginRight: '10px' }} />
 							</div>
-						</div> */}
-
-						{/* <div className='filter__item'>
-							<select name='options' id='options'>
-								<option value='recently_added'>Recently Added</option>
-								<option value='highest_price'>Highest Price</option>
-								<option value='lowest_price'>Lowest Price</option>
-							</select>
-						</div> */}
+						</div>
 
 						<div className='filter__item'>
 							<div className='filter__item-checkbox'>

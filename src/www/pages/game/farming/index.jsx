@@ -69,7 +69,7 @@ function Farming(props) {
 	const [listNFt, setListNFt] = useState([]);
 	const [cardSelected, setCardSelected] = useState();
 	const [cardMiniActive, setCardMiniActive] = useState();
-	const [showFarmDialog, setShowFarmDialog] = useState();
+	const [showFarmDialog, setShowFarmDialog] = useState(false);
 	const [valueResource, setValueResource] = useState({
 		food: 0,
 		gold: 0,
@@ -160,13 +160,11 @@ function Farming(props) {
 
 
 	const onClickFarm = async () => {
-
-		if(!isClaim || !isCompletedCount) {
-			toastEmitter("warn", "you need to wait to time out or claim Resource before farm again");
-		}else {
+		if (!isCompletedCount) {
+			toastEmitter('warn', 'You need to wait for the time out to farm');
+		}else{
 			setShowFarmDialog(true);
 		}
-
 	};
 
 	const handleClose = async () => {
@@ -290,7 +288,7 @@ function Farming(props) {
 				<ListResource>
 					{Object.entries(item?.resource).map(([key, value]) => {
 						if (!value) return;
-						<ResourceItem>
+						<ResourceItem key={key}>
 							<ResourceImg src={`/images/navbar/icons/${key}.png`} alt='' />
 							<ResourceQuantity>{value || 0}</ResourceQuantity>
 						</ResourceItem>;
@@ -333,7 +331,7 @@ function Farming(props) {
 									<Skeleton variant='rectangular' width={60} height={'100%'} />
 								</Stack>
 							) : (
-								listNFtLand.map((el) => (
+								listNFtLand.map((el, index) => (
 									<CardNft
 										active={cardMiniActive === el?.tokenId[0] ? true : false}
 										onChangeCard={onChangeCard}
@@ -342,6 +340,7 @@ function Farming(props) {
 										height={100}
 										heightImg={60}
 										miniCard={true}
+										key={index}
 									/>
 								))
 							)}
@@ -431,9 +430,9 @@ function Farming(props) {
 						</ListResource>
 					</ListResourceWrapper>
 
-					{cardSelected?.detail?.land?.claimableResource.map((el) => {
+					{cardSelected?.detail?.land?.claimableResource.map((el, index) => {
 						return (
-							<CountdownWrapper>
+							<CountdownWrapper key={index}>
 								<CountdownInside>{resourceItem(el)}</CountdownInside>
 							</CountdownWrapper>
 						);
@@ -444,7 +443,7 @@ function Farming(props) {
 						<Button onClick={() => setOpen(true)}>Dig Nest</Button>
 					</BtnList>
 
-					<Dialog onClose={handleClose} open={showFarmDialog}>
+					<Dialog onClose={handleClose} open={showFarmDialog && showFarmDialog}>
 						{listWorker?.length && (
 							<DialogContent>
 								<Stack sx={{ height: 300 }} spacing={1} direction='row'>

@@ -82,7 +82,7 @@ function PopUp(props) {
 	return (
 		<>
 			<Modal
-				open={isOpen}
+				open={isOpen && isOpen}
 				onClose={handleClose}
 				aria-labelledby='modal-modal-title'
 				aria-describedby='modal-modal-description'>
