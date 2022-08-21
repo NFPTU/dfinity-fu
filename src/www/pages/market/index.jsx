@@ -109,8 +109,6 @@ function Market(props) {
 						.includes(debounced.toLowerCase())
 				);
 
-				console.log('filterById', filterById);
-
 				if(filterById){
 					setFilterData(filterById)
 					setFilterSearchData(filterById)
@@ -341,7 +339,11 @@ function Market(props) {
 						</div>
 
 						<div className='filter__item'>
-							<select name='price' id='price' onChange={handleSortPrice}>
+							<select
+							value={typeSortPrice} 
+							name='price' 
+							id='price' 
+							onChange={handleSortPrice}>
 								<option value='lowestPrice'>Lowest Price</option>
 								<option value='highestPrice'>Highest Price</option>
 							</select>
