@@ -39,7 +39,7 @@ import User "./User";
 shared(msg) actor class AntKingdoms(
     init_admin: Principal,
     paymentToken: Principal,
-    marketFee: Nat
+    marketFee: Int
     ) = this {
     
   // Types
@@ -517,7 +517,14 @@ private let NFT_RARITY : [Text] =   ["Common","Uncommon","Rare", "Epec", "Legend
         };
         return #ok(1);
     };
-
+   /*
+    *   Core interfaces:
+    *       update calls:
+    *           buy/createOrder/CancelOrder/breed/stake...
+    *       query calls:
+    *           logo/name/symbol/decimal/totalSupply/balanceOf/allowance/getMetadata
+    *           historySize/getTransaction/getTransactions
+    */
     
     public shared(msg) func buy(orderId: Nat): async Result.Result<Nat, Text> {
         let tokenActor: TokenActor = actor(Principal.toText(paymentToken));
@@ -528,8 +535,10 @@ private let NFT_RARITY : [Text] =   ["Common","Uncommon","Rare", "Epec", "Legend
   
         switch(await tokenActor.transferFrom(msg.caller, Principal.fromActor(this), orderData.price)) {
             case(#Ok(id)) {
-                let amountToSeller = orderData.price * ((100 - marketFee) / 100);
-                switch(await tokenActor.transferFrom(Principal.fromActor(this), orderData.owner, amountToSeller)) {
+                let amountToSellerInt = Float.toInt(Float.fromInt(orderData.price) * (Float.fromInt(100 - marketFee) / 100));
+                let amountToSeller = Int.abs(amountToSellerInt);
+                
+                switch(await tokenActor.transfer(orderData.owner, amountToSeller)) {
                  case(#Ok(id)) {
                   _transfer(Principal.toText(orderData.owner), Principal.toText(msg.caller), orderData.tokenId);
                    orders.delete(orderId);

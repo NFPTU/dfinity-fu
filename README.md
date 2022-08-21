@@ -84,3 +84,7 @@ dfx canister install token --argument="(\"Test Token Logo\", \"Test Token Name\"
    ```
 
 1. Open the aforementioned URL in your web browser.
+
+```text
+   bash demo.sh
+   ```

@@ -19,7 +19,7 @@ import { Cancel } from '@mui/icons-material';
 import { Search, Landscape } from '@mui/icons-material';
 
 function Market(props) {
-	const { tabGameHeader, marketData } = props;
+	const { tabGameHeader, marketData, onGetAllOrders } = props;
 
 	let navigate = useNavigate();
 
@@ -35,7 +35,7 @@ function Market(props) {
 
 	const [filterSearchData, setFilterSearchData] = useState([]);
 
-	const [isOwned, setIsOwned] = useState(true);
+	const [isOwned, setIsOwned] = useState(false);
 
 	const [checked, setChecked] = useState([]);
 
@@ -111,7 +111,7 @@ function Market(props) {
 
 				console.log('filterById', filterById);
 
-				if(filterById){
+				if(filterById?.length){
 					setFilterData(filterById)
 					setFilterSearchData(filterById)
 				}else{
@@ -154,6 +154,7 @@ function Market(props) {
 	};
 
 	useEffect(() => {
+		if(!(superheroes  && principal)) return
 		const indexOfLastNFT = page * numberNftPerPage;
 		const indexOfFirstNFT = indexOfLastNFT - numberNftPerPage;
 		if (page >= 1) {
@@ -221,7 +222,17 @@ function Market(props) {
 	};
 
 	useEffect(() => {
-		onGetDataByType();
+		if(superheroes && principal) {
+			onGetAllOrders();
+
+		}
+	}, [superheroes, principal]);
+
+	useEffect(() => {
+		if(superheroes && principal) {
+			onGetDataByType();
+
+		}
 	}, [superheroes, principal, tab]);
 
 	useEffect(() => {

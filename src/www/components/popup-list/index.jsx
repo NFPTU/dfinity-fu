@@ -77,7 +77,7 @@ export default function PopupList(props) {
         <BootstrapDialogTitle id="customized-dialog-title" onClose={handleClose}>
           {dialogTitle}
         </BootstrapDialogTitle>
-        <DialogContent dividers>{children[0] ? children : 'No item found!'}</DialogContent>
+        <DialogContent dividers>{children}</DialogContent>
 
       </BootstrapDialog>
     </div>

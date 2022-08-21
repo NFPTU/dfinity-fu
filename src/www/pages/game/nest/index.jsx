@@ -99,7 +99,7 @@ function Nest(props) {
 				cardSelected?.tokenId[0]
 			);
 		} catch (er) {
-			
+
 		}
 		setOpenProcess(false);
 		toast('Add queen successfully!!!');
@@ -268,8 +268,8 @@ function Nest(props) {
 					open={open}
 					setOpen={setOpen}>
 					{getNFTByType('Queen').map((el, index) => {
-						if (el?.detail?.queen?.inNest[0]) return;
-						return (
+						console.log(el?.detail?.queen?.inNest[0]);
+						if (!el?.detail?.queen?.inNest[0]) return (
 							<CardNft
 								key={index}
 								data={el}
