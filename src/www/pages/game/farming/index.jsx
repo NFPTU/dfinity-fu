@@ -181,6 +181,8 @@ function Farming(props) {
 			leaf: 0,
 			soil: 0,
 		});
+
+		setIsDisableFarmBtn(true);
 	};
 
 	const onChangeSlide = (item, value) => {
