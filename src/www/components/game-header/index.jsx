@@ -20,7 +20,7 @@ function GameHeader(props) {
 	const walletId = walletIdBefore?.concat(`...${walletIdAfter}`);
 
 	const handleCopyToClipboard = () => {
-		navigator.clipboard.writeText(walletId);
+		navigator.clipboard.writeText(principal?.toString());
 
 		setIsCopied(true);
 
@@ -89,7 +89,7 @@ function GameHeader(props) {
 				<div className='header__wrapper-right'>
 
 					<div className='header__wrapper-balance'>
-						<span>{Number(balance) || 0}</span>
+						<span>{Number(balance) || 0} ATD</span>
 					</div>
 
 					<div className='header__wrapper-account'>

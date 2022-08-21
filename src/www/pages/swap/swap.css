@@ -20,7 +20,7 @@
 .swapContainer {
 	background-color: rgb(203, 231, 240);
 	width: 440px;
-	height: 350px;
+	height: 360px;
 	margin: 0 auto;
 	top: 50%;
 	border-radius: 24px;
@@ -68,12 +68,16 @@
 	line-height: 55px;
 }
 .currencyInputField {
-	font-size: 28px;
-	display: inline-block;
-	width: 100%;
-	border: none;
-	background-color: rgb(217, 236, 242);
+	font-size: 24px;
+    display: inline-block;
+    width: 100%;
+    border: none;
+    background-color: rgb(208 223 227);
+    border-radius: 6px;
+    outline: none;
+    padding: 10px 15px;
 }
+
 .tokenContainer {
 	text-align: right;
 }
@@ -103,7 +107,7 @@
 /******************************************************************************/
 /* Swap Button */
 .swapButtonContainer {
-	margin: 10px;
+	margin: 4px;
 }
 .swapButton {
 	height: 55px;
@@ -114,6 +118,13 @@
 	background-color: #dd2f81;
 	cursor: pointer;
 	text-align: center;
+	opacity: 0.9;
+	transition: all 0.5s ease;
+}
+
+.swapButton:hover {
+	opacity: 1;
+	transform: scaleX(1.01);
 }
 
 html *::-webkit-scrollbar {

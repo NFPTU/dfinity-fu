@@ -39,6 +39,8 @@ function Inventory(props) {
 
 	const [typeSortPrice, setTypeSortPrice] = useState('lowestPrice');
 
+	const [filterSearchData, setFilterSearchData] = useState([]);
+
 	const [superheroes, { loading, error }] = useCanister('superheroes');
 	const { principal, isConnected, disconnect } = useConnect();
 
@@ -77,7 +79,13 @@ function Inventory(props) {
 						.includes(debounced.toLowerCase())
 				);
 
-				filterById ? setFilterData(filterById) : setFilterData(data);
+				if(filterById){
+					setFilterData(filterById)
+					setFilterSearchData(filterById)
+				}else{
+					setFilterData(data);
+					setFilterSearchData(data)
+				}
 
 				setTimeout(() => {
 					setLoadingSearch(false);
@@ -177,6 +185,21 @@ function Inventory(props) {
 		sessionStorage.setItem('tabItemInventory', item);
 	};
 
+	useEffect(() => {
+		let mounted = true
+		if (mounted) {
+			const tab = sessionStorage.getItem('tabItemInventory');
+			if (tab) {
+				setTab(tab);
+			} else {
+				sessionStorage.setItem('tabItemInventory', 'Land');
+				setTab('Land');
+			}
+		}
+
+		return () => mounted = false;
+	})
+
 	const handleToggle = (value) => {
 		const currentIndex = checked.indexOf(value);
 		const newChecked = [...checked];
@@ -200,7 +223,7 @@ function Inventory(props) {
 		if (mounted) {
 			const getDataByFilter = () => {
 				for (const key of checked) {
-					const arrFilter = filterDataOrigin.filter(
+					const arrFilter = filterSearchData.filter(
 						(item) => item?.attributes[1]?.value === key
 					);
 
@@ -216,7 +239,7 @@ function Inventory(props) {
 
 			checked.length !== 0
 				? setFilterData(filterByRarity)
-				: setFilterData(data);
+				: setFilterData(filterSearchData);
 		}
 
 		return () => (mounted = false);
@@ -232,8 +255,8 @@ function Inventory(props) {
 								onClick={() => handleChangeTab(item.type)}
 								key={index}
 								className={
-									item.type ===
-									sessionStorage.getItem('tabItemIventory')
+									item.type === tab
+									// sessionStorage.getItem('tabItemIventory')
 										? 'tab-item tab-itemActive'
 										: 'tab-item'
 								}>
