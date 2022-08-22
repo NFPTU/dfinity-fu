@@ -72,18 +72,18 @@ function Nest(props) {
 		getResourceUpgrade('Nest', 'Rare', 2);
 	}, []);
 
-
 	const onGetData = async () => {
 		const resp = await superheroes?.getUserTokens(principal?.toString());
 		const listNest = resp?.ok.filter((el) => el.attributes[0].value === 'Nest');
 		const inLand = resp?.ok?.find(
 			(el) => el.tokenId[0] == listNest[0]?.detail?.nest?.inLand[0]
 		);
-
+		let queenItem = listNest.find(el => el?.tokenId[0] == cardSelected?.tokenId[0])
+		let queen = queenItem || listNest[0]
 		setInLand(inLand);
 		setListNFt(resp?.ok);
-		setCardSelected(listNest[0]);
-		setCardMiniActive(listNest[0]?.tokenId[0]);
+		setCardSelected(queen);
+		setCardMiniActive(queen?.tokenId[0]);
 		setListNest(listNest);
 	};
 
@@ -122,25 +122,27 @@ function Nest(props) {
 	};
 
 	const confirmDialog = async () => {
-		Swal.fire({
-			title: 'Do you want to upgrade nest now?',
-			showDenyButton: false,
-			showCancelButton: true,
-			confirmButtonText: 'Ok',
-			html: `
-			<h2><b>Amount of resources needed to upgrade</b></h2><br />
-			<div style={{color: 'red'}}>food ${resourceUpgrade?.food}</div>
-			<div>gold ${resourceUpgrade?.gold}</div>
-			<div>leaf ${resourceUpgrade?.leaf}</div>
-			<div>soil ${resourceUpgrade?.soil}</div>
-			`,
-		}).then((result) => {
-			/* Read more about isConfirmed, isDenied below */
-			if (result.isConfirmed) {
-				onUpgrade();
-			} else if (result.isDenied) {
-			}
-		});
+		if (cardSelected) {
+			Swal.fire({
+				title: 'Do you want to upgrade nest now?',
+				showDenyButton: false,
+				showCancelButton: true,
+				confirmButtonText: 'Ok',
+				html: `
+				<h2><b>Amount of resources needed to upgrade</b></h2><br />
+				<div style={{color: 'red'}}>food ${resourceUpgrade?.food}</div>
+				<div>gold ${resourceUpgrade?.gold}</div>
+				<div>leaf ${resourceUpgrade?.leaf}</div>
+				<div>soil ${resourceUpgrade?.soil}</div>
+				`,
+			}).then((result) => {
+				/* Read more about isConfirmed, isDenied below */
+				if (result.isConfirmed) {
+					onUpgrade();
+				} else if (result.isDenied) {
+				}
+			});
+		}
 	};
 
 	const onUpgrade = async (e) => {
@@ -265,7 +267,9 @@ function Nest(props) {
 												Number(cardSelected?.detail?.nest?.limit)}
 										</InfoBodyRightItem>
 										<InfoBodyRightItem>
-											{inLand && inLand.name}
+											{cardSelected?.detail?.nest?.inLand[0] && listNFt.find(
+												(el) => el.tokenId[0] == cardSelected?.detail?.nest?.inLand[0]
+											)?.name}
 										</InfoBodyRightItem>
 									</InfoBodyRight>
 								</InfoBody>
@@ -273,8 +277,11 @@ function Nest(props) {
 						</Info>
 
 						<BtnList>
-							<Btn onClick={confirmDialog}>Upgrade</Btn>
-							<Btn onClick={handleAddQueen}>Add Queen</Btn>
+            <Btn disabled={!cardSelected} onClick={confirmDialog}>
+								Upgrade
+							</Btn>
+							<Btn disabled={!cardSelected} onClick={handleAddQueen}>Add Queen</Btn>
+							
 						</BtnList>
 					</Right>
 				</Wrapper>

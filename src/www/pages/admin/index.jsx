@@ -46,6 +46,23 @@ function Admin() {
 		}
 	};
 
+	const onClaimAdmin = async () => {
+		try {
+			console.log(
+				superheroes,
+				activeProvider,
+				isIdle,
+				isConnecting,
+				isConnected
+			);
+			connect();
+			const res = await superheroes?.claimingAdmin();
+			console.log(res);
+		} catch (er) {
+			console.log('Err', er);
+		}
+	};
+
 	const onStakeNestInLand = async () => {
 		try {
 			const listNest = getNFTByType('Nest');
@@ -155,6 +172,8 @@ function Admin() {
 
 			<br />
 			<button onClick={onClaim}> Claiming NFT</button>
+			<br />
+			<button onClick={onClaimAdmin}> Claiming Admin NFT</button>
 			<br />
 			<button onClick={onStakeNestInLand}> stake nest NFT</button>
 			<br />

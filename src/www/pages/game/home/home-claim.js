@@ -53,6 +53,7 @@ export const TextBtn = styled.div`
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    cursor: pointer;
 `
 
 export const CardWrap = styled.div`

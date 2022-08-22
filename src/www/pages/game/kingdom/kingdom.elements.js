@@ -187,7 +187,8 @@ export const Btn = styled.div`
     align-items: center;
     justify-content: center;
     //Disable button
-    /* filter: grayscale(1); */
+    filter: ${({ disabled }) => disabled ? 'grayscale(1)' : ''};
+    cursor: ${({ disabled }) => !disabled ? 'pointer' : 'not-allowed'};
 `
 
 //=========== Resource =================
