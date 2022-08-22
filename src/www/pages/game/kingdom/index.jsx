@@ -79,6 +79,12 @@ function Kingdom(props) {
 		onGetData();
 	};
 
+	const handleExpandLand = () => {
+		if (cardSelected) {
+			setOpen(true);
+		}
+	};
+
 	useEffect(() => {
 		if (principal && superheroes) {
 			onGetData();
@@ -106,26 +112,6 @@ function Kingdom(props) {
 					</Left>
 
 					<Right>
-						{/* <Info>
-							<InfoTop>
-								<Type>Kingdom</Type>
-								<Level>Limit: 30</Level>
-							</InfoTop>
-							<InfoBody>
-								<InfoBodyLeft>
-									<InfoBodyLeftItem>Limit:</InfoBodyLeftItem>
-									<InfoBodyLeftItem>Description:</InfoBodyLeftItem>
-									<InfoBodyLeftItem>In Land:</InfoBodyLeftItem>
-								</InfoBodyLeft>
-
-								<InfoBodyRight>
-									<InfoBodyRightItem>30</InfoBodyRightItem>
-									<InfoBodyRightItem>Ant Nest #5</InfoBodyRightItem>
-									<InfoBodyRightItem>20</InfoBodyRightItem>
-								</InfoBodyRight>
-							</InfoBody>
-						</Info> */}
-
 						<ListLand>
 							<ListLandTitle>List All Land</ListLandTitle>
 							<ListLandWrapper>
@@ -135,7 +121,7 @@ function Kingdom(props) {
 										if (!el?.detail?.land?.inKingdom) return;
 										return (
 											<>
-											<CardNft key={index} data={el} alt='' size='small' />
+												<CardNft key={index} data={el} alt='' size='small' />
 											</>
 										);
 									})
@@ -150,16 +136,21 @@ function Kingdom(props) {
 						</ListLand>
 
 						<BtnList>
-							<Btn onClick={() => setOpen(true)}>Expand Land</Btn>
+							<Btn disabled={!cardSelected} onClick={handleExpandLand}>
+								Expand Land
+							</Btn>
 						</BtnList>
 					</Right>
 				</Wrapper>
-				<PopupList dialogTitle={"Choose land to expand into kingdom"} open={open} setOpen={setOpen}>
+				<PopupList
+					dialogTitle={'Choose land to expand into kingdom'}
+					open={open}
+					setOpen={setOpen}>
 					{listLand.map((el, index) => {
 						const tokenId = el?.tokenId[0];
 						if (el?.detail?.land?.inKingdom) return;
 						return (
-							<div style={{marginLeft: '15px'}}>
+							<div style={{ marginLeft: '15px' }}>
 								<CardNft
 									key={index}
 									data={el}

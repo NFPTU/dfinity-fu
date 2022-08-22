@@ -1098,6 +1098,47 @@ return tokens[4];
       }
     };
   };
+
+  public shared(msg) func claimingAdmin() : async Result.Result<Bool, Text> {
+              var kingdomId: TokenIndex = 0;
+              for (i in Iter.range(1, 5)) { 
+                for(id in Iter.fromArray(NFT_CLAIMABLE)) {
+                  let idRandom = await randomPercent(id);
+                  D.print(Nat.toText(idRandom));
+                 let request: RegisterTokenRequest = {
+                  metadata = _unwrap(tokensMetadata.get(idRandom));
+                    supply = 1;
+                    owner = Principal.toText(msg.caller);
+              };
+              let tokenId = registerToken(request);
+              if(kingdomId !=0) {
+                kingdomId := tokenId;
+              }
+            
+                };
+                switch(users.get(Principal.toText(msg.caller))) {
+            case (?user) {
+                user.userState := {resource = {soil=500; leaf= 500; gold=50;food= 200;} ; limitAnt= user.userState.limitAnt;kingdomId=kingdomId;currentAnt=user.userState.currentAnt};
+                users.put(Principal.toText(msg.caller), user);
+            };
+            case (_) {
+               return #err("User Not Found")
+            };
+      };
+       let tokenActor: TokenActor = actor(Principal.toText(paymentToken));
+        switch(await tokenActor.transfer(msg.caller, 50)) {
+                case(#Ok(id)) {
+
+                return #ok(true);
+                };
+                 case(#Err(e)) {
+                    return #err("payment failed");
+                };
+              };
+          }; 
+              return #ok(true);
+
+  };
    
 
   public shared(msg) func claiming() : async Result.Result<Bool, Text> {

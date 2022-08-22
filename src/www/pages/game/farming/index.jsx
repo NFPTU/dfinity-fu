@@ -136,11 +136,13 @@ function Farming(props) {
 		const inKingdom = resp?.ok.filter(
 			(el) => el.attributes[0].value === 'Kingdom'
 		);
+		let queenItem = listLand.find(el => el?.tokenId[0] == cardSelected?.tokenId[0])
+		let land = queenItem || listLand[0]
 
 		await onGetAvailWorker();
 		setListNFt(resp?.ok);
-		setCardSelected(listLand[0]);
-		setCardMiniActive(listLand[0]?.tokenId[0]);
+		setCardSelected(land);
+		setCardMiniActive(land?.tokenId[0]);
 		setlistNFtLand(listLand);
 		setListNftNest(listNest);
 		setInKingdom(inKingdom);
@@ -161,10 +163,16 @@ function Farming(props) {
 	};
 
 	const onClickFarm = async () => {
-		if (!isCompletedCount) {
-			toastEmitter('warn', 'You need to wait for the time out to farm');
-		} else {
-			setShowFarmDialog(true);
+		if (listNFtLand?.length !== 0) {
+			if (!isCompletedCount) {
+				toastEmitter('warn', 'You need to wait for the time out to farm');
+			} else {
+				if (!listWorker?.length) {
+					toastEmitter('warn', `You don't have enough Worker Ant`);
+				} else {
+					setShowFarmDialog(true);
+				}
+			}
 		}
 	};
 
@@ -197,10 +205,10 @@ function Farming(props) {
 			setValueResource((preValue) => ({ ...preValue, [item]: value }));
 		}
 
-		if(listWorker.length === remainW){
-			setIsDisableFarmBtn(true)
-		}else{
-			setIsDisableFarmBtn(false)
+		if (listWorker.length === remainW) {
+			setIsDisableFarmBtn(true);
+		} else {
+			setIsDisableFarmBtn(false);
 		}
 	};
 
@@ -361,6 +369,7 @@ function Farming(props) {
 										heightImg={60}
 										miniCard={true}
 										key={index}
+										cursor={true}
 									/>
 								))
 							)}
@@ -460,11 +469,16 @@ function Farming(props) {
 
 					<BtnList>
 						<Button
-							disabled={!isCompletedCount || !isClaim}
 							onClick={onClickFarm}>
 							Farm
 						</Button>
-						<Button onClick={() => setOpen(true)}>Dig Nest</Button>
+						<Button
+							disabled={!cardSelected}
+							onClick={() => {
+								return cardSelected && setOpen(true);
+							}}>
+							Dig Nest
+						</Button>
 					</BtnList>
 
 					<Dialog onClose={handleClose} open={showFarmDialog && showFarmDialog}>
@@ -508,7 +522,11 @@ function Farming(props) {
 										img={'/images/navbar/icons/leaf.jpeg'}
 									/>
 								</Stack>
-								<Button disabled={isDisableFarmBtn}  name={'Farm'} onClick={confirmDialog} />
+								<Button
+									disabled={isDisableFarmBtn}
+									name={'Farm'}
+									onClick={confirmDialog}
+								/>
 								Worker Ants: {remainWorker}
 								<ResourceFarmPerTimeTitle>
 									List resource farm per time
@@ -575,12 +593,14 @@ function Farming(props) {
 				{getNFTByType('Nest').map((el, index) => {
 					if (el?.detail?.nest?.inLand[0]) return;
 					return (
-						<CardNft
-							key={index}
-							data={el}
-							footer={() => rendterBtn(el)}
-							alt=''
-						/>
+						<div style={{ marginLeft: '10px' }}>
+							<CardNft
+								key={index}
+								data={el}
+								footer={() => rendterBtn(el)}
+								alt=''
+							/>
+						</div>
 					);
 				})}
 			</PopupList>

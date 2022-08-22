@@ -19,6 +19,7 @@ export interface AntKingdoms {
     ) => Promise<Result>,
   'claimWorkerEgg' : (arg_0: TokenIndex__1) => Promise<Result>,
   'claiming' : () => Promise<Result>,
+  'claimingAdmin' : () => Promise<Result>,
   'createOrder' : (arg_0: TokenIndex__1, arg_1: bigint) => Promise<Result_12>,
   'extensions' : () => Promise<Array<Extension>>,
   'getAllOrders' : () => Promise<Result_11>,

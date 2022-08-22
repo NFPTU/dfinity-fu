@@ -21,7 +21,7 @@ import { rarity_type } from './rarity_type'
 function CardNft(props) {
 	const [rarityImg, setRarityImg] = useState('')
 
-	const { width, height, data, footer, size, heightImg, miniCard, onChangeCard, active, queen } = props;
+	const { width, height, data, footer, size, heightImg, miniCard, onChangeCard, active, queen, cursor } = props;
 
 	const { attributes, description, detail, image, name, tokenId } = data;
 
@@ -43,7 +43,7 @@ function CardNft(props) {
 	}, [rarity, rarity_type])
 
 	return (
-		<CardContainer active={active} miniCard={miniCard} onClick={handleClick} width={width} height={height} size={size}>
+		<CardContainer cursor={cursor} active={active} miniCard={miniCard} onClick={handleClick} width={width} height={height} size={size}>
 			<CardWrapper>
 				<Top>
 					<Type miniCard={miniCard}>{attributes && attributes[0]?.value}</Type>
