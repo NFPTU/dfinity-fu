@@ -27,14 +27,16 @@ const style = {
 };
 
 function DetailNft(props) {
-	const { setOpenProcess } = props;
+	const { setOpenProcess, completedCountBreeding, cardSelectedBreeding } = props;
 
 	const [open, setOpen] = useState(false);
 
 	const handleOpen = () => {
 		if (
-			itemNft?.detail?.queen?.inNest?.length >= 1 &&  itemNft?.detail?.queen?.inNest[0] !== 0 ||
-			itemNft?.detail?.nest?.inLand?.length >= 1 && itemNft?.detail?.nest?.inLand[0] !== 0 ||
+			(itemNft?.detail?.queen?.inNest?.length >= 1 &&
+				itemNft?.detail?.queen?.inNest[0] !== 0) ||
+			(itemNft?.detail?.nest?.inLand?.length >= 1 &&
+				itemNft?.detail?.nest?.inLand[0] !== 0) ||
 			itemNft?.detail?.land?.inKingdom > 0
 		) {
 			toast('You need unstake');
@@ -124,8 +126,10 @@ function DetailNft(props) {
 			}
 		} else {
 			if (
-				itemNft?.detail?.queen?.inNest?.length >= 1 &&  itemNft?.detail?.queen?.inNest[0] !== 0||
-				itemNft?.detail?.nest?.inLand?.length >= 1 && itemNft?.detail?.nest?.inLand[0] !== 0||
+				(itemNft?.detail?.queen?.inNest?.length >= 1 &&
+					itemNft?.detail?.queen?.inNest[0] !== 0) ||
+				(itemNft?.detail?.nest?.inLand?.length >= 1 &&
+					itemNft?.detail?.nest?.inLand[0] !== 0) ||
 				itemNft?.detail?.land?.inKingdom > 0
 			) {
 				toast('You need unstake');
@@ -145,40 +149,58 @@ function DetailNft(props) {
 		}
 	};
 
+	console.log('itemNft', itemNft);
+
 	const unstake = async () => {
 		if (itemNft?.detail?.queen) {
-			setOpenProcess(true);
-			const resp = await superheroes?.unStakeQueenInNest(
-				itemNft?.tokenId[0],
-				itemNft?.detail?.queen?.inNest[0]
-			);
-			setOpenProcess(false);
-			if (resp) {
-				toast('Unstake queen success');
+			if (!completedCountBreeding && cardSelectedBreeding?.detail?.queen?.breedingWorkerId) {
+				toast('You need to claim Worker Ant before unstake !!!');
+			} else {
+				setOpenProcess(true);
+				const resp = await superheroes?.unStakeQueenInNest(
+					itemNft?.tokenId[0],
+					itemNft?.detail?.queen?.inNest[0]
+				);
+				setOpenProcess(false);
+				if (resp) {
+					toast('Unstake queen success');
+					setneedUn(false);
+					getData();
+				}
 			}
 		} else if (itemNft?.detail?.land) {
-			setOpenProcess(true);
-			const resp = await superheroes?.unStakeLandToKingdom(
-				itemNft?.tokenId[0],
-				itemNft?.detail?.land?.inKingdom
-			);
-			setOpenProcess(false);
-			if (resp) {
-				toast('Unstake land success');
+			if (itemNft?.detail?.land?.nestStaked[0] !== 0) {
+				toast('You have nest staked in list land !');
+			} else {
+				setOpenProcess(true);
+				const resp = await superheroes?.unStakeLandToKingdom(
+					itemNft?.tokenId[0],
+					itemNft?.detail?.land?.inKingdom
+				);
+				setOpenProcess(false);
+				if (resp) {
+					toast('Unstake land success');
+					setneedUn(false);
+					getData();
+				}
 			}
 		} else if (itemNft?.detail?.nest) {
-			setOpenProcess(true);
-			const resp = await superheroes?.unStakeNestInLand(
-				itemNft?.tokenId[0],
-				itemNft?.detail?.nest?.inLand[0]
-			);
-			setOpenProcess(false);
-			if (resp) {
-				toast('Unstake nest success');
+			if (itemNft?.detail?.nest?.queenIn[0] !== 0) {
+				toast('You have queen staked in list nest !');
+			} else {
+				setOpenProcess(true);
+				const resp = await superheroes?.unStakeNestInLand(
+					itemNft?.tokenId[0],
+					itemNft?.detail?.nest?.inLand[0]
+				);
+				setOpenProcess(false);
+				if (resp) {
+					toast('Unstake nest success');
+					setneedUn(false);
+					getData();
+				}
 			}
 		}
-		setneedUn(false);
-		getData();
 	};
 
 	const buyNft = async () => {
@@ -195,7 +217,7 @@ function DetailNft(props) {
 		getData();
 	};
 
-	console.log('itemNft', itemNft)
+	console.log('itemNft', itemNft);
 
 	return (
 		<div className='detail-market-container'>
@@ -310,7 +332,7 @@ function DetailNft(props) {
 												{itemNft?.attributes[0]?.value === 'Land' && (
 													<>
 														<div className='wrapper__right-tab-item1-title mt-8'>
-															List resource land
+															Resources Remaining
 														</div>
 														<div className='resource__land-list'>
 															<div className='resource__land-item'>

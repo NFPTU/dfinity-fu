@@ -12,7 +12,8 @@ export const CardContainer = styled.div`
   margin-top: ${({miniCard}) => miniCard ? '5px' : ''};
   border: ${({active}) => active ? '2px solid red' : '2px solid transparent'};
   margin-right: ${({size}) => size === "small" ? '6px' : ''};
-  margin-bottom: ${({size}) => size === "small" ? '6px' : ''}
+  margin-bottom: ${({size}) => size === "small" ? '6px' : ''};
+  cursor: ${({cursor}) => cursor ? 'pointer' : ''};
 `;
 
 export const CardWrapper = styled.div`

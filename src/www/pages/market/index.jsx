@@ -35,7 +35,7 @@ function Market(props) {
 
 	const [filterSearchData, setFilterSearchData] = useState([]);
 
-	const [isOwned, setIsOwned] = useState(true);
+	const [isOwned, setIsOwned] = useState(sessionStorage.getItem('isOwned') || true);
 
 	const [checked, setChecked] = useState([]);
 
@@ -183,7 +183,23 @@ function Market(props) {
 	//================ Function =====================
 	const handleChangeOwned = (e) => {
 		setIsOwned(e.target.checked);
+		sessionStorage.setItem('isOwned', e.target.checked)
 	};
+
+	useEffect(() => {
+		let mounted = true
+		if (mounted) {
+			const isOwnedFromStorage = sessionStorage.getItem('isOwned');
+			if (isOwnedFromStorage) {
+				setIsOwned(isOwnedFromStorage);
+			} else {
+				sessionStorage.setItem('isOwned', true);
+				setIsOwned(true);
+			}
+		}
+
+		return () => mounted = false;
+	}, [superheroes, principal, tab])
 
 	const clearFilter = () => {
 		setIsOwned(true);
