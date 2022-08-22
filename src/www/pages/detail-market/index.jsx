@@ -13,6 +13,7 @@ import ModalLayout from './modal-layout';
 import Modal from '@mui/material/Modal';
 import { withContext } from '../../hooks';
 import { useNavigate } from 'react-router-dom';
+import { rarity_type } from '../../components/card-nft/rarity_type';
 
 const style = {
 	position: 'absolute',
@@ -82,6 +83,7 @@ function DetailNft(props) {
 			setResourceLand(itemorder?.token?.detail?.land?.resource);
 			setownerNft(itemorder?.owner.toString());
 		} else {
+			setDataOrder()
 			const resp = await superheroes?.getUserTokens(principal?.toString());
 			let item = resp?.ok.find((el) => el?.tokenId[0] == desc);
 			setItemNft(item);
@@ -91,6 +93,8 @@ function DetailNft(props) {
 	};
 
 	useEffect(async () => {
+
+		handleRarityType()
 		if (
 			itemNft &&
 			ownerNft == principal?.toString() &&
@@ -113,6 +117,14 @@ function DetailNft(props) {
 			setClassesTabLine('bottom-line bottom-line-2');
 		}
 	}, [tab]);
+
+	const [rarityImg, setRarityImg] = useState('')
+
+	const handleRarityType = () => {
+		const ra = rarity_type?.find((item) => item.type === itemNft?.attributes[1]?.value)
+
+		setRarityImg(ra?.src)
+	}
 
 	//Function fot listing NFT:
 	const listTing = async () => {
@@ -321,11 +333,11 @@ function DetailNft(props) {
 												</div>
 												<div className='wrapper__right-tab-item1-detail'>
 													<img
-														src='https://marketplace.monsterra.io/images/rarity-icon/rare.svg'
+														src={rarityImg}
 														alt='rarity'
 													/>
 													<div className='wrapper__right-tab-item1-detail-name'>
-														Rare
+														{itemNft?.attributes[1]?.value}
 													</div>
 												</div>
 

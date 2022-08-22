@@ -97,7 +97,9 @@ function Nest(props) {
 				queen?.tokenId[0],
 				cardSelected?.tokenId[0]
 			);
-		} catch (er) {}
+		} catch (er) {
+
+		}
 		setOpenProcess(false);
 		toast('Add queen successfully!!!');
 		onGetData();
@@ -275,16 +277,14 @@ function Nest(props) {
 					open={open}
 					setOpen={setOpen}>
 					{getNFTByType('Queen').map((el, index) => {
-						if (el?.detail?.queen?.inNest[0]) return;
-						return (
-							<div style={{ marginLeft: '10px' }}>
-								<CardNft
-									key={index}
-									data={el}
-									footer={() => rendterBtn(el)}
-									alt=''
-								/>
-							</div>
+						console.log(el?.detail?.queen?.inNest[0]);
+						if (!el?.detail?.queen?.inNest[0]) return (
+							<CardNft
+								key={index}
+								data={el}
+								footer={() => rendterBtn(el)}
+								alt=''
+							/>
 						);
 					})}
 				</PopupList>

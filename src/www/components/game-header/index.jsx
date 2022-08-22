@@ -6,21 +6,18 @@ import Tooltip from '@mui/material/Tooltip';
 import { Link } from 'react-router-dom';
 import { useCanister, useConnect } from '@connect2ic/react';
 import { withContext } from '../../hooks'
-import { Principal } from '@dfinity/principal';
 
 function GameHeader(props) {
-	const { tabGameHeader, setTabGameHeader } = props
+	const { tabGameHeader, setTabGameHeader, balance } = props
 
 	const [tabHeader, setTabHeader] = useState("market");
 
 	const [isCopied, setIsCopied] = useState(false);
-	const [balance, setbalance] = useState(0);
 
 	const { principal } = useConnect();
 	const walletIdBefore = principal?.toString()?.slice(0, 4);
 	const walletIdAfter = principal?.toString()?.slice(60, 63);
 	const walletId = walletIdBefore?.concat(`...${walletIdAfter}`);
-	const [token] = useCanister('token');
 
 	const handleCopyToClipboard = () => {
 		navigator.clipboard.writeText(principal?.toString());
@@ -34,16 +31,7 @@ function GameHeader(props) {
 		return () => clearTimeout(timerId);
 	};
 
-	useEffect(async () => {
-		if (principal && token) {
-			getBalance()
-		}
-	}, [principal, token]);
-
-	const getBalance = async () => {
-		const res2 = await token.balanceOf(Principal.fromText(principal?.toString()));
-		setbalance(res2)
-	}
+	
 
 	const handleChangeTabItem = (item) => {
 		if (item === 'game') {

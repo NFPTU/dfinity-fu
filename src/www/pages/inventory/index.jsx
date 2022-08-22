@@ -17,7 +17,7 @@ import { Cancel } from '@mui/icons-material';
 import ClipLoader from 'react-spinners/ClipLoader';
 
 function Inventory(props) {
-	const { data } = props;
+	const { data, onGetData } = props;
 
 	let navigate = useNavigate();
 
@@ -153,8 +153,18 @@ function Inventory(props) {
 	//===================== SIDE EFFECT =======================
 
 	useEffect(() => {
-		onGetDataByType();
+		if(superheroes &&  principal) {
+			onGetDataByType();
+
+		}
 	}, [superheroes, principal, tab]);
+
+	useEffect(() => {
+		if(superheroes && principal) {
+			onGetData();
+
+		}
+	}, [superheroes, principal]);
 
 	useEffect(() => {
 		if (tab === 'Land') {

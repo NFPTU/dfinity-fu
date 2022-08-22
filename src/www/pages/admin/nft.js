@@ -60,7 +60,7 @@ export const metadata = [
 					resourcePerWorker: {
 						gold: 0,
 						leaf: 0,
-						soil: 0,
+						soil: 10,
 						food: 30,
 					},
 					breedWorkerTime: 60 * second, //giam
@@ -103,7 +103,7 @@ export const metadata = [
 					resourcePerWorker: {
 						gold: 0,
 						leaf: 0,
-						soil: 0,
+						soil: 10,
 						food: 28,
 					},
 					breedWorkerTime: 54 * second, //giam
@@ -146,7 +146,7 @@ export const metadata = [
 					resourcePerWorker: {
 						gold: 0,
 						leaf: 0,
-						soil: 0,
+						soil: 10,
 						food: 26,
 					},
 					breedWorkerTime: 49 * second, //giam
@@ -189,7 +189,7 @@ export const metadata = [
 					resourcePerWorker: {
 						gold: 0,
 						leaf: 0,
-						soil: 0,
+						soil: 10,
 						food: 24,
 					},
 					breedWorkerTime: 44 * second, //giam
@@ -232,7 +232,7 @@ export const metadata = [
 					resourcePerWorker: {
 						gold: 0,
 						leaf: 0,
-						soil: 0,
+						soil: 10,
 						food: 20,
 					},
 					breedWorkerTime: 38 * second, //giam
@@ -911,14 +911,14 @@ export const levelData = [
 							gold: 15,
 							leaf: 35,
 							food: 45,
-							soil: 0,
+							soil: 10,
 						},
 						nextLevel: {
 							queen: {
 								resourcePerWorker: {
 									gold: 0,
 									leaf: 0,
-									soil: 0,
+									soil: 10,
 									food: 30,
 								},
 								breedWorkerTime: 60 * second,
@@ -928,17 +928,17 @@ export const levelData = [
 					{
 						level: 2,
 						costResource: {
-							gold: 10,
+							gold: 2,
 							leaf: 30,
 							food: 40,
-							soil: 0,
+							soil: 10,
 						},
 						nextLevel: {
 							queen: {
 								resourcePerWorker: {
 									gold: 0,
 									leaf: 0,
-									soil: 0,
+									soil: 10,
 									food: 28,
 								},
 								breedWorkerTime: 58 * second,
@@ -948,17 +948,17 @@ export const levelData = [
 					{
 						level: 3,
 						costResource: {
-							gold: 12,
+							gold: 3,
 							leaf: 35,
 							food: 45,
-							soil: 0,
+							soil: 10,
 						},
 						nextLevel: {
 							queen: {
 								resourcePerWorker: {
 									gold: 0,
 									leaf: 0,
-									soil: 0,
+									soil: 10,
 									food: 26,
 								},
 								breedWorkerTime: 56 * second,
@@ -971,14 +971,14 @@ export const levelData = [
 							gold: 14,
 							leaf: 40,
 							food: 50,
-							soil: 0,
+							soil: 10,
 						},
 						nextLevel: {
 							queen: {
 								resourcePerWorker: {
 									gold: 0,
 									leaf: 0,
-									soil: 0,
+									soil: 10,
 									food: 24,
 								},
 								breedWorkerTime: 54 * second,
@@ -991,14 +991,14 @@ export const levelData = [
 							gold: 16,
 							leaf: 45,
 							food: 50,
-							soil: 0,
+							soil: 10,
 						},
 						nextLevel: {
 							queen: {
 								resourcePerWorker: {
 									gold: 0,
 									leaf: 0,
-									soil: 0,
+									soil: 10,
 									food: 22,
 								},
 								breedWorkerTime: 52 * second,
@@ -1016,14 +1016,14 @@ export const levelData = [
 							gold: 15,
 							leaf: 35,
 							food: 45,
-							soil: 0,
+							soil: 10,
 						},
 						nextLevel: {
 							queen: {
 								resourcePerWorker: {
 									gold: 0,
 									leaf: 0,
-									soil: 0,
+									soil: 10,
 									food: 30,
 								},
 								breedWorkerTime: 60 * second,
@@ -1033,17 +1033,17 @@ export const levelData = [
 					{
 						level: 2,
 						costResource: {
-							gold: 10,
+							gold: 2,
 							leaf: 30,
 							food: 40,
-							soil: 0,
+							soil: 10,
 						},
 						nextLevel: {
 							queen: {
 								resourcePerWorker: {
 									gold: 0,
 									leaf: 0,
-									soil: 0,
+									soil: 10,
 									food: 28,
 								},
 								breedWorkerTime: 58 * second,
@@ -1053,17 +1053,17 @@ export const levelData = [
 					{
 						level: 3,
 						costResource: {
-							gold: 12,
+							gold: 3,
 							leaf: 35,
 							food: 45,
-							soil: 0,
+							soil: 10,
 						},
 						nextLevel: {
 							queen: {
 								resourcePerWorker: {
 									gold: 0,
 									leaf: 0,
-									soil: 0,
+									soil: 10,
 									food: 26,
 								},
 								breedWorkerTime: 56 * second,
@@ -1076,14 +1076,14 @@ export const levelData = [
 							gold: 14,
 							leaf: 40,
 							food: 50,
-							soil: 0,
+							soil: 10,
 						},
 						nextLevel: {
 							queen: {
 								resourcePerWorker: {
 									gold: 0,
 									leaf: 0,
-									soil: 0,
+									soil: 10,
 									food: 24,
 								},
 								breedWorkerTime: 54 * second,
@@ -1096,14 +1096,14 @@ export const levelData = [
 							gold: 16,
 							leaf: 45,
 							food: 50,
-							soil: 0,
+							soil: 10,
 						},
 						nextLevel: {
 							queen: {
 								resourcePerWorker: {
 									gold: 0,
 									leaf: 0,
-									soil: 0,
+									soil: 10,
 									food: 22,
 								},
 								breedWorkerTime: 52 * second,
@@ -1121,14 +1121,14 @@ export const levelData = [
 							gold: 15,
 							leaf: 35,
 							food: 45,
-							soil: 0,
+							soil: 10,
 						},
 						nextLevel: {
 							queen: {
 								resourcePerWorker: {
 									gold: 0,
 									leaf: 0,
-									soil: 0,
+									soil: 10,
 									food: 30,
 								},
 								breedWorkerTime: 60 * second,
@@ -1138,17 +1138,17 @@ export const levelData = [
 					{
 						level: 2,
 						costResource: {
-							gold: 10,
+							gold: 2,
 							leaf: 30,
 							food: 40,
-							soil: 0,
+							soil: 10,
 						},
 						nextLevel: {
 							queen: {
 								resourcePerWorker: {
 									gold: 0,
 									leaf: 0,
-									soil: 0,
+									soil: 10,
 									food: 28,
 								},
 								breedWorkerTime: 58 * second,
@@ -1158,17 +1158,17 @@ export const levelData = [
 					{
 						level: 3,
 						costResource: {
-							gold: 12,
+							gold: 3,
 							leaf: 35,
 							food: 45,
-							soil: 0,
+							soil: 10,
 						},
 						nextLevel: {
 							queen: {
 								resourcePerWorker: {
 									gold: 0,
 									leaf: 0,
-									soil: 0,
+									soil: 10,
 									food: 26,
 								},
 								breedWorkerTime: 56 * second,
@@ -1181,14 +1181,14 @@ export const levelData = [
 							gold: 14,
 							leaf: 40,
 							food: 50,
-							soil: 0,
+							soil: 10,
 						},
 						nextLevel: {
 							queen: {
 								resourcePerWorker: {
 									gold: 0,
 									leaf: 0,
-									soil: 0,
+									soil: 10,
 									food: 24,
 								},
 								breedWorkerTime: 54 * second,
@@ -1201,14 +1201,14 @@ export const levelData = [
 							gold: 16,
 							leaf: 45,
 							food: 50,
-							soil: 0,
+							soil: 10,
 						},
 						nextLevel: {
 							queen: {
 								resourcePerWorker: {
 									gold: 0,
 									leaf: 0,
-									soil: 0,
+									soil: 10,
 									food: 22,
 								},
 								breedWorkerTime: 52 * second,
@@ -1226,14 +1226,14 @@ export const levelData = [
 							gold: 15,
 							leaf: 35,
 							food: 45,
-							soil: 0,
+							soil: 10,
 						},
 						nextLevel: {
 							queen: {
 								resourcePerWorker: {
 									gold: 0,
 									leaf: 0,
-									soil: 0,
+									soil: 10,
 									food: 30,
 								},
 								breedWorkerTime: 60 * second,
@@ -1243,17 +1243,17 @@ export const levelData = [
 					{
 						level: 2,
 						costResource: {
-							gold: 10,
+							gold: 2,
 							leaf: 30,
 							food: 40,
-							soil: 0,
+							soil: 10,
 						},
 						nextLevel: {
 							queen: {
 								resourcePerWorker: {
 									gold: 0,
 									leaf: 0,
-									soil: 0,
+									soil: 10,
 									food: 28,
 								},
 								breedWorkerTime: 58 * second,
@@ -1263,17 +1263,17 @@ export const levelData = [
 					{
 						level: 3,
 						costResource: {
-							gold: 12,
+							gold: 3,
 							leaf: 35,
 							food: 45,
-							soil: 0,
+							soil: 10,
 						},
 						nextLevel: {
 							queen: {
 								resourcePerWorker: {
 									gold: 0,
 									leaf: 0,
-									soil: 0,
+									soil: 10,
 									food: 26,
 								},
 								breedWorkerTime: 56 * second,
@@ -1286,14 +1286,14 @@ export const levelData = [
 							gold: 14,
 							leaf: 40,
 							food: 50,
-							soil: 0,
+							soil: 10,
 						},
 						nextLevel: {
 							queen: {
 								resourcePerWorker: {
 									gold: 0,
 									leaf: 0,
-									soil: 0,
+									soil: 10,
 									food: 24,
 								},
 								breedWorkerTime: 54 * second,
@@ -1306,14 +1306,14 @@ export const levelData = [
 							gold: 16,
 							leaf: 45,
 							food: 50,
-							soil: 0,
+							soil: 10,
 						},
 						nextLevel: {
 							queen: {
 								resourcePerWorker: {
 									gold: 0,
 									leaf: 0,
-									soil: 0,
+									soil: 10,
 									food: 22,
 								},
 								breedWorkerTime: 52 * second,
@@ -1331,14 +1331,14 @@ export const levelData = [
 							gold: 15,
 							leaf: 35,
 							food: 45,
-							soil: 0,
+							soil: 10,
 						},
 						nextLevel: {
 							queen: {
 								resourcePerWorker: {
 									gold: 0,
 									leaf: 0,
-									soil: 0,
+									soil: 10,
 									food: 30,
 								},
 								breedWorkerTime: 60 * second,
@@ -1348,17 +1348,17 @@ export const levelData = [
 					{
 						level: 2,
 						costResource: {
-							gold: 10,
+							gold: 2,
 							leaf: 30,
 							food: 40,
-							soil: 0,
+							soil: 10,
 						},
 						nextLevel: {
 							queen: {
 								resourcePerWorker: {
 									gold: 0,
 									leaf: 0,
-									soil: 0,
+									soil: 10,
 									food: 28,
 								},
 								breedWorkerTime: 58 * second,
@@ -1368,17 +1368,17 @@ export const levelData = [
 					{
 						level: 3,
 						costResource: {
-							gold: 12,
+							gold: 3,
 							leaf: 35,
 							food: 45,
-							soil: 0,
+							soil: 10,
 						},
 						nextLevel: {
 							queen: {
 								resourcePerWorker: {
 									gold: 0,
 									leaf: 0,
-									soil: 0,
+									soil: 10,
 									food: 26,
 								},
 								breedWorkerTime: 56 * second,
@@ -1391,14 +1391,14 @@ export const levelData = [
 							gold: 14,
 							leaf: 40,
 							food: 50,
-							soil: 0,
+							soil: 10,
 						},
 						nextLevel: {
 							queen: {
 								resourcePerWorker: {
 									gold: 0,
 									leaf: 0,
-									soil: 0,
+									soil: 10,
 									food: 24,
 								},
 								breedWorkerTime: 54 * second,
@@ -1411,14 +1411,14 @@ export const levelData = [
 							gold: 16,
 							leaf: 45,
 							food: 50,
-							soil: 0,
+							soil: 10,
 						},
 						nextLevel: {
 							queen: {
 								resourcePerWorker: {
 									gold: 0,
 									leaf: 0,
-									soil: 0,
+									soil: 10,
 									food: 22,
 								},
 								breedWorkerTime: 52 * second,
@@ -1441,7 +1441,7 @@ export const levelData = [
 							gold: 15,
 							leaf: 35,
 							food: 45,
-							soil: 0,
+							soil: 10,
 						},
 						nextLevel: {
 							nest: {
@@ -1455,7 +1455,7 @@ export const levelData = [
 							gold: 15,
 							leaf: 35,
 							food: 45,
-							soil: 0,
+							soil: 10,
 						},
 						nextLevel: {
 							nest: {
@@ -1469,7 +1469,7 @@ export const levelData = [
 							gold: 15,
 							leaf: 35,
 							food: 45,
-							soil: 0,
+							soil: 10,
 						},
 						nextLevel: {
 							nest: {
@@ -1483,7 +1483,7 @@ export const levelData = [
 							gold: 15,
 							leaf: 35,
 							food: 45,
-							soil: 0,
+							soil: 10,
 						},
 						nextLevel: {
 							nest: {
@@ -1497,7 +1497,7 @@ export const levelData = [
 							gold: 15,
 							leaf: 35,
 							food: 45,
-							soil: 0,
+							soil: 10,
 						},
 						nextLevel: {
 							nest: {
@@ -1516,7 +1516,7 @@ export const levelData = [
 							gold: 15,
 							leaf: 35,
 							food: 45,
-							soil: 0,
+							soil: 10,
 						},
 						nextLevel: {
 							nest: {
@@ -1530,7 +1530,7 @@ export const levelData = [
 							gold: 15,
 							leaf: 35,
 							food: 45,
-							soil: 0,
+							soil: 10,
 						},
 						nextLevel: {
 							nest: {
@@ -1544,7 +1544,7 @@ export const levelData = [
 							gold: 15,
 							leaf: 35,
 							food: 45,
-							soil: 0,
+							soil: 10,
 						},
 						nextLevel: {
 							nest: {
@@ -1558,7 +1558,7 @@ export const levelData = [
 							gold: 15,
 							leaf: 35,
 							food: 45,
-							soil: 0,
+							soil: 10,
 						},
 						nextLevel: {
 							nest: {
@@ -1572,7 +1572,7 @@ export const levelData = [
 							gold: 15,
 							leaf: 35,
 							food: 45,
-							soil: 0,
+							soil: 10,
 						},
 						nextLevel: {
 							nest: {
@@ -1591,7 +1591,7 @@ export const levelData = [
 							gold: 15,
 							leaf: 35,
 							food: 45,
-							soil: 0,
+							soil: 10,
 						},
 						nextLevel: {
 							nest: {
@@ -1605,7 +1605,7 @@ export const levelData = [
 							gold: 15,
 							leaf: 35,
 							food: 45,
-							soil: 0,
+							soil: 10,
 						},
 						nextLevel: {
 							nest: {
@@ -1619,7 +1619,7 @@ export const levelData = [
 							gold: 15,
 							leaf: 35,
 							food: 45,
-							soil: 0,
+							soil: 10,
 						},
 						nextLevel: {
 							nest: {
@@ -1633,7 +1633,7 @@ export const levelData = [
 							gold: 15,
 							leaf: 35,
 							food: 45,
-							soil: 0,
+							soil: 10,
 						},
 						nextLevel: {
 							nest: {
@@ -1647,7 +1647,7 @@ export const levelData = [
 							gold: 15,
 							leaf: 35,
 							food: 45,
-							soil: 0,
+							soil: 10,
 						},
 						nextLevel: {
 							nest: {
@@ -1666,7 +1666,7 @@ export const levelData = [
 							gold: 15,
 							leaf: 35,
 							food: 45,
-							soil: 0,
+							soil: 10,
 						},
 						nextLevel: {
 							nest: {
@@ -1680,7 +1680,7 @@ export const levelData = [
 							gold: 15,
 							leaf: 35,
 							food: 45,
-							soil: 0,
+							soil: 10,
 						},
 						nextLevel: {
 							nest: {
@@ -1694,7 +1694,7 @@ export const levelData = [
 							gold: 15,
 							leaf: 35,
 							food: 45,
-							soil: 0,
+							soil: 10,
 						},
 						nextLevel: {
 							nest: {
@@ -1708,7 +1708,7 @@ export const levelData = [
 							gold: 15,
 							leaf: 35,
 							food: 45,
-							soil: 0,
+							soil: 10,
 						},
 						nextLevel: {
 							nest: {
@@ -1722,7 +1722,7 @@ export const levelData = [
 							gold: 15,
 							leaf: 35,
 							food: 45,
-							soil: 0,
+							soil: 10,
 						},
 						nextLevel: {
 							nest: {
@@ -1741,7 +1741,7 @@ export const levelData = [
 							gold: 15,
 							leaf: 35,
 							food: 45,
-							soil: 0,
+							soil: 10,
 						},
 						nextLevel: {
 							nest: {
@@ -1755,7 +1755,7 @@ export const levelData = [
 							gold: 15,
 							leaf: 35,
 							food: 45,
-							soil: 0,
+							soil: 10,
 						},
 						nextLevel: {
 							nest: {
@@ -1769,7 +1769,7 @@ export const levelData = [
 							gold: 15,
 							leaf: 35,
 							food: 45,
-							soil: 0,
+							soil: 10,
 						},
 						nextLevel: {
 							nest: {
@@ -1783,7 +1783,7 @@ export const levelData = [
 							gold: 15,
 							leaf: 35,
 							food: 45,
-							soil: 0,
+							soil: 10,
 						},
 						nextLevel: {
 							nest: {
@@ -1797,7 +1797,7 @@ export const levelData = [
 							gold: 15,
 							leaf: 35,
 							food: 45,
-							soil: 0,
+							soil: 10,
 						},
 						nextLevel: {
 							nest: {

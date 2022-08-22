@@ -66,6 +66,7 @@ function Breeding(props) {
 	const { principal, isConnected, disconnect } = useConnect();
 
 	const onChangeCard = (item) => {
+		console.log(item);
 		setCardSelected(item);
 		setCardSelectedBreeding(item);
 		setCardMiniActive(item?.tokenId[0]);
@@ -199,14 +200,12 @@ function Breeding(props) {
 					'warn',
 					'Can not breeding! The number of ant worker in the nest has reached the limit'
 				);
-				console.log('chay vao day 1');
 			} else {
 				setOpenProcess(true);
 				const listQ = getNFTByType('Queen');
-				const res = await superheroes.breedAntWorkder(listQ[0]?.tokenId[0]);
+				const res = await superheroes.breedAntWorkder(cardSelected?.tokenId[0]);
 				console.log('res', res);
 				setOpenProcess(false);
-				console.log('chay vao day');
 			}
 		}
 	};
@@ -271,7 +270,7 @@ function Breeding(props) {
 		} else {
 			const listQ = getNFTByType('Queen');
 			setOpenProcess(true);
-			const res = await superheroes.upgradeLevelQueen(listQ[0]?.tokenId[0]);
+			const res = await superheroes.upgradeLevelQueen(cardSelected?.tokenId[0]);
 			setOpenProcess(false);
 			await onGetData();
 			toast('Upgrade queen successfully!!!');
@@ -338,7 +337,6 @@ function Breeding(props) {
 		}
 	}, [data]);
 
-	console.log('worker', worker);
 
 	return (
 		<>

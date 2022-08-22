@@ -3,9 +3,11 @@ import Context from './Context';
 import reducer, { initState } from './reducer';
 import { superheroes } from '../../declarations';
 import { customAxios } from '../utils/custom-axios';
-import { useConnect } from '@connect2ic/react';
+import { useConnect, useCanister  } from '@connect2ic/react';
 import ProcessModal from '../components/process-modal';
 import { useNavigate } from 'react-router-dom';
+import { Principal } from '@dfinity/principal';
+
 
 export function Provider({ children }) {
 	const [prinpId, setprinpId] = useState(localStorage.getItem('prinpId'));
@@ -56,13 +58,17 @@ export function Provider({ children }) {
 	const setOpenProcess = async (value) => {
 		if (!value) {
 			await getUserInfo();
+			await getBalance();
 		}
 		setopenProcess(value);
 	};
 
 	useEffect(() => {
-		onGetData();
-		onGetAllOrders();
+		if(superheroes && principal) {
+			onGetData();
+			onGetAllOrders();
+		}
+		
 	}, [superheroes, principal]);
 
 	useEffect(() => {
@@ -71,6 +77,21 @@ export function Provider({ children }) {
 			getUserInfo();
 		}
 	}, [prinpId, principal]);
+	const [token] = useCanister('token');
+
+	useEffect(async () => {
+		if (principal && token) {
+			getBalance()
+		}
+	}, [principal, token]);
+
+	const [balance, setbalance] = useState(0);
+
+
+	const getBalance = async () => {
+		const res2 = await token.balanceOf(Principal.fromText(principal?.toString()));
+		setbalance(res2)
+	}
 
 	const value = {
 		prinpId,
@@ -86,6 +107,10 @@ export function Provider({ children }) {
 		tabMarketFooter,
 		setTabMarketFooter,
 		marketData,
+		onGetData,
+		onGetAllOrders,
+		balance,
+		getBalance,
 		completedCountBreeding,
 		setCompletedCountBreeding,
 		cardSelectedBreeding,
