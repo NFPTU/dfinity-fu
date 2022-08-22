@@ -163,10 +163,16 @@ function Farming(props) {
 	};
 
 	const onClickFarm = async () => {
-		if (!isCompletedCount) {
-			toastEmitter('warn', 'You need to wait for the time out to farm');
-		} else {
-			setShowFarmDialog(true);
+		if (listNFtLand?.length !== 0) {
+			if (!isCompletedCount) {
+				toastEmitter('warn', 'You need to wait for the time out to farm');
+			} else {
+				if (!listWorker?.length) {
+					toastEmitter('warn', `You don't have enough Worker Ant`);
+				} else {
+					setShowFarmDialog(true);
+				}
+			}
 		}
 	};
 
@@ -199,10 +205,10 @@ function Farming(props) {
 			setValueResource((preValue) => ({ ...preValue, [item]: value }));
 		}
 
-		if(listWorker.length === remainW){
-			setIsDisableFarmBtn(true)
-		}else{
-			setIsDisableFarmBtn(false)
+		if (listWorker.length === remainW) {
+			setIsDisableFarmBtn(true);
+		} else {
+			setIsDisableFarmBtn(false);
 		}
 	};
 
@@ -363,6 +369,7 @@ function Farming(props) {
 										heightImg={60}
 										miniCard={true}
 										key={index}
+										cursor={true}
 									/>
 								))
 							)}
@@ -465,7 +472,13 @@ function Farming(props) {
 							onClick={onClickFarm}>
 							Farm
 						</Button>
-						<Button onClick={() => setOpen(true)}>Dig Nest</Button>
+						<Button
+							disabled={!cardSelected}
+							onClick={() => {
+								return cardSelected && setOpen(true);
+							}}>
+							Dig Nest
+						</Button>
 					</BtnList>
 
 					<Dialog onClose={handleClose} open={showFarmDialog && showFarmDialog}>
@@ -509,7 +522,11 @@ function Farming(props) {
 										img={'/images/navbar/icons/leaf.jpeg'}
 									/>
 								</Stack>
-								<Button disabled={isDisableFarmBtn}  name={'Farm'} onClick={confirmDialog} />
+								<Button
+									disabled={isDisableFarmBtn}
+									name={'Farm'}
+									onClick={confirmDialog}
+								/>
 								Worker Ants: {remainWorker}
 								<ResourceFarmPerTimeTitle>
 									List resource farm per time
@@ -576,12 +593,14 @@ function Farming(props) {
 				{getNFTByType('Nest').map((el, index) => {
 					if (el?.detail?.nest?.inLand[0]) return;
 					return (
-						<CardNft
-							key={index}
-							data={el}
-							footer={() => rendterBtn(el)}
-							alt=''
-						/>
+						<div style={{ marginLeft: '10px' }}>
+							<CardNft
+								key={index}
+								data={el}
+								footer={() => rendterBtn(el)}
+								alt=''
+							/>
+						</div>
 					);
 				})}
 			</PopupList>

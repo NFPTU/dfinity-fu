@@ -40,17 +40,23 @@ import Swal from 'sweetalert2';
 import { levelData } from '../../admin/nft';
 
 function Breeding(props) {
-	const { setOpenProcess, resource } = props;
+	const {
+		setOpenProcess,
+		resource,
+		setCompletedCountBreeding,
+		setCardSelectedBreeding,
+	} = props;
 	const [data, setData] = useState([]);
 	const [queenNFT, setQueenNFT] = useState({});
 	const [listQueenMiniCard, setListQueenMiniCard] = useState([]);
 	const [listWorkerNFT, setListWorkerNFT] = useState([]);
 	const [remainWorker, setRemainWorker] = useState([]);
 	const [worker, setWorker] = useState();
-	const [completedCount, setCompletedCount] = useState(false);
 	const [listNest, setListNest] = useState([]);
 	const [cardSelected, setCardSelected] = useState();
 	const [cardMiniActive, setCardMiniActive] = useState();
+
+	const [completedCount, setCompletedCount] = useState(false);
 
 	const [inNest, setInNest] = useState('');
 
@@ -219,6 +225,7 @@ function Breeding(props) {
 			}
 		}
 	};
+	console.log('completedCount', completedCount);
 
 	const onClaimWorker = async (e) => {
 		console.log(worker);
@@ -237,25 +244,31 @@ function Breeding(props) {
 	};
 
 	const confirmDialogUpdate = async () => {
-		Swal.fire({
-			title: 'Do you want to upgrade queen now?',
-			showDenyButton: false,
-			showCancelButton: true,
-			confirmButtonText: 'Ok',
-			html: `
-			<h2><b>Amount of resources needed to upgrade</b></h2><br />
-			<div style={{color: 'red'}}>food ${resourceUpgrade?.food}</div>
-			<div>gold ${resourceUpgrade?.gold}</div>
-			<div>leaf ${resourceUpgrade?.leaf}</div>
-			<div>soil ${resourceUpgrade?.soil}</div>
-			`,
-		}).then((result) => {
-			/* Read more about isConfirmed, isDenied below */
-			if (result.isConfirmed) {
-				onUpgrade();
-			} else if (result.isDenied) {
+		if (cardSelected) {
+			if (cardSelected?.detail?.queen?.breedingWorkerId && !completedCount) {
+				toastEmitter('warn', 'You need to wait for the time out to upgrade');
+			} else {
+				Swal.fire({
+					title: 'Do you want to upgrade queen now?',
+					showDenyButton: false,
+					showCancelButton: true,
+					confirmButtonText: 'Ok',
+					html: `
+				<h2><b>Amount of resources needed to upgrade</b></h2><br />
+				<div style={{color: 'red'}}>food ${resourceUpgrade?.food}</div>
+				<div>gold ${resourceUpgrade?.gold}</div>
+				<div>leaf ${resourceUpgrade?.leaf}</div>
+				<div>soil ${resourceUpgrade?.soil}</div>
+				`,
+				}).then((result) => {
+					/* Read more about isConfirmed, isDenied below */
+					if (result.isConfirmed) {
+						onUpgrade();
+					} else if (result.isDenied) {
+					}
+				});
 			}
-		});
+		}
 	};
 
 	const onUpgrade = async (e) => {
@@ -292,17 +305,28 @@ function Breeding(props) {
 	};
 
 	const onBreeding = async (e) => {
-		if (!cardSelected?.detail?.queen?.breedingWorkerId) {
-			await onBreedingWorker();
-		} else {
-			await onClaimWorker();
+		if (cardSelected) {
+			if (!cardSelected?.detail?.queen?.breedingWorkerId) {
+				setCompletedCount(false);
+				setCompletedCountBreeding(false);
+				await onBreedingWorker();
+			} else {
+				await onClaimWorker();
+			}
+			await onGetData();
 		}
 		onGetData()
 	};
 
 	const onCompleteCount = (props) => {
 		setCompletedCount(props);
-		toastEmitter('success', 'Breeding successfully !!!');
+		setCompletedCountBreeding(props);
+		toastEmitter('success', 'Breeding successfully!!!');
+	};
+
+	const onMountCount = (props) => {
+		setCompletedCount(props);
+		setCompletedCountBreeding(props);
 	};
 
 	const onGetAvailWorker = async () => {
@@ -444,11 +468,10 @@ function Breeding(props) {
 												1000
 										}
 										onComplete={(props) => {
-											onCompleteCount(props.completed);
+											onCompleteCount(props.completed && props.completed);
 										}}
 										onMount={(props) => {
-											const isCompleted = props.completed;
-											if (isCompleted) setCompletedCount(isCompleted);
+											onMountCount(props.completed && props.completed);
 										}}
 									/>
 								</CountdownInside>
@@ -463,7 +486,15 @@ function Breeding(props) {
 									? 'Breeding'
 									: 'Claim'}
 							</Btn>
-							<Btn onClick={confirmDialogUpdate}>Upgrade</Btn>
+							<Btn
+								disabled={
+									!cardSelected ||
+									(cardSelected?.detail?.queen?.breedingWorkerId &&
+										!completedCount)
+								}
+								onClick={confirmDialogUpdate}>
+								Upgrade
+							</Btn>
 						</BtnList>
 					</Right>
 				</Wrapper>
