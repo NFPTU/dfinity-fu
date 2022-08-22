@@ -277,8 +277,16 @@ function Nest(props) {
 						</Info>
 
 						<BtnList>
+<<<<<<< HEAD
 							<Btn onClick={confirmDialog}>Upgrade</Btn>
 							<Btn onClick={handleAddQueen}>Add Queen</Btn>
+=======
+            <Btn disabled={!cardSelected} onClick={confirmDialog}>
+								Upgrade
+							</Btn>
+							<Btn disabled={!cardSelected} onClick={handleAddQueen}>Add Queen</Btn>
+							
+>>>>>>> 5384389bece7f811c2cc3c655a187808c8b3a724
 						</BtnList>
 					</Right>
 				</Wrapper>
