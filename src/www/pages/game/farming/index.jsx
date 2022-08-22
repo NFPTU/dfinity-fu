@@ -136,11 +136,13 @@ function Farming(props) {
 		const inKingdom = resp?.ok.filter(
 			(el) => el.attributes[0].value === 'Kingdom'
 		);
+		let queenItem = listLand.find(el => el?.tokenId[0] == cardSelected?.tokenId[0])
+		let land = queenItem || listLand[0]
 
 		await onGetAvailWorker();
 		setListNFt(resp?.ok);
-		setCardSelected(listLand[0]);
-		setCardMiniActive(listLand[0]?.tokenId[0]);
+		setCardSelected(land);
+		setCardMiniActive(land?.tokenId[0]);
 		setlistNFtLand(listLand);
 		setListNftNest(listNest);
 		setInKingdom(inKingdom);
@@ -460,7 +462,6 @@ function Farming(props) {
 
 					<BtnList>
 						<Button
-							disabled={!isCompletedCount || !isClaim}
 							onClick={onClickFarm}>
 							Farm
 						</Button>

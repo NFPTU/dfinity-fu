@@ -60,8 +60,9 @@ function Breeding(props) {
 	const { principal, isConnected, disconnect } = useConnect();
 
 	const onChangeCard = (item) => {
-		console.log(item);
+		console.log(getNFTById(item?.detail?.queen?.breedingWorkerId));
 		setCardSelected(item);
+		setWorker(getNFTById(item?.detail?.queen?.breedingWorkerId))
 		setCardMiniActive(item?.tokenId[0]);
 	};
 
@@ -151,12 +152,29 @@ function Breeding(props) {
 
 	//Get Queen NFT:
 	const getQueenNFT = () => {
-		const queen = getNFTByType('Queen');
-		setWorker(getNFTById(queen[0]?.detail?.queen?.breedingWorkerId));
-		setQueenNFT(queen && queen[0]);
-		setCardSelected(queen && queen[0]);
-		setCardMiniActive(queen[0]?.tokenId[0]);
-		setListQueenMiniCard(queen && queen);
+		const queenList = getNFTByType('Queen');
+		let queenItem = queenList.find(el => el?.tokenId[0] == cardSelected?.tokenId[0])
+		let queen = queenItem || queenList[0]
+		setWorker(getNFTById(queen?.detail?.queen?.breedingWorkerId));
+		setQueenNFT(queen );
+		setCardSelected(queen);
+		setCardMiniActive(queen?.tokenId[0]);
+		setListQueenMiniCard(queenList);
+	};
+
+	//update Queen NFT:
+	const updateQueenNFT = async () => {
+		const resp = await superheroes?.getUserTokens(principal?.toString());
+		const queenNFTs = resp?.ok.filter(
+			(el) => el.attributes[0].value === 'Queen'
+		);
+		
+		console.log(queenItem);
+		setWorker(resp?.ok?.find((el) => el.tokenId[0] == queenItem?.detail?.queen?.breedingWorkerId));
+		setQueenNFT(queenItem);
+		setCardSelected(queenItem);
+		setCardMiniActive(queenItem?.tokenId[0]);
+		setListQueenMiniCard(queenNFTs);
 	};
 
 	//Get List Nest:
@@ -203,21 +221,19 @@ function Breeding(props) {
 	};
 
 	const onClaimWorker = async (e) => {
-		if (!completedCount) {
-			e?.preventDefault();
-			toastEmitter('warn', 'You need to wait for the time out to claim');
-		} else {
+		console.log(worker);
 			if (
 				worker?.detail?.worker?.breedTimestamp &&
 				!getRemainingTime(worker?.detail?.worker?.breedTimestamp)
 			) {
 				setOpenProcess(true);
 				const res = await superheroes.claimWorkerEgg(cardSelected?.tokenId[0]);
-				await onGetData();
 				setOpenProcess(false);
 				toastEmitter('success', 'Claim egg successfully !!!');
+			} else {
+				e?.preventDefault();
+				toastEmitter('warn', 'You need to wait for the time out to claim');
 			}
-		}
 	};
 
 	const confirmDialogUpdate = async () => {
@@ -281,7 +297,7 @@ function Breeding(props) {
 		} else {
 			await onClaimWorker();
 		}
-		await onGetData();
+		onGetData()
 	};
 
 	const onCompleteCount = (props) => {
@@ -418,7 +434,7 @@ function Breeding(props) {
 							)}
 						</Info>
 
-						{worker?.detail?.worker?.breedTimestamp && !completedCount && (
+						{worker?.detail?.worker?.breedTimestamp && getRemainingTime(worker?.detail?.worker?.breedTimestamp) && (
 							<CountdownWrapper>
 								<CountdownInside>
 									<Countdown
@@ -442,10 +458,7 @@ function Breeding(props) {
 						<BtnList>
 							<Btn
 								onClick={onBreeding}
-								disabled={
-									cardSelected?.detail?.queen?.breedingWorkerId &&
-									!completedCount
-								}>
+								>
 								{!cardSelected?.detail?.queen?.breedingWorkerId
 									? 'Breeding'
 									: 'Claim'}

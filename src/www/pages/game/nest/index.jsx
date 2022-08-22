@@ -79,11 +79,12 @@ function Nest(props) {
 		const inLand = resp?.ok?.find(
 			(el) => el.tokenId[0] == listNest[0]?.detail?.nest?.inLand[0]
 		);
-
+		let queenItem = listNest.find(el => el?.tokenId[0] == cardSelected?.tokenId[0])
+		let queen = queenItem || listNest[0]
 		setInLand(inLand);
 		setListNFt(resp?.ok);
-		setCardSelected(listNest[0]);
-		setCardMiniActive(listNest[0]?.tokenId[0]);
+		setCardSelected(queen);
+		setCardMiniActive(queen?.tokenId[0]);
 		setListNest(listNest);
 	};
 
