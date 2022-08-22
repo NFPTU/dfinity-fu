@@ -62,12 +62,6 @@ function GameFooter(props) {
 			imgUrl: '/images/footer/breed.png',
 			title: 'Marketplace',
 			to: '/market',
-		},
-		{
-			id: 6,
-			imgUrl: '/images/footer/breed.png',
-			title: 'Battle',
-			to: '/battle',
 		}
 	];
 

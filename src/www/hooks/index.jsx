@@ -20,6 +20,10 @@ export function Provider({ children }) {
 	const [marketData, setMarketData] = useState([]);
 	const navigate = useNavigate();
 
+	//State to check unstake breeding:
+	const [completedCountBreeding, setCompletedCountBreeding] = useState(false);
+	const [cardSelectedBreeding, setCardSelectedBreeding] = useState();
+
 	//Get All NFT
 	const onGetData = async () => {
 		const resp = await superheroes?.getUserTokens(principal?.toString());
@@ -106,7 +110,12 @@ export function Provider({ children }) {
 		onGetData,
 		onGetAllOrders,
 		balance,
-		getBalance
+		getBalance,
+		completedCountBreeding,
+		setCompletedCountBreeding,
+		cardSelectedBreeding,
+		setCardSelectedBreeding,
+		
 	};
 	return (
 		<Context.Provider value={value}>
