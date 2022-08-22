@@ -289,4 +289,4 @@ type AntKingdoms =
  };
 type AccountIdentifier__1 = text;
 type AccountIdentifier = text;
-service : (principal, principal, nat) -> AntKingdoms
+service : (principal, principal, int) -> AntKingdoms

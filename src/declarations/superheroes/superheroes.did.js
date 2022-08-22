@@ -267,5 +267,5 @@ export const idlFactory = ({ IDL }) => {
   return AntKingdoms;
 };
 export const init = ({ IDL }) => {
-  return [IDL.Principal, IDL.Principal, IDL.Nat];
+  return [IDL.Principal, IDL.Principal, IDL.Int];
 };
