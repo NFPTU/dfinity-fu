@@ -199,6 +199,7 @@ export const idlFactory = ({ IDL }) => {
       ),
     'claimWorkerEgg' : IDL.Func([TokenIndex__1], [Result], []),
     'claiming' : IDL.Func([], [Result], []),
+    'claimingAdmin' : IDL.Func([], [Result], []),
     'createOrder' : IDL.Func([TokenIndex__1, IDL.Nat], [Result_12], []),
     'extensions' : IDL.Func([], [IDL.Vec(Extension)], ['query']),
     'getAllOrders' : IDL.Func([], [Result_11], ['query']),

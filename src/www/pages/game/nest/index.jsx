@@ -252,7 +252,9 @@ function Nest(props) {
 												Number(cardSelected?.detail?.nest?.limit)}
 										</InfoBodyRightItem>
 										<InfoBodyRightItem>
-											{inLand && inLand.name}
+											{cardSelected?.detail?.nest?.inLand[0] && listNFt.find(
+												(el) => el.tokenId[0] == cardSelected?.detail?.nest?.inLand[0]
+											)?.name}
 										</InfoBodyRightItem>
 									</InfoBodyRight>
 								</InfoBody>

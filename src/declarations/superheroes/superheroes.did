@@ -258,6 +258,7 @@ type AntKingdoms =
    claimResourceInLand: (TokenIndex__1, TokenIndex__1) -> (Result);
    claimWorkerEgg: (TokenIndex__1) -> (Result);
    claiming: () -> (Result);
+   claimingAdmin: () -> (Result);
    createOrder: (TokenIndex__1, nat) -> (Result_12);
    extensions: () -> (vec Extension) query;
    getAllOrders: () -> (Result_11) query;

@@ -66,7 +66,7 @@ function Breeding(props) {
 	const { principal, isConnected, disconnect } = useConnect();
 
 	const onChangeCard = (item) => {
-		console.log(getNFTById(item?.detail?.queen?.breedingWorkerId));
+		console.log(item);
 		setCardSelected(item);
 		setWorker(getNFTById(item?.detail?.queen?.breedingWorkerId))
 		setCardMiniActive(item?.tokenId[0]);
@@ -139,8 +139,8 @@ function Breeding(props) {
 		);
 
 		setInNest(inNest);
-		await onGetAvailWorker();
 		setData(resp?.ok);
+		await onGetAvailWorker();
 	};
 
 	//Filter NFT by type
@@ -452,7 +452,7 @@ function Breeding(props) {
 												  )
 												: 0}
 										</InfoBodyRightItem>
-										<InfoBodyRightItem>{inNest?.name}</InfoBodyRightItem>
+										<InfoBodyRightItem>Nest #{cardSelected?.detail?.queen?.inNest[0]}</InfoBodyRightItem>
 									</InfoBodyRight>
 								</InfoBody>
 							)}
