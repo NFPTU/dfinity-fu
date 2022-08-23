@@ -113,9 +113,6 @@ function DetailNft(props) {
 		if (tab === 'description') {
 			setClassesTabLine('bottom-line bottom-line-1');
 		}
-		if (tab === 'history') {
-			setClassesTabLine('bottom-line bottom-line-2');
-		}
 	}, [tab]);
 
 	const [rarityImg, setRarityImg] = useState('')

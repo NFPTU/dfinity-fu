@@ -25,6 +25,13 @@ import {
 	CardWrapper,
 	LeftWrapper,
 	ListMiniCard,
+	NotiBody,
+	NotiBtn,
+	NotiNavigate,
+	NotiTitle,
+	NotiWrapper,
+	WrapperNoti,
+	WrapperLoader
 } from './breeding.elements';
 import { useCanister, useConnect } from '@connect2ic/react';
 import { getRemainingTime, toHHMMSS } from '../../../utils/utils';
@@ -38,6 +45,9 @@ import Stack from '@mui/material/Stack';
 import { toast } from 'react-toastify';
 import Swal from 'sweetalert2';
 import { levelData } from '../../admin/nft';
+import LocalGroceryStoreIcon from '@mui/icons-material/LocalGroceryStore';
+import { Link } from 'react-router-dom';
+import { GridLoader } from 'react-spinners';
 
 function Breeding(props) {
 	const {
@@ -66,11 +76,11 @@ function Breeding(props) {
 	const { principal, isConnected, disconnect } = useConnect();
 
 	const onChangeCard = (item) => {
-		console.log(item);
 		setCardSelected(item);
-		setWorker(getNFTById(item?.detail?.queen?.breedingWorkerId))
+		setWorker(getNFTById(item?.detail?.queen?.breedingWorkerId));
 		setCardMiniActive(item?.tokenId[0]);
 	};
+
 
 	useEffect(() => {
 		const getResourceUpgrade = (name, rarity, level) => {
@@ -159,10 +169,12 @@ function Breeding(props) {
 	//Get Queen NFT:
 	const getQueenNFT = () => {
 		const queenList = getNFTByType('Queen');
-		let queenItem = queenList.find(el => el?.tokenId[0] == cardSelected?.tokenId[0])
-		let queen = queenItem || queenList[0]
+		let queenItem = queenList.find(
+			(el) => el?.tokenId[0] == cardSelected?.tokenId[0]
+		);
+		let queen = queenItem || queenList[0];
 		setWorker(getNFTById(queen?.detail?.queen?.breedingWorkerId));
-		setQueenNFT(queen );
+		setQueenNFT(queen);
 		setCardSelected(queen);
 		setCardMiniActive(queen?.tokenId[0]);
 		setListQueenMiniCard(queenList);
@@ -174,9 +186,12 @@ function Breeding(props) {
 		const queenNFTs = resp?.ok.filter(
 			(el) => el.attributes[0].value === 'Queen'
 		);
-		
-		console.log(queenItem);
-		setWorker(resp?.ok?.find((el) => el.tokenId[0] == queenItem?.detail?.queen?.breedingWorkerId));
+
+		setWorker(
+			resp?.ok?.find(
+				(el) => el.tokenId[0] == queenItem?.detail?.queen?.breedingWorkerId
+			)
+		);
 		setQueenNFT(queenItem);
 		setCardSelected(queenItem);
 		setCardMiniActive(queenItem?.tokenId[0]);
@@ -220,27 +235,24 @@ function Breeding(props) {
 				setOpenProcess(true);
 				const listQ = getNFTByType('Queen');
 				const res = await superheroes.breedAntWorkder(cardSelected?.tokenId[0]);
-				console.log('res', res);
 				setOpenProcess(false);
 			}
 		}
 	};
-	console.log('completedCount', completedCount);
 
 	const onClaimWorker = async (e) => {
-		console.log(worker);
-			if (
-				worker?.detail?.worker?.breedTimestamp &&
-				!getRemainingTime(worker?.detail?.worker?.breedTimestamp)
-			) {
-				setOpenProcess(true);
-				const res = await superheroes.claimWorkerEgg(cardSelected?.tokenId[0]);
-				setOpenProcess(false);
-				toastEmitter('success', 'Claim egg successfully !!!');
-			} else {
-				e?.preventDefault();
-				toastEmitter('warn', 'You need to wait for the time out to claim');
-			}
+		if (
+			worker?.detail?.worker?.breedTimestamp &&
+			!getRemainingTime(worker?.detail?.worker?.breedTimestamp)
+		) {
+			setOpenProcess(true);
+			const res = await superheroes.claimWorkerEgg(cardSelected?.tokenId[0]);
+			setOpenProcess(false);
+			toastEmitter('success', 'Claim egg successfully !!!');
+		} else {
+			e?.preventDefault();
+			toastEmitter('warn', 'You need to wait for the time out to claim');
+		}
 	};
 
 	const confirmDialogUpdate = async () => {
@@ -315,7 +327,7 @@ function Breeding(props) {
 			}
 			await onGetData();
 		}
-		onGetData()
+		onGetData();
 	};
 
 	const onCompleteCount = (props) => {
@@ -350,154 +362,191 @@ function Breeding(props) {
 		}
 	}, [data]);
 
+	const handleNavigateMarket = () => {
+		sessionStorage.setItem('tabFooterActive', 'Kingdom');
+	};
+
+	console.log('loading', loading);
+
+	console.log('cardSelected', cardSelected)
 
 	return (
 		<>
 			<Container>
-				<Wrapper>
-					{/* <Left>
-						{queenNFT ? (
-							<CardNft data={queenNFT} />
-						) : (
-							<Stack spacing={1}>
-								<Skeleton variant='text' width={240} height={15} />
-								<Skeleton variant='text' width={240} height={15} />
-								<Skeleton variant='rectangular' width={240} height={245} />
-							</Stack>
-						)}
-					</Left> */}
-
-					<LeftWrapper>
-						<ListMiniCard>
-							{!listQueenMiniCard ? (
-								<Stack spacing={1}>
-									<Skeleton variant='rectangular' width={60} height={'100%'} />
-								</Stack>
-							) : (
-								listQueenMiniCard.map((el, index) => (
+				{!cardSelected ? (
+					<WrapperLoader>
+						<GridLoader color={'#e89f01'} />
+					</WrapperLoader>
+				) : typeof cardSelected === 'undefined' ? (
+					<WrapperNoti>
+						<NotiWrapper>
+							<NotiTitle>
+								Currently you do not have Queen Ants, please buy at least 1 to
+								continue!!!
+							</NotiTitle>
+							<NotiBody>
+								<NotiNavigate>Go to the market here</NotiNavigate>
+								<Link
+									to='/market'
+									style={{ textDecoration: 'none', color: 'black' }}>
+									<NotiBtn onClick={handleNavigateMarket}>
+										<LocalGroceryStoreIcon sx={{ marginRight: '5px' }} /> Market
+									</NotiBtn>
+								</Link>
+							</NotiBody>
+						</NotiWrapper>
+					</WrapperNoti>
+				) : (
+					<Wrapper>
+						<LeftWrapper>
+							<ListMiniCard>
+								{!listQueenMiniCard ? (
+									<Stack spacing={1}>
+										<Skeleton
+											variant='rectangular'
+											width={60}
+											height={'100%'}
+										/>
+									</Stack>
+								) : (
+									listQueenMiniCard.map((el, index) => (
+										<CardNft
+											key={index}
+											active={cardMiniActive === el?.tokenId[0] ? true : false}
+											onChangeCard={onChangeCard}
+											data={el}
+											width={62}
+											height={100}
+											heightImg={60}
+											miniCard={true}
+											queen={true}
+										/>
+									))
+								)}
+							</ListMiniCard>
+							<CardWrapper>
+								{!cardSelected ? (
+									<Stack spacing={1}>
+										<Skeleton variant='text' width={240} height={15} />
+										<Skeleton variant='text' width={240} height={15} />
+										<Skeleton variant='rectangular' width={240} height={245} />
+									</Stack>
+								) : (
 									<CardNft
-										key={index}
-										active={cardMiniActive === el?.tokenId[0] ? true : false}
-										onChangeCard={onChangeCard}
-										data={el}
-										width={62}
-										height={100}
-										heightImg={60}
-										miniCard={true}
-										queen={true}
+										miniCard={false}
+										data={cardSelected}
+										heightImg={160}
 									/>
-								))
-							)}
-						</ListMiniCard>
-						<CardWrapper>
-							{!cardSelected ? (
-								<Stack spacing={1}>
-									<Skeleton variant='text' width={240} height={15} />
-									<Skeleton variant='text' width={240} height={15} />
-									<Skeleton variant='rectangular' width={240} height={245} />
-								</Stack>
-							) : (
-								<CardNft miniCard={false} data={cardSelected} heightImg={160} />
-							)}
-						</CardWrapper>
-					</LeftWrapper>
+								)}
+							</CardWrapper>
+						</LeftWrapper>
 
-					<Right>
-						<Info>
-							{!cardSelected ? (
-								<Stack spacing={1} sx={{ marginBottom: '10px' }}>
-									<Skeleton variant='text' width={380} height={10} />
-									<Skeleton variant='text' width={380} height={10} />
-								</Stack>
-							) : (
-								<InfoTop>
-									<Type>Queen</Type>
-									<Level>
-										{'Level'}:{' '}
-										{(cardSelected?.detail?.queen?.level &&
-											Number(cardSelected?.detail?.queen?.level)) ||
-											1}
-									</Level>
-								</InfoTop>
-							)}
-							{!cardSelected ? (
-								<Stack spacing={1}>
-									<Skeleton variant='rectangular' width={380} height={80} />
-								</Stack>
-							) : (
-								<InfoBody>
-									<InfoBodyLeft>
-										<InfoBodyLeftItem>Rarity:</InfoBodyLeftItem>
-										<InfoBodyLeftItem>Food Per Worker:</InfoBodyLeftItem>
-										<InfoBodyLeftItem>Breed Worker Time:</InfoBodyLeftItem>
-										<InfoBodyLeftItem>In Nest:</InfoBodyLeftItem>
-									</InfoBodyLeft>
+						<Right>
+							<Info>
+								{!cardSelected ? (
+									<Stack spacing={1} sx={{ marginBottom: '10px' }}>
+										<Skeleton variant='text' width={380} height={10} />
+										<Skeleton variant='text' width={380} height={10} />
+									</Stack>
+								) : (
+									<InfoTop>
+										<Type>Queen</Type>
+										<Level>
+											{'Level'}:{' '}
+											{(cardSelected?.detail?.queen?.level &&
+												Number(cardSelected?.detail?.queen?.level)) ||
+												1}
+										</Level>
+									</InfoTop>
+								)}
+								{!cardSelected ? (
+									<Stack spacing={1}>
+										<Skeleton variant='rectangular' width={380} height={80} />
+									</Stack>
+								) : (
+									<InfoBody>
+										<InfoBodyLeft>
+											<InfoBodyLeftItem>Rarity:</InfoBodyLeftItem>
+											<InfoBodyLeftItem>Food Per Worker:</InfoBodyLeftItem>
+											<InfoBodyLeftItem>Breed Worker Time:</InfoBodyLeftItem>
+											<InfoBodyLeftItem>In Nest:</InfoBodyLeftItem>
+										</InfoBodyLeft>
 
-									<InfoBodyRight>
-										<InfoBodyRightItem>
-											{(cardSelected?.attributes &&
-												cardSelected?.attributes[1]?.value) ||
-												'Uncommon'}
-										</InfoBodyRightItem>
-										<InfoBodyRightItem>
-											{
-												cardSelected?.detail?.queen?.info?.resourcePerWorker
-													?.food
-											}
-										</InfoBodyRightItem>
-										<InfoBodyRightItem>
-											{cardSelected?.detail?.queen?.info?.breedWorkerTime
-												? toHHMMSS(
-														cardSelected?.detail?.queen?.info?.breedWorkerTime
-												  )
-												: 0}
-										</InfoBodyRightItem>
-										<InfoBodyRightItem>Nest #{cardSelected?.detail?.queen?.inNest[0]}</InfoBodyRightItem>
-									</InfoBodyRight>
-								</InfoBody>
-							)}
-						</Info>
+										<InfoBodyRight>
+											<InfoBodyRightItem>
+												{(cardSelected?.attributes &&
+													cardSelected?.attributes[1]?.value) ||
+													'Uncommon'}
+											</InfoBodyRightItem>
+											<InfoBodyRightItem>
+												{
+													cardSelected?.detail?.queen?.info?.resourcePerWorker
+														?.food
+												}
+											</InfoBodyRightItem>
+											<InfoBodyRightItem>
+												{cardSelected?.detail?.queen?.info?.breedWorkerTime
+													? toHHMMSS(
+															cardSelected?.detail?.queen?.info?.breedWorkerTime
+													  )
+													: 0}
+											</InfoBodyRightItem>
+											<InfoBodyRightItem>
+												Nest #{cardSelected?.detail?.queen?.inNest[0]}
+											</InfoBodyRightItem>
+										</InfoBodyRight>
+									</InfoBody>
+								)}
+							</Info>
 
-						{worker?.detail?.worker?.breedTimestamp && getRemainingTime(worker?.detail?.worker?.breedTimestamp) && (
-							<CountdownWrapper>
-								<CountdownInside>
-									<Countdown
-										date={
-											Date.now() +
-											getRemainingTime(worker?.detail?.worker?.breedTimestamp) *
-												1000
-										}
-										onComplete={(props) => {
-											onCompleteCount(props.completed && props.completed);
-										}}
-										onMount={(props) => {
-											onMountCount(props.completed && props.completed);
-										}}
-									/>
-								</CountdownInside>
-							</CountdownWrapper>
-						)}
+							{worker?.detail?.worker?.breedTimestamp &&
+								getRemainingTime(worker?.detail?.worker?.breedTimestamp) && (
+									<CountdownWrapper>
+										<CountdownInside>
+											<Countdown
+												date={
+													Date.now() +
+													getRemainingTime(
+														worker?.detail?.worker?.breedTimestamp
+													) *
+														1000
+												}
+												onComplete={(props) => {
+													onCompleteCount(props.completed && props.completed);
+												}}
+												onMount={(props) => {
+													onMountCount(props.completed && props.completed);
+												}}
+											/>
+										</CountdownInside>
+									</CountdownWrapper>
+								)}
 
-						<BtnList>
-							<Btn
-								onClick={onBreeding}
-								>
-								{!cardSelected?.detail?.queen?.breedingWorkerId
-									? 'Breeding'
-									: 'Claim'}
-							</Btn>
-							<Btn
-								disabled={
-									!cardSelected ||
-									(cardSelected?.detail?.queen?.breedingWorkerId &&
-										!completedCount)
-								}
-								onClick={confirmDialogUpdate}>
-								Upgrade
-							</Btn>
-						</BtnList>
-					</Right>
-				</Wrapper>
+							<BtnList>
+								<Btn
+									disabled={
+										!cardSelected ||
+										(cardSelected?.detail?.queen?.breedingWorkerId &&
+											!completedCount)
+									}
+									onClick={onBreeding}>
+									{!cardSelected?.detail?.queen?.breedingWorkerId
+										? 'Breeding'
+										: 'Claim'}
+								</Btn>
+								<Btn
+									disabled={
+										!cardSelected ||
+										(cardSelected?.detail?.queen?.breedingWorkerId &&
+											!completedCount)
+									}
+									onClick={confirmDialogUpdate}>
+									Upgrade
+								</Btn>
+							</BtnList>
+						</Right>
+					</Wrapper>
+				)}
 			</Container>
 		</>
 	);
