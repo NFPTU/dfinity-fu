@@ -180,6 +180,21 @@ function Nest(props) {
 		sessionStorage.setItem('tabFooterActive', 'Kingdom');
 	};
 
+	const handleAddQueen = () => {
+		const queenIn = cardSelected?.detail?.nest?.queenIn[0];
+		const inLand = cardSelected?.detail?.nest?.inLand[0];
+		console.log(cardSelected);
+		if(queenIn === 0 || !queenIn) {
+			setOpen(true)
+		}else if(inLand === 0 || !inLand){
+			toast.warn('Nest must add to Land can add Queen');
+			
+		} else {
+			toast.warn('Nest only contain 1 queen');
+		}
+		
+	}
+
 	useEffect(() => {
 		if (principal && superheroes) {
 			onGetData();
@@ -318,13 +333,7 @@ function Nest(props) {
 									<Btn disabled={!cardSelected} onClick={confirmDialog}>
 										Upgrade
 									</Btn>
-									<Btn
-										disabled={!cardSelected}
-										onClick={() => {
-											return cardSelected && setOpen(true);
-										}}>
-										Add Queen
-									</Btn>
+									<Btn disabled={!cardSelected} onClick={handleAddQueen}>Add Queen</Btn>
 								</BtnList>
 							</Right>
 						</Wrapper>
