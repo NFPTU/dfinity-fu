@@ -16,6 +16,7 @@ export const Container = styled.div`
 	-webkit-animation-name: slideup;
 	animation-name: slideup;
 	height: 60rem;
+	overflow-x: hidden;
 `;
 
 export const Wrapper = styled.div`
