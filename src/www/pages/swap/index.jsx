@@ -7,6 +7,7 @@ import Swal from 'sweetalert2';
 import BeatLoader from 'react-spinners/BeatLoader';
 import { Principal } from '@dfinity/principal';
 import { toast } from 'react-toastify';
+import { roundToTwoDecimal } from '../../utils/utils';
 
 function Swap(props) {
 	const { resource, setOpenProcess } = props;
@@ -47,29 +48,39 @@ function Swap(props) {
 	}, [principal, token, resource]);
 
 	const getSwapPrice = (inputAmount) => {
-		setInputAmount(inputAmount);
-
-		setOutputAmount(inputAmount / 10);
-	};
-
-	console.log('inputAmount', typeof Number.parseInt(inputAmount));
-
-	const runSwap = async () => {
-		if (inputAmount === '' || inputAmount === undefined) {
+		if (
+			Number.parseInt(inputAmount) > 0 &&
+			Number.parseInt(inputAmount) <= wethAmount
+		) {
+			setInputAmount(inputAmount);
+			setOutputAmount((inputAmount / 10).toFixed(2));
+		} else if (inputAmount === '') {
+			setInputAmount(undefined);
+			setOutputAmount(0);
+		} else if (Number.parseInt(inputAmount) > wethAmount) {
+			toast(`You don't have enough gold to swap the amount !`);
+		} else if (inputAmount === '' || inputAmount === undefined) {
 			toast('You must enter amount to swap !');
 		} else if (Number.parseInt(inputAmount) < 0) {
 			toast('Amount must be greater than 0 !');
-		} else {
-			setOpenProcess(true);
-			try {
-				const res2 = await superheroes.swapGoldToToken(Number(inputAmount));
-			} catch (err) {
-				console.log(err);
-				setOpenProcess(false);
-			}
-			setOpenProcess(false);
-			toast('Swap successfully !!!');
+			setOutputAmount(0);
+		} else if (isNaN(+inputAmount)) {
+			toast('you must enter number to swap the amount !');
 		}
+	};
+
+	const runSwap = async () => {
+		setOpenProcess(true);
+		try {
+			const res2 = await superheroes.swapGoldToToken(Number(inputAmount));
+		} catch (err) {
+			console.log(err);
+			setOpenProcess(false);
+		}
+		setOpenProcess(false);
+		toast('Swap successfully !!!');
+		setInputAmount(0);
+		setOutputAmount(0);
 	};
 
 	return (
