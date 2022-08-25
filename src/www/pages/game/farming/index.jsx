@@ -36,6 +36,13 @@ import {
 	ResourceItemm,
 	ResourceFarmPerTimeTitle,
 	ResourceItemImg,
+	NotiBody,
+	NotiBtn,
+	NotiNavigate,
+	NotiTitle,
+	NotiWrapper,
+	WrapperNoti,
+	WrapperLoader,
 } from './farming.elements';
 import './farming.css';
 import { listMiniCard } from './mockData';
@@ -60,6 +67,9 @@ import Stack from '@mui/material/Stack';
 import { toast } from 'react-toastify';
 import Swal from 'sweetalert2';
 import { roundToTwoDecimal } from '../../../utils/utils';
+import LocalGroceryStoreIcon from '@mui/icons-material/LocalGroceryStore';
+import { Link } from 'react-router-dom';
+import { GridLoader } from 'react-spinners';
 
 function Farming(props) {
 	const { setOpenProcess, tabMarketFooter } = props;
@@ -136,8 +146,10 @@ function Farming(props) {
 		const inKingdom = resp?.ok.filter(
 			(el) => el.attributes[0].value === 'Kingdom'
 		);
-		let queenItem = listLand.find(el => el?.tokenId[0] == cardSelected?.tokenId[0])
-		let land = queenItem || listLand[0]
+		let queenItem = listLand.find(
+			(el) => el?.tokenId[0] == cardSelected?.tokenId[0]
+		);
+		let land = queenItem || listLand[0];
 
 		await onGetAvailWorker();
 		setListNFt(resp?.ok);
@@ -348,262 +360,308 @@ function Farming(props) {
 		}
 	}, [principal, superheroes]);
 
+	const handleNavigateMarket = () => {
+		sessionStorage.setItem('tabFooterActive', 'Kingdom');
+	};
+
 	return (
 		<Container>
-			<Wrapper>
-				<Left>
-					<LeftWrapper>
-						<ListMiniCard>
-							{!listNFtLand ? (
-								<Stack spacing={1}>
-									<Skeleton variant='rectangular' width={60} height={'100%'} />
-								</Stack>
-							) : (
-								listNFtLand.map((el, index) => (
-									<CardNft
-										active={cardMiniActive === el?.tokenId[0] ? true : false}
-										onChangeCard={onChangeCard}
-										data={el}
-										width={62}
-										height={100}
-										heightImg={60}
-										miniCard={true}
-										key={index}
-										cursor={true}
-									/>
-								))
+			{!cardSelected ? (
+				<WrapperLoader>
+					<GridLoader color={'#e89f01'} />
+				</WrapperLoader>
+			) : typeof cardSelected === 'undefined' ? (
+				<WrapperNoti>
+					<NotiWrapper>
+						<NotiTitle>
+							Currently you do not have Nest, please buy at least 1 to
+							continue!!!
+						</NotiTitle>
+						<NotiBody>
+							<NotiNavigate>Go to the market here</NotiNavigate>
+							<Link
+								to='/market'
+								style={{ textDecoration: 'none', color: 'black' }}>
+								<NotiBtn onClick={handleNavigateMarket}>
+									<LocalGroceryStoreIcon sx={{ marginRight: '5px' }} /> Market
+								</NotiBtn>
+							</Link>
+						</NotiBody>
+					</NotiWrapper>
+				</WrapperNoti>
+			) : (
+				<>
+					<Wrapper>
+						<Left>
+							<LeftWrapper>
+								<ListMiniCard>
+									{!listNFtLand ? (
+										<Stack spacing={1}>
+											<Skeleton
+												variant='rectangular'
+												width={60}
+												height={'100%'}
+											/>
+										</Stack>
+									) : (
+										listNFtLand.map((el, index) => (
+											<CardNft
+												active={
+													cardMiniActive === el?.tokenId[0] ? true : false
+												}
+												onChangeCard={onChangeCard}
+												data={el}
+												width={62}
+												height={100}
+												heightImg={60}
+												miniCard={true}
+												key={index}
+												cursor={true}
+											/>
+										))
+									)}
+								</ListMiniCard>
+								<CardWrapper>
+									{!cardSelected ? (
+										<Stack spacing={1}>
+											<Skeleton variant='text' width={240} height={15} />
+											<Skeleton variant='text' width={240} height={15} />
+											<Skeleton
+												variant='rectangular'
+												width={240}
+												height={245}
+											/>
+										</Stack>
+									) : (
+										<CardNft data={cardSelected} heightImg={160} />
+									)}
+								</CardWrapper>
+							</LeftWrapper>
+						</Left>
+
+						<Right>
+							<Info>
+								{!cardSelected ? (
+									<Stack spacing={1} sx={{ marginBottom: '10px' }}>
+										<Skeleton variant='text' width={435} height={10} />
+										<Skeleton variant='text' width={435} height={10} />
+									</Stack>
+								) : (
+									<InfoTop>
+										<Type>{cardSelected?.attributes[0]?.value || 'Land'}</Type>
+									</InfoTop>
+								)}
+								{!cardSelected ? (
+									<Stack spacing={1} sx={{ marginBottom: '10px' }}>
+										<Skeleton variant='rectangular' width={435} height={80} />
+									</Stack>
+								) : (
+									<InfoBody>
+										<InfoBodyLeft>
+											<InfoBodyLeftItem>Rarity:</InfoBodyLeftItem>
+											<InfoBodyLeftItem>Farming Time:</InfoBodyLeftItem>
+											<InfoBodyLeftItem>In Kingdom:</InfoBodyLeftItem>
+										</InfoBodyLeft>
+
+										<InfoBodyRight>
+											<InfoBodyRightItem>
+												{cardSelected?.attributes[1]?.value || 'Uncommon'}
+											</InfoBodyRightItem>
+											<InfoBodyRightItem>
+												{cardSelected?.detail?.land?.info?.farmingTime
+													? toHHMMSS(
+															cardSelected?.detail?.land?.info?.farmingTime
+													  )
+													: 0}
+											</InfoBodyRightItem>
+											<InfoBodyRightItem>
+												{inKingdom && inKingdom[0]?.name}
+											</InfoBodyRightItem>
+										</InfoBodyRight>
+									</InfoBody>
+								)}
+							</Info>
+
+							<ListResourceWrapper>
+								<ResourceTitle>Resource</ResourceTitle>
+								<ListResource>
+									<ResourceItem>
+										<ResourceImg src='/images/navbar/icons/gold.png' alt='' />
+										<ResourceQuantity>
+											{cardSelected?.detail?.land?.resource?.gold || 0}
+										</ResourceQuantity>
+									</ResourceItem>
+									<ResourceItem>
+										<ResourceImg src='/images/navbar/icons/soil.png' alt='' />
+										<ResourceQuantity>
+											{cardSelected?.detail?.land?.resource?.soil || 0}
+										</ResourceQuantity>
+									</ResourceItem>
+									<ResourceItem>
+										<ResourceImg src='/images/navbar/icons/food.png' alt='' />
+										<ResourceQuantity>
+											{cardSelected?.detail?.land?.resource?.food || 0}
+										</ResourceQuantity>
+									</ResourceItem>
+									<ResourceItem>
+										<ResourceImg src='/images/navbar/icons/leaf.jpeg' alt='' />
+										<ResourceQuantity>
+											{cardSelected?.detail?.land?.resource?.leaf || 0}
+										</ResourceQuantity>
+									</ResourceItem>
+								</ListResource>
+							</ListResourceWrapper>
+
+							{cardSelected?.detail?.land?.claimableResource.map(
+								(el, index) => {
+									return (
+										<CountdownWrapper key={index}>
+											<CountdownInside>{resourceItem(el)}</CountdownInside>
+										</CountdownWrapper>
+									);
+								}
 							)}
-						</ListMiniCard>
-						<CardWrapper>
-							{!cardSelected ? (
-								<Stack spacing={1}>
-									<Skeleton variant='text' width={240} height={15} />
-									<Skeleton variant='text' width={240} height={15} />
-									<Skeleton variant='rectangular' width={240} height={245} />
-								</Stack>
-							) : (
-								<CardNft data={cardSelected} heightImg={160} />
-							)}
-						</CardWrapper>
-					</LeftWrapper>
-				</Left>
 
-				<Right>
-					<Info>
-						{!cardSelected ? (
-							<Stack spacing={1} sx={{ marginBottom: '10px' }}>
-								<Skeleton variant='text' width={435} height={10} />
-								<Skeleton variant='text' width={435} height={10} />
-							</Stack>
-						) : (
-							<InfoTop>
-								<Type>{cardSelected?.attributes[0]?.value || 'Land'}</Type>
-							</InfoTop>
-						)}
-						{!cardSelected ? (
-							<Stack spacing={1} sx={{ marginBottom: '10px' }}>
-								<Skeleton variant='rectangular' width={435} height={80} />
-							</Stack>
-						) : (
-							<InfoBody>
-								<InfoBodyLeft>
-									<InfoBodyLeftItem>Rarity:</InfoBodyLeftItem>
-									<InfoBodyLeftItem>Farming Time:</InfoBodyLeftItem>
-									<InfoBodyLeftItem>In Kingdom:</InfoBodyLeftItem>
-								</InfoBodyLeft>
-
-								<InfoBodyRight>
-									<InfoBodyRightItem>
-										{cardSelected?.attributes[1]?.value || 'Uncommon'}
-									</InfoBodyRightItem>
-									<InfoBodyRightItem>
-										{cardSelected?.detail?.land?.info?.farmingTime
-											? toHHMMSS(cardSelected?.detail?.land?.info?.farmingTime)
-											: 0}
-									</InfoBodyRightItem>
-									<InfoBodyRightItem>
-										{inKingdom && inKingdom[0]?.name}
-									</InfoBodyRightItem>
-								</InfoBodyRight>
-							</InfoBody>
-						)}
-					</Info>
-
-					<ListResourceWrapper>
-						<ResourceTitle>Resource</ResourceTitle>
-						<ListResource>
-							<ResourceItem>
-								<ResourceImg src='/images/navbar/icons/gold.png' alt='' />
-								<ResourceQuantity>
-									{cardSelected?.detail?.land?.resource?.gold || 0}
-								</ResourceQuantity>
-							</ResourceItem>
-							<ResourceItem>
-								<ResourceImg src='/images/navbar/icons/soil.png' alt='' />
-								<ResourceQuantity>
-									{cardSelected?.detail?.land?.resource?.soil || 0}
-								</ResourceQuantity>
-							</ResourceItem>
-							<ResourceItem>
-								<ResourceImg src='/images/navbar/icons/food.png' alt='' />
-								<ResourceQuantity>
-									{cardSelected?.detail?.land?.resource?.food || 0}
-								</ResourceQuantity>
-							</ResourceItem>
-							<ResourceItem>
-								<ResourceImg src='/images/navbar/icons/leaf.jpeg' alt='' />
-								<ResourceQuantity>
-									{cardSelected?.detail?.land?.resource?.leaf || 0}
-								</ResourceQuantity>
-							</ResourceItem>
-						</ListResource>
-					</ListResourceWrapper>
-
-					{cardSelected?.detail?.land?.claimableResource.map((el, index) => {
-						return (
-							<CountdownWrapper key={index}>
-								<CountdownInside>{resourceItem(el)}</CountdownInside>
-							</CountdownWrapper>
-						);
-					})}
-
-					<BtnList>
-						<Button
-							onClick={onClickFarm}>
-							Farm
-						</Button>
-						<Button
-							disabled={!cardSelected}
-							onClick={() => {
-								return cardSelected && setOpen(true);
-							}}>
-							Dig Nest
-						</Button>
-					</BtnList>
-
-					<Dialog onClose={handleClose} open={showFarmDialog && showFarmDialog}>
-						{listWorker?.length && (
-							<DialogContent>
-								<Stack sx={{ height: 300 }} spacing={1} direction='row'>
-									<SliderItem
-										min={0}
-										max={listWorker.length}
-										value={valueResource.food}
-										handleSliderChange={(event, newValue) => {
-											onChangeSlide('food', newValue);
-										}}
-										img={'/images/navbar/icons/food.png'}
-									/>
-									<SliderItem
-										min={0}
-										max={listWorker.length}
-										value={valueResource.gold}
-										handleSliderChange={(event, newValue) => {
-											onChangeSlide('gold', newValue);
-										}}
-										img={'/images/navbar/icons/gold.png'}
-									/>
-									<SliderItem
-										min={0}
-										max={listWorker.length}
-										value={valueResource.soil}
-										handleSliderChange={(event, newValue) => {
-											onChangeSlide('soil', newValue);
-										}}
-										img={'/images/navbar/icons/soil.png'}
-									/>
-									<SliderItem
-										min={0}
-										max={listWorker.length}
-										value={valueResource.leaf}
-										handleSliderChange={(event, newValue) => {
-											onChangeSlide('leaf', newValue);
-										}}
-										img={'/images/navbar/icons/leaf.jpeg'}
-									/>
-								</Stack>
+							<BtnList>
+								<Button disabled={!cardSelected} onClick={onClickFarm}>
+									Farm
+								</Button>
 								<Button
-									disabled={isDisableFarmBtn}
-									name={'Farm'}
-									onClick={confirmDialog}
-								/>
-								Worker Ants: {remainWorker}
-								<ResourceFarmPerTimeTitle>
-									List resource farm per time
-								</ResourceFarmPerTimeTitle>
-								<ResourceFarmPerTime>
-									<ResourceItemm>
-										<ResourceItemName>Food:</ResourceItemName>
-										<ResourceItemValue>
-											{roundToTwoDecimal(
-												resourceFarmPerTime?.food * valueResource?.food
-											)}
-										</ResourceItemValue>
-										<ResourceItemImg
-											src={'/images/navbar/icons/food.png'}
-											alt='resource item img'
+									disabled={!cardSelected}
+									onClick={() => {
+										return cardSelected && setOpen(true);
+									}}>
+									Dig Nest
+								</Button>
+							</BtnList>
+
+							<Dialog
+								onClose={handleClose}
+								open={showFarmDialog && showFarmDialog}>
+								{listWorker?.length && (
+									<DialogContent>
+										<Stack sx={{ height: 300 }} spacing={1} direction='row'>
+											<SliderItem
+												min={0}
+												max={listWorker.length}
+												value={valueResource.food}
+												handleSliderChange={(event, newValue) => {
+													onChangeSlide('food', newValue);
+												}}
+												img={'/images/navbar/icons/food.png'}
+											/>
+											<SliderItem
+												min={0}
+												max={listWorker.length}
+												value={valueResource.gold}
+												handleSliderChange={(event, newValue) => {
+													onChangeSlide('gold', newValue);
+												}}
+												img={'/images/navbar/icons/gold.png'}
+											/>
+											<SliderItem
+												min={0}
+												max={listWorker.length}
+												value={valueResource.soil}
+												handleSliderChange={(event, newValue) => {
+													onChangeSlide('soil', newValue);
+												}}
+												img={'/images/navbar/icons/soil.png'}
+											/>
+											<SliderItem
+												min={0}
+												max={listWorker.length}
+												value={valueResource.leaf}
+												handleSliderChange={(event, newValue) => {
+													onChangeSlide('leaf', newValue);
+												}}
+												img={'/images/navbar/icons/leaf.jpeg'}
+											/>
+										</Stack>
+										<Button
+											disabled={isDisableFarmBtn}
+											name={'Farm'}
+											onClick={confirmDialog}
 										/>
-									</ResourceItemm>
-									<ResourceItem>
-										<ResourceItemName>Gold:</ResourceItemName>
-										<ResourceItemValue>
-											{roundToTwoDecimal(
-												resourceFarmPerTime?.gold * valueResource?.gold
-											)}
-										</ResourceItemValue>
-										<ResourceItemImg
-											src={'/images/navbar/icons/gold.png'}
-											alt='resource item img'
-										/>
-									</ResourceItem>
-									<ResourceItem>
-										<ResourceItemName>Soil:</ResourceItemName>
-										<ResourceItemValue>
-											{roundToTwoDecimal(
-												resourceFarmPerTime?.soil * valueResource?.soil
-											)}
-										</ResourceItemValue>
-										<ResourceItemImg
-											src={'/images/navbar/icons/soil.png'}
-											alt='resource item img'
-										/>
-									</ResourceItem>
-									<ResourceItem>
-										<ResourceItemName>Leaf:</ResourceItemName>
-										<ResourceItemValue>
-											{roundToTwoDecimal(
-												resourceFarmPerTime?.leaf * valueResource?.leaf
-											)}
-										</ResourceItemValue>
-										<ResourceItemImg
-											src={'/images/navbar/icons/leaf.jpeg'}
-											alt='resource item img'
-										/>
-									</ResourceItem>
-								</ResourceFarmPerTime>
-							</DialogContent>
-						)}
-					</Dialog>
-				</Right>
-			</Wrapper>
-			<PopupList
-				dialogTitle={'Choose nest to dig nest into land'}
-				open={open}
-				setOpen={setOpen}>
-				{getNFTByType('Nest').map((el, index) => {
-					if (el?.detail?.nest?.inLand[0]) return;
-					return (
-						<div style={{ marginLeft: '10px' }}>
-							<CardNft
-								key={index}
-								data={el}
-								footer={() => rendterBtn(el)}
-								alt=''
-							/>
-						</div>
-					);
-				})}
-			</PopupList>
+										Worker Ants: {remainWorker}
+										<ResourceFarmPerTimeTitle>
+											List resource farm per time
+										</ResourceFarmPerTimeTitle>
+										<ResourceFarmPerTime>
+											<ResourceItemm>
+												<ResourceItemName>Food:</ResourceItemName>
+												<ResourceItemValue>
+													{roundToTwoDecimal(
+														resourceFarmPerTime?.food * valueResource?.food
+													)}
+												</ResourceItemValue>
+												<ResourceItemImg
+													src={'/images/navbar/icons/food.png'}
+													alt='resource item img'
+												/>
+											</ResourceItemm>
+											<ResourceItem>
+												<ResourceItemName>Gold:</ResourceItemName>
+												<ResourceItemValue>
+													{roundToTwoDecimal(
+														resourceFarmPerTime?.gold * valueResource?.gold
+													)}
+												</ResourceItemValue>
+												<ResourceItemImg
+													src={'/images/navbar/icons/gold.png'}
+													alt='resource item img'
+												/>
+											</ResourceItem>
+											<ResourceItem>
+												<ResourceItemName>Soil:</ResourceItemName>
+												<ResourceItemValue>
+													{roundToTwoDecimal(
+														resourceFarmPerTime?.soil * valueResource?.soil
+													)}
+												</ResourceItemValue>
+												<ResourceItemImg
+													src={'/images/navbar/icons/soil.png'}
+													alt='resource item img'
+												/>
+											</ResourceItem>
+											<ResourceItem>
+												<ResourceItemName>Leaf:</ResourceItemName>
+												<ResourceItemValue>
+													{roundToTwoDecimal(
+														resourceFarmPerTime?.leaf * valueResource?.leaf
+													)}
+												</ResourceItemValue>
+												<ResourceItemImg
+													src={'/images/navbar/icons/leaf.jpeg'}
+													alt='resource item img'
+												/>
+											</ResourceItem>
+										</ResourceFarmPerTime>
+									</DialogContent>
+								)}
+							</Dialog>
+						</Right>
+					</Wrapper>
+					<PopupList
+						dialogTitle={'Choose nest to dig nest into land'}
+						open={open}
+						setOpen={setOpen}>
+						{getNFTByType('Nest').map((el, index) => {
+							if (el?.detail?.nest?.inLand[0]) return;
+							return (
+								<div style={{ marginLeft: '10px' }}>
+									<CardNft
+										key={index}
+										data={el}
+										footer={() => rendterBtn(el)}
+										alt=''
+									/>
+								</div>
+							);
+						})}
+					</PopupList>
+				</>
+			)}
 		</Container>
 	);
 }

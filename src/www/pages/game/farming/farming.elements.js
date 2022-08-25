@@ -16,6 +16,7 @@ export const Container = styled.div`
 	-webkit-animation-name: slideup;
 	animation-name: slideup;
 	height: 60rem;
+	overflow-x: hidden;
 `;
 
 export const Wrapper = styled.div`
@@ -266,3 +267,69 @@ export const ResourceItemImg = styled.img`
     width: 30px;
     border-radius: 50%;
 `
+
+//Notification
+export const WrapperNoti = styled.div`
+	position: absolute;
+	display: flex;
+	align-items: center;
+	top: 45%;
+	left: 55%;
+	transform: translate(-50%, -50%);
+	width: 55rem;
+	padding: 30px;
+`;
+
+export const NotiWrapper = styled.div`
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+`;
+
+export const NotiTitle = styled.div`
+	font-weight: bold;
+	font-size: 22px;
+`;
+
+export const NotiBody = styled.div`
+	display: flex;
+	align-items: center;
+	margin-top: 15px;
+`;
+
+export const NotiNavigate = styled.div`
+	font-size: 22px;
+	margin-right: 10px;
+`;
+
+export const NotiBtn = styled.div`
+	color: #ffffff;
+	font-size: 22px;
+	background: linear-gradient(180deg, #f9c744, #df8c00);
+	width: 180px;
+	height: 45px;
+	border-radius: 6px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	cursor: pointer;
+	opacity: 0.9;
+	transition: all 0.5s ease;
+
+	&:hover {
+		opacity: 1;
+	}
+`;
+
+export const WrapperLoader = styled.div`
+	position: absolute;
+	display: flex;
+	align-items: center;
+	top: 45%;
+	left: 88%;
+	transform: translate(-50%, -50%);
+	width: 55rem;
+	padding: 30px;
+`;
+
+

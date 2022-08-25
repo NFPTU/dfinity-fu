@@ -20,6 +20,13 @@ import {
 	LeftWrapper,
 	ListMiniCard,
 	CardWrapper,
+	NotiBody,
+	NotiBtn,
+	NotiNavigate,
+	NotiTitle,
+	NotiWrapper,
+	WrapperNoti,
+	WrapperLoader,
 } from './nest.elements';
 import './nest.css';
 import { useCanister, useConnect } from '@connect2ic/react';
@@ -32,6 +39,9 @@ import Stack from '@mui/material/Stack';
 import { toast } from 'react-toastify';
 import Swal from 'sweetalert2';
 import { levelData } from '../../admin/nft';
+import { Link } from 'react-router-dom';
+import { GridLoader } from 'react-spinners';
+import LocalGroceryStoreIcon from '@mui/icons-material/LocalGroceryStore';
 
 function Nest(props) {
 	const { setOpenProcess, resource } = props;
@@ -43,10 +53,13 @@ function Nest(props) {
 	const [open, setOpen] = useState(false);
 	const [resourceUpgrade, setResourceUpgrade] = useState({});
 
+	const [fakeLoading, setFakeLoading] = useState(false);
+
 	const [inLand, setInLand] = useState('');
 
 	const [superheroes, { loading, error }] = useCanister('superheroes');
 	const { principal } = useConnect();
+
 
 	useEffect(() => {
 		const getResourceUpgrade = (name, rarity, level) => {
@@ -78,8 +91,10 @@ function Nest(props) {
 		const inLand = resp?.ok?.find(
 			(el) => el.tokenId[0] == listNest[0]?.detail?.nest?.inLand[0]
 		);
-		let queenItem = listNest.find(el => el?.tokenId[0] == cardSelected?.tokenId[0])
-		let queen = queenItem || listNest[0]
+		let queenItem = listNest.find(
+			(el) => el?.tokenId[0] == cardSelected?.tokenId[0]
+		);
+		let queen = queenItem || listNest[0];
 		setInLand(inLand);
 		setListNFt(resp?.ok);
 		setCardSelected(queen);
@@ -98,9 +113,7 @@ function Nest(props) {
 				queen?.tokenId[0],
 				cardSelected?.tokenId[0]
 			);
-		} catch (er) {
-
-		}
+		} catch (er) {}
 		setOpenProcess(false);
 		toast('Add queen successfully!!!');
 		onGetData();
@@ -163,6 +176,10 @@ function Nest(props) {
 		}
 	};
 
+	const handleNavigateMarket = () => {
+		sessionStorage.setItem('tabFooterActive', 'Kingdom');
+	};
+
 	const handleAddQueen = () => {
 		const queenIn = cardSelected?.detail?.nest?.queenIn[0];
 		const inLand = cardSelected?.detail?.nest?.inLand[0];
@@ -187,125 +204,160 @@ function Nest(props) {
 	return (
 		<>
 			<Container>
-				<Wrapper>
-					<Left>
-						<LeftWrapper>
-							<ListMiniCard>
-								{!listNest ? (
-									<Stack spacing={1}>
-										<Skeleton
-											variant='rectangular'
-											width={60}
-											height={'100%'}
-										/>
-									</Stack>
-								) : (
-									listNest.map((el, index) => (
-										<CardNft
-											key={index}
-											active={cardMiniActive === el?.tokenId[0] ? true : false}
-											onChangeCard={onChangeCard}
-											data={el}
-											width={62}
-											height={100}
-											heightImg={60}
-											miniCard={true}
-										/>
-									))
-								)}
-							</ListMiniCard>
-							<CardWrapper>
-								{cardSelected ? (
-									<Card data={cardSelected} />
-								) : (
-									<Stack spacing={1}>
-										<Skeleton variant='text' width={240} height={15} />
-										<Skeleton variant='text' width={240} height={15} />
-										<Skeleton variant='rectangular' width={240} height={245} />
-									</Stack>
-								)}
-							</CardWrapper>
-						</LeftWrapper>
-					</Left>
+				{!cardSelected ? (
+					<WrapperLoader>
+						<GridLoader color={'#e89f01'} />
+					</WrapperLoader>
+				) : typeof cardSelected === 'undefined' ? (
+					<WrapperNoti>
+						<NotiWrapper>
+							<NotiTitle>
+								Currently you do not have Nest, please buy at least 1 to
+								continue!!!
+							</NotiTitle>
+							<NotiBody>
+								<NotiNavigate>Go to the market here</NotiNavigate>
+								<Link
+									to='/market'
+									style={{ textDecoration: 'none', color: 'black' }}>
+									<NotiBtn onClick={handleNavigateMarket}>
+										<LocalGroceryStoreIcon sx={{ marginRight: '5px' }} /> Market
+									</NotiBtn>
+								</Link>
+							</NotiBody>
+						</NotiWrapper>
+					</WrapperNoti>
+				) : (
+					<>
+						<Wrapper>
+							<Left>
+								<LeftWrapper>
+									<ListMiniCard>
+										{!listNest ? (
+											<Stack spacing={1}>
+												<Skeleton
+													variant='rectangular'
+													width={60}
+													height={'100%'}
+												/>
+											</Stack>
+										) : (
+											listNest.map((el, index) => (
+												<CardNft
+													key={index}
+													active={
+														cardMiniActive === el?.tokenId[0] ? true : false
+													}
+													onChangeCard={onChangeCard}
+													data={el}
+													width={62}
+													height={100}
+													heightImg={60}
+													miniCard={true}
+												/>
+											))
+										)}
+									</ListMiniCard>
+									<CardWrapper>
+										{cardSelected ? (
+											<Card data={cardSelected} />
+										) : (
+											<Stack spacing={1}>
+												<Skeleton variant='text' width={240} height={15} />
+												<Skeleton variant='text' width={240} height={15} />
+												<Skeleton
+													variant='rectangular'
+													width={240}
+													height={245}
+												/>
+											</Stack>
+										)}
+									</CardWrapper>
+								</LeftWrapper>
+							</Left>
 
-					<Right>
-						<Info>
-							{cardSelected ? (
-								<InfoTop>
-									<Type>{cardSelected?.attributes[0]?.value || 'Nest'}</Type>
-									<Level>
-										{'Level'}:{' '}
-										{(cardSelected?.detail?.nest?.level &&
-											Number(cardSelected?.detail?.nest?.level)) ||
-											1}
-									</Level>
-								</InfoTop>
-							) : (
-								<Stack spacing={1} sx={{ marginBottom: '10px' }}>
-									<Skeleton variant='text' width={380} height={10} />
-									<Skeleton variant='text' width={380} height={10} />
-								</Stack>
-							)}
-							{!cardSelected ? (
-								<Stack spacing={1} sx={{ marginTop: '10px' }}>
-									<Skeleton variant='rectangular' width={380} height={80} />
-								</Stack>
-							) : (
-								<InfoBody>
-									<InfoBodyLeft>
-										<InfoBodyLeftItem>Rarity:</InfoBodyLeftItem>
-										<InfoBodyLeftItem>Limit Ant:</InfoBodyLeftItem>
-										<InfoBodyLeftItem>In Land:</InfoBodyLeftItem>
-									</InfoBodyLeft>
+							<Right>
+								<Info>
+									{cardSelected ? (
+										<InfoTop>
+											<Type>
+												{cardSelected?.attributes[0]?.value || 'Nest'}
+											</Type>
+											<Level>
+												{'Level'}:{' '}
+												{(cardSelected?.detail?.nest?.level &&
+													Number(cardSelected?.detail?.nest?.level)) ||
+													1}
+											</Level>
+										</InfoTop>
+									) : (
+										<Stack spacing={1} sx={{ marginBottom: '10px' }}>
+											<Skeleton variant='text' width={380} height={10} />
+											<Skeleton variant='text' width={380} height={10} />
+										</Stack>
+									)}
+									{!cardSelected ? (
+										<Stack spacing={1} sx={{ marginTop: '10px' }}>
+											<Skeleton variant='rectangular' width={380} height={80} />
+										</Stack>
+									) : (
+										<InfoBody>
+											<InfoBodyLeft>
+												<InfoBodyLeftItem>Rarity:</InfoBodyLeftItem>
+												<InfoBodyLeftItem>Limit Ant:</InfoBodyLeftItem>
+												<InfoBodyLeftItem>In Land:</InfoBodyLeftItem>
+											</InfoBodyLeft>
 
-									<InfoBodyRight>
-										<InfoBodyRightItem>
-											{cardSelected?.attributes[1]?.value}
-										</InfoBodyRightItem>
-										<InfoBodyRightItem>
-											{cardSelected?.detail?.nest?.limit &&
-												Number(cardSelected?.detail?.nest?.limit)}
-										</InfoBodyRightItem>
-										<InfoBodyRightItem>
-											{cardSelected?.detail?.nest?.inLand[0] && listNFt.find(
-												(el) => el.tokenId[0] == cardSelected?.detail?.nest?.inLand[0]
-											)?.name}
-										</InfoBodyRightItem>
-									</InfoBodyRight>
-								</InfoBody>
-							)}
-						</Info>
+											<InfoBodyRight>
+												<InfoBodyRightItem>
+													{cardSelected?.attributes[1]?.value}
+												</InfoBodyRightItem>
+												<InfoBodyRightItem>
+													{cardSelected?.detail?.nest?.limit &&
+														Number(cardSelected?.detail?.nest?.limit)}
+												</InfoBodyRightItem>
+												<InfoBodyRightItem>
+													{cardSelected?.detail?.nest?.inLand[0] &&
+														listNFt.find(
+															(el) =>
+																el.tokenId[0] ==
+																cardSelected?.detail?.nest?.inLand[0]
+														)?.name}
+												</InfoBodyRightItem>
+											</InfoBodyRight>
+										</InfoBody>
+									)}
+								</Info>
 
-						<BtnList>
-<<<<<<< HEAD
-							<Btn onClick={confirmDialog}>Upgrade</Btn>
-							<Btn onClick={handleAddQueen}>Add Queen</Btn>
-=======
-            <Btn disabled={!cardSelected} onClick={confirmDialog}>
-								Upgrade
-							</Btn>
-							<Btn disabled={!cardSelected} onClick={handleAddQueen}>Add Queen</Btn>
-							
->>>>>>> 5384389bece7f811c2cc3c655a187808c8b3a724
-						</BtnList>
-					</Right>
-				</Wrapper>
-				<PopupList
-					dialogTitle={'Choose queen to add into nest'}
-					open={open}
-					setOpen={setOpen}>
-					{getNFTByType('Queen').map((el, index) => {
-						console.log(el?.detail?.queen?.inNest[0]);
-						if (!el?.detail?.queen?.inNest[0]) return (
-							<CardNft
-								key={index}
-								data={el}
-								footer={() => rendterBtn(el)}
-								alt=''
-							/>
-						);
-					})}
-				</PopupList>
+								<BtnList>
+									<Btn disabled={!cardSelected} onClick={confirmDialog}>
+										Upgrade
+									</Btn>
+									<Btn disabled={!cardSelected} onClick={handleAddQueen}>Add Queen</Btn>
+								</BtnList>
+							</Right>
+						</Wrapper>
+						<PopupList
+							dialogTitle={'Choose queen to add into nest'}
+							open={open}
+							setOpen={setOpen}>
+							{getNFTByType('Queen').map((el, index) => {
+								console.log(el?.detail?.queen?.inNest[0]);
+								if (!el?.detail?.queen?.inNest[0])
+									return (
+										<div style={{ marginLeft: '10px' }}>
+											<CardNft
+												key={index}
+												data={el}
+												footer={() => rendterBtn(el)}
+												alt=''
+											/>
+										</div>
+									);
+							})}
+						</PopupList>
+					</>
+				)}
 			</Container>
 		</>
 	);
