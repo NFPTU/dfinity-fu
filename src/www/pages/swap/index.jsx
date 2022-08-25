@@ -11,12 +11,12 @@ import { roundToTwoDecimal } from '../../utils/utils';
 
 function Swap(props) {
 	const { resource, setOpenProcess } = props;
-	const [wethAmount, setWethAmount] = useState(undefined);
-	const [uniAmount, setUniAmount] = useState(undefined);
+	const [wethAmount, setWethAmount] = useState('');
+	const [uniAmount, setUniAmount] = useState('');
 	const [token] = useCanister('token');
 
-	const [inputAmount, setInputAmount] = useState(undefined);
-	const [outputAmount, setOutputAmount] = useState(undefined);
+	const [inputAmount, setInputAmount] = useState('');
+	const [outputAmount, setOutputAmount] = useState('');
 
 	const ratio = 10;
 
@@ -58,14 +58,7 @@ function Swap(props) {
 			setInputAmount(undefined);
 			setOutputAmount(0);
 		} else if (Number.parseInt(inputAmount) > wethAmount) {
-			toast(`You don't have enough gold to swap the amount !`);
-		} else if (inputAmount === '' || inputAmount === undefined) {
-			toast('You must enter amount to swap !');
-		} else if (Number.parseInt(inputAmount) < 0) {
-			toast('Amount must be greater than 0 !');
-			setOutputAmount(0);
-		} else if (isNaN(+inputAmount)) {
-			toast('you must enter number to swap the amount !');
+			setInputAmount(wethAmount);
 		}
 	};
 
@@ -73,12 +66,12 @@ function Swap(props) {
 		setOpenProcess(true);
 		try {
 			const res2 = await superheroes.swapGoldToToken(Number(inputAmount));
+			setOpenProcess(false);
+			toast('Swap successfully !!!');
 		} catch (err) {
 			console.log(err);
 			setOpenProcess(false);
 		}
-		setOpenProcess(false);
-		toast('Swap successfully !!!');
 		setInputAmount(0);
 		setOutputAmount(0);
 	};
@@ -97,6 +90,7 @@ function Swap(props) {
 								field='input'
 								tokenName='Gold'
 								getSwapPrice={getSwapPrice}
+								value={inputAmount}
 								balance={wethAmount}
 							/>
 							<CurrencyField

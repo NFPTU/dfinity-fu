@@ -1,9 +1,6 @@
 import React from 'react';
-
+import "./index.css"
 const CurrencyField = (props) => {
-	const getPrice = (value) => {
-		props.getSwapPrice(value);
-	};
 
 	return (
 		<div className='row currencyInput'>
@@ -14,13 +11,15 @@ const CurrencyField = (props) => {
 					</div>
 				) : (
 					<input
-						pattern='^[0-9]+}$'
 						required
+						min={0}
+						max={props.balance ? props.balance : 0}
 						className='currencyInputField'
-						placeholder='0.0'
+						placeholder='0'
+						type="number"
 						value={props.value}
-						onBlur={(e) =>
-							props.field === 'input' ? getPrice(e.target.value) : null
+						onInput={(e) =>
+							props.field === 'input' ? props.getSwapPrice(e.target.value) : null
 						}
 					/>
 				)}
