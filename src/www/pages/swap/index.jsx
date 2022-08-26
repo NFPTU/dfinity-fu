@@ -48,16 +48,14 @@ function Swap(props) {
 	}, [principal, token, resource]);
 
 	const getSwapPrice = (e) => {
-		const inputNumber = Number.parseInt(e.key);
-		console.log("=====e=====", e.code, inputAmount.length);
-		
+		const inputNumber = e.key;
 		if (
-			Number.parseInt(inputNumber) > 0 &&
+			Number.parseInt(inputNumber) >= 0 &&
 			Number.parseInt(inputNumber) <= wethAmount
 		) {
-			if(Number.parseInt(inputAmount + inputNumber) <= wethAmount) {
+			if(Number.parseInt(inputAmount.toString() + inputNumber) <= wethAmount) {
 				console.log(inputNumber);
-				setInputAmount(inputAmount + inputNumber);
+				setInputAmount(Number(inputAmount.toString() + inputNumber) === 0 ? '' : Number(inputAmount.toString() + inputNumber).toString());
 				setOutputAmount((Number.parseFloat(inputAmount + inputNumber) / 10).toFixed(2));
 			} else {
 				setInputAmount(wethAmount.toString());
@@ -67,9 +65,8 @@ function Swap(props) {
 			setInputAmount(inputAmount + ".");
 
 		}else if(e.code == "Backspace" && inputAmount.length > 0){
-			setInputAmount(inputAmount.substring(0, inputAmount.length - 1))
+			setInputAmount(inputAmount.substring(0, inputAmount.length - 1));
 			setOutputAmount((inputAmount.substring(0, inputAmount.length - 1) / 10).toFixed(2));
-
 		}
 
 	};
