@@ -499,8 +499,8 @@ function Breeding(props) {
 								)}
 							</Info>
 
-							{worker?.detail?.worker?.breedTimestamp &&
-								getRemainingTime(worker?.detail?.worker?.breedTimestamp) && (
+							{(worker?.detail?.worker?.breedTimestamp &&
+								getRemainingTime(worker?.detail?.worker?.breedTimestamp) )?(
 									<CountdownWrapper>
 										<CountdownInside>
 											<Countdown
@@ -520,26 +520,16 @@ function Breeding(props) {
 											/>
 										</CountdownInside>
 									</CountdownWrapper>
-								)}
+								): ''}
 
 							<BtnList>
 								<Btn
-									disabled={
-										!cardSelected ||
-										(cardSelected?.detail?.queen?.breedingWorkerId &&
-											!completedCount)
-									}
 									onClick={onBreeding}>
 									{!cardSelected?.detail?.queen?.breedingWorkerId
 										? 'Breeding'
 										: 'Claim'}
 								</Btn>
 								<Btn
-									disabled={
-										!cardSelected ||
-										(cardSelected?.detail?.queen?.breedingWorkerId &&
-											!completedCount)
-									}
 									onClick={confirmDialogUpdate}>
 									Upgrade
 								</Btn>

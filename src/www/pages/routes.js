@@ -25,8 +25,16 @@ const Inventory = lazy(() => import("./inventory"))
 const Battle = lazy(() => import("./game/battle"))
 const DetailMarket = lazy(() => import("./detail-market"))
 const Swap = lazy(() => import("./swap"))
+const Loading = lazy(() => import("../components/loading"))
 
 const routes = [
+    {
+        path: "/loading",
+        exact: true,
+        public: true,
+        component: Loading,
+        layout: null
+    },
     {
         path: "/",
         exact: true,

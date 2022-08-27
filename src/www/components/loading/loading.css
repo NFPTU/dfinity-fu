@@ -1,0 +1,10 @@
+.loading__pageMain {
+    background-image: url('https://wallpapercave.com/wp/wp4054234.jpg');
+	background-size: cover;
+	background-repeat: no-repeat;
+	height: 100vh;
+	display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
