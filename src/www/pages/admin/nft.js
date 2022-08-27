@@ -73,7 +73,7 @@ export const metadata = [
 		description: 'Ant Queen',
 		tokenId: [],
 		image:
-			'https://storageapi.fleek.co/c86ea07c-070d-40b0-bb7a-12a2d3c468f4-bucket/nft/queen.png',
+			'https://storageapi.fleek.co/c86ea07c-070d-40b0-bb7a-12a2d3c468f4-bucket/nft/AntKingdom/Queen/Kien%20chua%201.png',
 		attributes: [
 			{
 				trait_type: 'Type',
@@ -116,7 +116,7 @@ export const metadata = [
 		description: 'Ant Queen',
 		tokenId: [],
 		image:
-			'https://storageapi.fleek.co/c86ea07c-070d-40b0-bb7a-12a2d3c468f4-bucket/nft/queen.png',
+			'https://storageapi.fleek.co/c86ea07c-070d-40b0-bb7a-12a2d3c468f4-bucket/nft/AntKingdom/Queen/Kien chua 2.png',
 		attributes: [
 			{
 				trait_type: 'Type',
@@ -159,7 +159,7 @@ export const metadata = [
 		description: 'Ant Queen',
 		tokenId: [],
 		image:
-			'https://storageapi.fleek.co/c86ea07c-070d-40b0-bb7a-12a2d3c468f4-bucket/nft/queen.png',
+			'https://storageapi.fleek.co/c86ea07c-070d-40b0-bb7a-12a2d3c468f4-bucket/nft/AntKingdom/Queen/Kien chua 4.png',
 		attributes: [
 			{
 				trait_type: 'Type',
@@ -202,7 +202,7 @@ export const metadata = [
 		description: 'Ant Queen',
 		tokenId: [],
 		image:
-			'https://storageapi.fleek.co/c86ea07c-070d-40b0-bb7a-12a2d3c468f4-bucket/nft/queen.png',
+			'https://storageapi.fleek.co/c86ea07c-070d-40b0-bb7a-12a2d3c468f4-bucket/nft/AntKingdom/Queen/Kien chua 5.png',
 		attributes: [
 			{
 				trait_type: 'Type',
@@ -481,7 +481,7 @@ export const metadata = [
 		description: 'Ant Nest',
 		tokenId: [],
 		image:
-			'https://storageapi.fleek.co/c86ea07c-070d-40b0-bb7a-12a2d3c468f4-bucket/nft/ant-nest.jpg',
+			'https://storageapi.fleek.co/c86ea07c-070d-40b0-bb7a-12a2d3c468f4-bucket/nft/AntKingdom/Nest/ver1.png',
 		attributes: [
 			{
 				trait_type: 'Type',
@@ -523,7 +523,7 @@ export const metadata = [
 		description: 'Ant Nest',
 		tokenId: [],
 		image:
-			'https://storageapi.fleek.co/c86ea07c-070d-40b0-bb7a-12a2d3c468f4-bucket/nft/ant-nest.jpg',
+			'https://storageapi.fleek.co/c86ea07c-070d-40b0-bb7a-12a2d3c468f4-bucket/nft/AntKingdom/Nest/ver2.png',
 		attributes: [
 			{
 				trait_type: 'Type',
@@ -565,7 +565,7 @@ export const metadata = [
 		description: 'Ant Nest',
 		tokenId: [],
 		image:
-			'https://storageapi.fleek.co/c86ea07c-070d-40b0-bb7a-12a2d3c468f4-bucket/nft/ant-nest.jpg',
+			'https://storageapi.fleek.co/c86ea07c-070d-40b0-bb7a-12a2d3c468f4-bucket/nft/AntKingdom/Nest/ver3.png',
 		attributes: [
 			{
 				trait_type: 'Type',
@@ -607,7 +607,7 @@ export const metadata = [
 		description: 'Ant Nest',
 		tokenId: [],
 		image:
-			'https://storageapi.fleek.co/c86ea07c-070d-40b0-bb7a-12a2d3c468f4-bucket/nft/ant-nest.jpg',
+			'https://storageapi.fleek.co/c86ea07c-070d-40b0-bb7a-12a2d3c468f4-bucket/nft/AntKingdom/Nest/ver4.png',
 		attributes: [
 			{
 				trait_type: 'Type',
@@ -649,7 +649,7 @@ export const metadata = [
 		description: 'Ant Nest',
 		tokenId: [],
 		image:
-			'https://storageapi.fleek.co/c86ea07c-070d-40b0-bb7a-12a2d3c468f4-bucket/nft/ant-nest.jpg',
+			'https://storageapi.fleek.co/c86ea07c-070d-40b0-bb7a-12a2d3c468f4-bucket/nft/AntKingdom/Nest/ver5.png',
 		attributes: [
 			{
 				trait_type: 'Type',
@@ -733,7 +733,7 @@ export const metadata = [
 		description: 'Land',
 		tokenId: [],
 		image:
-			'https://storageapi.fleek.co/c86ea07c-070d-40b0-bb7a-12a2d3c468f4-bucket/nft/land.png',
+			'https://storageapi.fleek.co/c86ea07c-070d-40b0-bb7a-12a2d3c468f4-bucket/nft/AntKingdom/Land/ver1.png',
 		attributes: [
 			{
 				trait_type: 'Type',
@@ -775,7 +775,7 @@ export const metadata = [
 		description: 'Land',
 		tokenId: [],
 		image:
-			'https://storageapi.fleek.co/c86ea07c-070d-40b0-bb7a-12a2d3c468f4-bucket/nft/land.png',
+			'https://storageapi.fleek.co/c86ea07c-070d-40b0-bb7a-12a2d3c468f4-bucket/nft/AntKingdom/Land/ver2.png',
 		attributes: [
 			{
 				trait_type: 'Type',
@@ -817,7 +817,7 @@ export const metadata = [
 		description: 'Land',
 		tokenId: [],
 		image:
-			'https://storageapi.fleek.co/c86ea07c-070d-40b0-bb7a-12a2d3c468f4-bucket/nft/land.png',
+			'https://storageapi.fleek.co/c86ea07c-070d-40b0-bb7a-12a2d3c468f4-bucket/nft/AntKingdom/Land/ver3.png',
 		attributes: [
 			{
 				trait_type: 'Type',
@@ -859,7 +859,7 @@ export const metadata = [
 		description: 'Land',
 		tokenId: [],
 		image:
-			'https://storageapi.fleek.co/c86ea07c-070d-40b0-bb7a-12a2d3c468f4-bucket/nft/land.png',
+			'https://storageapi.fleek.co/c86ea07c-070d-40b0-bb7a-12a2d3c468f4-bucket/nft/AntKingdom/Land/ver4.png',
 		attributes: [
 			{
 				trait_type: 'Type',
