@@ -179,6 +179,11 @@ function Farming(props) {
 			if (!isCompletedCount) {
 				toastEmitter('warn', 'You need to wait for the time out to farm');
 			} else {
+				const inKingdom = cardSelected?.detail?.land?.inKingdom;
+				if(!inKingdom) {
+					toastEmitter('warn', `You need stake Land to Kingdom to Farm`);
+					return;
+				}
 				if (!listWorker?.length) {
 					toastEmitter('warn', `You don't have enough Worker Ant`);
 				} else {

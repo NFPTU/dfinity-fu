@@ -178,9 +178,7 @@ function DetailNft(props) {
 				}
 			}
 		} else if (itemNft?.detail?.land) {
-			if (itemNft?.detail?.land?.nestStaked[0] !== 0) {
-				toast('You have nest staked in list land !');
-			} else {
+			if (itemNft?.detail?.land?.nestStaked[0] === 0 || itemNft?.detail?.land?.nestStaked?.length === 0) {
 				setOpenProcess(true);
 				const resp = await superheroes?.unStakeLandToKingdom(
 					itemNft?.tokenId[0],
@@ -192,11 +190,11 @@ function DetailNft(props) {
 					setneedUn(false);
 					getData();
 				}
+			} else {
+				toast('You have nest staked in list land !');
 			}
 		} else if (itemNft?.detail?.nest) {
-			if (itemNft?.detail?.nest?.queenIn[0] !== 0) {
-				toast('You have queen staked in list nest !');
-			} else {
+			if (itemNft?.detail?.nest?.queenIn[0] === 0 || itemNft?.detail?.nest?.queenIn?.length === 0) {
 				setOpenProcess(true);
 				const resp = await superheroes?.unStakeNestInLand(
 					itemNft?.tokenId[0],
@@ -208,6 +206,9 @@ function DetailNft(props) {
 					setneedUn(false);
 					getData();
 				}
+
+			} else {
+				toast('You have queen staked in list nest !');
 			}
 		}
 	};
