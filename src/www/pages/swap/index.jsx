@@ -7,15 +7,16 @@ import Swal from 'sweetalert2';
 import BeatLoader from 'react-spinners/BeatLoader';
 import { Principal } from '@dfinity/principal';
 import { toast } from 'react-toastify';
+import { roundToTwoDecimal } from '../../utils/utils';
 
 function Swap(props) {
 	const { resource, setOpenProcess } = props;
-	const [wethAmount, setWethAmount] = useState(undefined);
-	const [uniAmount, setUniAmount] = useState(undefined);
+	const [wethAmount, setWethAmount] = useState('');
+	const [uniAmount, setUniAmount] = useState('');
 	const [token] = useCanister('token');
 
-	const [inputAmount, setInputAmount] = useState(undefined);
-	const [outputAmount, setOutputAmount] = useState(undefined);
+	const [inputAmount, setInputAmount] = useState('');
+	const [outputAmount, setOutputAmount] = useState('');
 
 	const ratio = 10;
 
@@ -46,30 +47,43 @@ function Swap(props) {
 		}
 	}, [principal, token, resource]);
 
-	const getSwapPrice = (inputAmount) => {
-		setInputAmount(inputAmount);
+	const getSwapPrice = (e) => {
+		const inputNumber = e.key;
+		if (
+			Number.parseInt(inputNumber) >= 0 &&
+			Number.parseInt(inputNumber) <= wethAmount
+		) {
+			if(Number.parseInt(inputAmount.toString() + inputNumber) <= wethAmount) {
+				console.log(inputNumber);
+				setInputAmount(Number(inputAmount.toString() + inputNumber) === 0 ? '' : Number(inputAmount.toString() + inputNumber).toString());
+				setOutputAmount((Number.parseFloat(inputAmount + inputNumber) / 10).toFixed(2));
+			} else {
+				setInputAmount(wethAmount.toString());
+				setOutputAmount((wethAmount / 10).toFixed(2));
+			}
+		}else if(e.code == "Period" && !inputAmount.includes(".")){
+			setInputAmount(inputAmount + ".");
 
-		setOutputAmount(inputAmount / 10);
+		}else if(e.code == "Backspace" && inputAmount.length > 0){
+			setInputAmount(inputAmount.substring(0, inputAmount.length - 1));
+			setOutputAmount((inputAmount.substring(0, inputAmount.length - 1) / 10).toFixed(2));
+		}
+
 	};
 
-	console.log('inputAmount', typeof Number.parseInt(inputAmount));
-
 	const runSwap = async () => {
-		if (inputAmount === '' || inputAmount === undefined) {
-			toast('You must enter amount to swap !');
-		} else if (Number.parseInt(inputAmount) < 0) {
-			toast('Amount must be greater than 0 !');
-		} else {
-			setOpenProcess(true);
-			try {
-				const res2 = await superheroes.swapGoldToToken(Number(inputAmount));
-			} catch (err) {
-				console.log(err);
-				setOpenProcess(false);
-			}
+		setOpenProcess(true);
+		try {
+			const res2 = await superheroes.swapGoldToToken(Number(inputAmount));
+			console.log(inputAmount);
 			setOpenProcess(false);
 			toast('Swap successfully !!!');
+		} catch (err) {
+			console.log(err);
+			setOpenProcess(false);
 		}
+		setInputAmount(0);
+		setOutputAmount(0);
 	};
 
 	return (
@@ -86,6 +100,7 @@ function Swap(props) {
 								field='input'
 								tokenName='Gold'
 								getSwapPrice={getSwapPrice}
+								value={inputAmount}
 								balance={wethAmount}
 							/>
 							<CurrencyField

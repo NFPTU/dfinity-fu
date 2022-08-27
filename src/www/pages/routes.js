@@ -4,6 +4,7 @@ import { lazy } from 'react'
 import MarketLayout from '../components/layout/market-layout'
 import GameLayout from '../components/layout/game-layout'
 import GameLayoutHeader from '../components/layout/game-layout-header'
+import GameLayoutNotFooter from '../components/layout/game-layout-not-footer'
 
 //Pages
 const HomePage = lazy(() => import("./home"))
@@ -66,7 +67,7 @@ const routes = [
         exact: true,
         public: true,
         component: HomeClaim,
-        layout: GameLayout
+        layout: GameLayoutNotFooter
     },
     {
         path: "/land",
