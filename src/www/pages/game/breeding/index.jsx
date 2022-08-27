@@ -323,8 +323,12 @@ function Breeding(props) {
 			}else if (!cardSelected?.detail?.queen?.breedingWorkerId) {
 				setCompletedCount(false);
 				setCompletedCountBreeding(false);
+				localStorage.setItem("CompletedCountBreeding", false);
 				await onBreedingWorker();
 			} else {
+				setCompletedCountBreeding(true);
+				localStorage.setItem("CompletedCountBreeding", true);
+
 				await onClaimWorker();
 			}
 			await onGetData();
@@ -334,13 +338,11 @@ function Breeding(props) {
 
 	const onCompleteCount = (props) => {
 		setCompletedCount(props);
-		setCompletedCountBreeding(props);
 		toastEmitter('success', 'Breeding successfully!!!');
 	};
 
 	const onMountCount = (props) => {
 		setCompletedCount(props);
-		setCompletedCountBreeding(props);
 	};
 
 	const onGetAvailWorker = async () => {
