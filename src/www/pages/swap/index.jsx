@@ -47,25 +47,35 @@ function Swap(props) {
 		}
 	}, [principal, token, resource]);
 
-	const getSwapPrice = (inputAmount) => {
+	const getSwapPrice = (e) => {
+		const inputNumber = e.key;
 		if (
-			Number.parseInt(inputAmount) > 0 &&
-			Number.parseInt(inputAmount) <= wethAmount
+			Number.parseInt(inputNumber) >= 0 &&
+			Number.parseInt(inputNumber) <= wethAmount
 		) {
-			setInputAmount(inputAmount);
-			setOutputAmount((inputAmount / 10).toFixed(2));
-		} else if (inputAmount === '') {
-			setInputAmount(undefined);
-			setOutputAmount(0);
-		} else if (Number.parseInt(inputAmount) > wethAmount) {
-			setInputAmount(wethAmount);
+			if(Number.parseInt(inputAmount.toString() + inputNumber) <= wethAmount) {
+				console.log(inputNumber);
+				setInputAmount(Number(inputAmount.toString() + inputNumber) === 0 ? '' : Number(inputAmount.toString() + inputNumber).toString());
+				setOutputAmount((Number.parseFloat(inputAmount + inputNumber) / 10).toFixed(2));
+			} else {
+				setInputAmount(wethAmount.toString());
+				setOutputAmount((wethAmount / 10).toFixed(2));
+			}
+		}else if(e.code == "Period" && !inputAmount.includes(".")){
+			setInputAmount(inputAmount + ".");
+
+		}else if(e.code == "Backspace" && inputAmount.length > 0){
+			setInputAmount(inputAmount.substring(0, inputAmount.length - 1));
+			setOutputAmount((inputAmount.substring(0, inputAmount.length - 1) / 10).toFixed(2));
 		}
+
 	};
 
 	const runSwap = async () => {
 		setOpenProcess(true);
 		try {
 			const res2 = await superheroes.swapGoldToToken(Number(inputAmount));
+			console.log(inputAmount);
 			setOpenProcess(false);
 			toast('Swap successfully !!!');
 		} catch (err) {

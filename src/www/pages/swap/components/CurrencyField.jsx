@@ -12,14 +12,14 @@ const CurrencyField = (props) => {
 				) : (
 					<input
 						required
-						min={0}
+						min="0"
 						max={props.balance ? props.balance : 0}
 						className='currencyInputField'
 						placeholder='0'
-						type="number"
+						type="text"
 						value={props.value}
-						onInput={(e) =>
-							props.field === 'input' ? props.getSwapPrice(e.target.value) : null
+						onKeyDown={(e) =>
+							props.field === 'input' ? props.getSwapPrice(e) : null
 						}
 					/>
 				)}
