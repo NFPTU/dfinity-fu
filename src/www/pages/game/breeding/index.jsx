@@ -318,7 +318,7 @@ function Breeding(props) {
 
 	const onBreeding = async (e) => {
 		if (cardSelected) {
-			if(cardSelected?.detail?.queen?.inNest.length === 0 || cardSelected?.detail?.queen?.inNest.length === 1 && cardSelected?.detail?.queen?.inNest[0]) {
+			if(cardSelected?.detail?.queen?.inNest.length === 0 || (cardSelected?.detail?.queen?.inNest.length === 1 && cardSelected?.detail?.queen?.inNest[0] === 0)) {
 				toastEmitter('warn', 'you need to stake queen to nest to start breeding');
 			}else if (!cardSelected?.detail?.queen?.breedingWorkerId) {
 				setCompletedCount(false);
