@@ -72,11 +72,10 @@ export function Provider({ children }) {
 	}, [superheroes, principal]);
 
 	useEffect(() => {
-		console.log(prinpId);
-		if (prinpId && principal) {
+		if (principal) {
 			getUserInfo();
 		}
-	}, [prinpId, principal]);
+	}, [principal]);
 	const [token] = useCanister('token');
 
 	useEffect(async () => {
