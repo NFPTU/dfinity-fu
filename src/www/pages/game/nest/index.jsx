@@ -52,6 +52,7 @@ function Nest(props) {
 	const [cardMiniActive, setCardMiniActive] = useState();
 	const [open, setOpen] = useState(false);
 	const [resourceUpgrade, setResourceUpgrade] = useState({});
+	const [remainWorker, setRemainWorker] = useState([]);
 
 	const [fakeLoading, setFakeLoading] = useState(false);
 
@@ -95,6 +96,7 @@ function Nest(props) {
 			(el) => el?.tokenId[0] == cardSelected?.tokenId[0]
 		);
 		let queen = queenItem || listNest[0];
+		await onGetAvailWorker();
 		setInLand(inLand);
 		setListNFt(resp?.ok);
 		setCardSelected(queen);
@@ -194,6 +196,15 @@ function Nest(props) {
 		}
 		
 	}
+
+	const onGetAvailWorker = async () => {
+		const resp = await superheroes?.getUserAvailableWorker(
+			principal?.toString()
+		);
+		setRemainWorker(resp?.ok.length);
+	};
+
+	console.log('remainWorker', remainWorker)
 
 	useEffect(() => {
 		if (principal && superheroes) {
@@ -306,6 +317,7 @@ function Nest(props) {
 												<InfoBodyLeftItem>Rarity:</InfoBodyLeftItem>
 												<InfoBodyLeftItem>Limit Ant:</InfoBodyLeftItem>
 												<InfoBodyLeftItem>In Land:</InfoBodyLeftItem>
+												<InfoBodyLeftItem>Number of Worker Ants:</InfoBodyLeftItem>
 											</InfoBodyLeft>
 
 											<InfoBodyRight>
@@ -323,6 +335,9 @@ function Nest(props) {
 																el.tokenId[0] ==
 																cardSelected?.detail?.nest?.inLand[0]
 														)?.name}
+												</InfoBodyRightItem>			
+												<InfoBodyRightItem>
+													{remainWorker}
 												</InfoBodyRightItem>
 											</InfoBodyRight>
 										</InfoBody>

@@ -10,6 +10,7 @@ import Home from './pages/home';
 import DetailNft from './pages/detail-nft';
 import routes from './pages/routes';
 import MarketLayout from './components/layout/market-layout';
+import Loading from './components/loading';
 
 function App() {
 	return (
@@ -30,7 +31,7 @@ function App() {
 							key={path}
 							{...rest}
 							element={
-								<React.Suspense fallback={'loading'}>
+								<React.Suspense fallback={<Loading />}>
 									<Layout>
 										<Component />
 									</Layout>

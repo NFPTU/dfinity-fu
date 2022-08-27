@@ -76,7 +76,6 @@ function DetailNft(props) {
 		const respo = await superheroes?.getAllOrders();
 		let itemorder = respo?.ok.find((el) => el?.token?.tokenId[0] == desc);
 
-		console.log('itemorder', itemorder);
 		if (itemorder) {
 			setDataOrder(itemorder);
 			setItemNft(itemorder?.token);
@@ -158,7 +157,9 @@ function DetailNft(props) {
 		}
 	};
 
-	console.log('itemNft', itemNft);
+	console.log('completedCountBreeding', completedCountBreeding)
+
+	console.log('cardSelectedBreeding', cardSelectedBreeding?.detail?.queen?.breedingWorkerId)
 
 	const unstake = async () => {
 		if (itemNft?.detail?.queen) {
@@ -226,8 +227,6 @@ function DetailNft(props) {
 		}
 		getData();
 	};
-
-	console.log('itemNft', itemNft);
 
 	return (
 		<div className='detail-market-container'>

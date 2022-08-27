@@ -8,7 +8,6 @@ function GameLayoutNotFooter({ children }) {
     <Container>
     <GameNavbar />
     { children }
-    <GameFooterOnlyHeader />
     </Container>
   )
 }
