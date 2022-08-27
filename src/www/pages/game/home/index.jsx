@@ -82,7 +82,10 @@ function Homeclaim(props) {
 				open={open} 
 				setOpen={setOpen} 
 				maxWidth={'lg'}
-				handleClosePopup={() => navigate('/kingdom')}
+				handleClosePopup={() => {
+					sessionStorage.setItem('tabFooterActive', 'Kingdom');
+					navigate('/kingdom');
+				}}
 				>
 					{listNFt.map((el, index) => {
 						if (el?.detail?.nest?.inLand[0]) return
