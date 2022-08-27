@@ -14,6 +14,7 @@ import {
 import { withContext } from '../../../hooks';
 import CardNft from '../../../components/card-nft';
 import PopupList from '../../../components/popup-list';
+import { toast } from 'react-toastify';
 
 function Homeclaim(props) {
 	const { getUserInfo, prinpId, setOpenProcess } = props
@@ -32,6 +33,9 @@ function Homeclaim(props) {
 			setOpenProcess(false)
 			setOpen(true)
 		} catch (er) {
+			setOpenProcess(false)
+			navigate('/kingdom')
+			toast.error('Claim failed!')
 			console.log(er);
 		}
 	};
@@ -78,7 +82,10 @@ function Homeclaim(props) {
 				open={open} 
 				setOpen={setOpen} 
 				maxWidth={'lg'}
-				handleClosePopup={() => navigate('/kingdom')}
+				handleClosePopup={() => {
+					sessionStorage.setItem('tabFooterActive', 'Kingdom');
+					navigate('/kingdom');
+				}}
 				>
 					{listNFt.map((el, index) => {
 						if (el?.detail?.nest?.inLand[0]) return
