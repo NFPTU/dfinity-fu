@@ -72,7 +72,7 @@ import { Link } from 'react-router-dom';
 import { GridLoader } from 'react-spinners';
 
 function Farming(props) {
-	const { setOpenProcess, tabMarketFooter } = props;
+	const { setOpenProcess, tabMarketFooter, setCompletedCountFarming } = props;
 
 	const [listNftNest, setListNftNest] = useState([]);
 	const [listNFtLand, setlistNFtLand] = useState([]);
@@ -180,7 +180,7 @@ function Farming(props) {
 				toastEmitter('warn', 'You need to wait for the time out to farm');
 			} else {
 				const inKingdom = cardSelected?.detail?.land?.inKingdom;
-				if(!inKingdom) {
+				if (!inKingdom) {
 					toastEmitter('warn', `You need stake Land to Kingdom to Farm`);
 					return;
 				}
@@ -254,6 +254,8 @@ function Farming(props) {
 	};
 
 	const onSubmitFarm = async () => {
+		setCompletedCountFarming(false)
+		localStorage.setItem("CompletedCountFarming", false);
 		setOpenProcess(true);
 		const resp = await superheroes?.workerFarmInLand(
 			sliceFarm(),
@@ -287,6 +289,8 @@ function Farming(props) {
 			if (!isCompletedCount) {
 				toastEmitter('warn', 'You need to wait for the time out to claim');
 			} else {
+				setCompletedCountFarming(true)
+				localStorage.setItem("CompletedCountFarming", true);
 				setOpenProcess(true);
 				const resp = await superheroes?.claimResourceInLand(
 					cardSelected.tokenId[0],
@@ -315,7 +319,7 @@ function Farming(props) {
 			toastEmitter('success', 'Dig Nest Successfully !!!');
 			setOpen(false);
 			onGetData();
-		} catch (er) {}
+		} catch (er) { }
 	};
 
 	const rendterBtn = (land) => {
@@ -475,8 +479,8 @@ function Farming(props) {
 											<InfoBodyRightItem>
 												{cardSelected?.detail?.land?.info?.farmingTime
 													? toHHMMSS(
-															cardSelected?.detail?.land?.info?.farmingTime
-													  )
+														cardSelected?.detail?.land?.info?.farmingTime
+													)
 													: 0}
 											</InfoBodyRightItem>
 											<InfoBodyRightItem>

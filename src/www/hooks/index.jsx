@@ -22,6 +22,7 @@ export function Provider({ children }) {
 
 	//State to check unstake breeding:
 	const [completedCountBreeding, setCompletedCountBreeding] = useState(false);
+	const [completedCountFarming, setCompletedCountFarming] = useState(false);
 	const [cardSelectedBreeding, setCardSelectedBreeding] = useState();
 
 	//Get All NFT
@@ -67,6 +68,8 @@ export function Provider({ children }) {
 		if(superheroes && principal) {
 			onGetData();
 			onGetAllOrders();
+			localStorage.getItem('CompletedCountBreeding') ? setCompletedCountBreeding(JSON.parse(localStorage.getItem('CompletedCountBreeding'))) : '';
+			localStorage.getItem('CompletedCountFarming') ? setCompletedCountFarming(JSON.parse(localStorage.getItem('CompletedCountFarming'))) : '';
 		}
 		
 	}, [superheroes, principal]);
@@ -114,7 +117,8 @@ export function Provider({ children }) {
 		setCompletedCountBreeding,
 		cardSelectedBreeding,
 		setCardSelectedBreeding,
-		
+		setCompletedCountFarming,
+		completedCountFarming
 	};
 	return (
 		<Context.Provider value={value}>
