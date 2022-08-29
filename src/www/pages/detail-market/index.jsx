@@ -28,7 +28,12 @@ const style = {
 };
 
 function DetailNft(props) {
-	const { setOpenProcess, completedCountBreeding, cardSelectedBreeding } = props;
+	const {
+		setOpenProcess,
+		completedCountBreeding,
+		cardSelectedBreeding,
+		balance,
+	} = props;
 
 	const [open, setOpen] = useState(false);
 
@@ -82,7 +87,7 @@ function DetailNft(props) {
 			setResourceLand(itemorder?.token?.detail?.land?.resource);
 			setownerNft(itemorder?.owner.toString());
 		} else {
-			setDataOrder()
+			setDataOrder();
 			const resp = await superheroes?.getUserTokens(principal?.toString());
 			let item = resp?.ok.find((el) => el?.tokenId[0] == desc);
 			setItemNft(item);
@@ -92,8 +97,7 @@ function DetailNft(props) {
 	};
 
 	useEffect(async () => {
-
-		handleRarityType()
+		handleRarityType();
 		if (
 			itemNft &&
 			ownerNft == principal?.toString() &&
@@ -114,13 +118,15 @@ function DetailNft(props) {
 		}
 	}, [tab]);
 
-	const [rarityImg, setRarityImg] = useState('')
+	const [rarityImg, setRarityImg] = useState('');
 
 	const handleRarityType = () => {
-		const ra = rarity_type?.find((item) => item.type === itemNft?.attributes[1]?.value)
+		const ra = rarity_type?.find(
+			(item) => item.type === itemNft?.attributes[1]?.value
+		);
 
-		setRarityImg(ra?.src)
-	}
+		setRarityImg(ra?.src);
+	};
 
 	//Function fot listing NFT:
 	const listTing = async () => {
@@ -142,28 +148,43 @@ function DetailNft(props) {
 			) {
 				toast('You need unstake');
 				return;
-			}
-			setOpenProcess(true);
-			const resp = await superheroes?.createOrder(
-				Number(desc),
-				Number.parseInt(priceListing)
-			);
-			setOpenProcess(false);
-			if (resp) {
-				toast('Create Order success');
-				getData();
-				setOpen(false);
+			} else {
+				if (isNaN(+priceListing)) {
+					toast('You must enter the number !!!');
+				} else if (Number(priceListing) < 0) {
+					toast('You must enter positive number !!!');
+				} else if (priceListing === '') {
+					toast('You must enter price !!!');
+				} else {
+					setOpenProcess(true);
+					const resp = await superheroes?.createOrder(
+						Number(desc),
+						Number.parseInt(priceListing)
+					);
+					setOpenProcess(false);
+					if (resp) {
+						toast('Create Order success');
+						getData();
+						setOpen(false);
+					}
+				}
 			}
 		}
 	};
 
-	console.log('completedCountBreeding', completedCountBreeding)
+	console.log('completedCountBreeding', completedCountBreeding);
 
-	console.log('cardSelectedBreeding', cardSelectedBreeding?.detail?.queen?.breedingWorkerId)
+	console.log(
+		'cardSelectedBreeding',
+		cardSelectedBreeding?.detail?.queen?.breedingWorkerId
+	);
 
 	const unstake = async () => {
 		if (itemNft?.detail?.queen) {
-			if (!completedCountBreeding && cardSelectedBreeding?.detail?.queen?.breedingWorkerId) {
+			if (
+				!completedCountBreeding &&
+				cardSelectedBreeding?.detail?.queen?.breedingWorkerId
+			) {
 				toast('You need to claim Worker Ant before unstake !!!');
 			} else {
 				setOpenProcess(true);
@@ -179,7 +200,10 @@ function DetailNft(props) {
 				}
 			}
 		} else if (itemNft?.detail?.land) {
-			if (itemNft?.detail?.land?.nestStaked[0] === 0 || itemNft?.detail?.land?.nestStaked?.length === 0) {
+			if (
+				itemNft?.detail?.land?.nestStaked[0] === 0 ||
+				itemNft?.detail?.land?.nestStaked?.length === 0
+			) {
 				setOpenProcess(true);
 				const resp = await superheroes?.unStakeLandToKingdom(
 					itemNft?.tokenId[0],
@@ -195,7 +219,10 @@ function DetailNft(props) {
 				toast('You have nest staked in list land !');
 			}
 		} else if (itemNft?.detail?.nest) {
-			if (itemNft?.detail?.nest?.queenIn[0] === 0 || itemNft?.detail?.nest?.queenIn?.length === 0) {
+			if (
+				itemNft?.detail?.nest?.queenIn[0] === 0 ||
+				itemNft?.detail?.nest?.queenIn?.length === 0
+			) {
 				setOpenProcess(true);
 				const resp = await superheroes?.unStakeNestInLand(
 					itemNft?.tokenId[0],
@@ -207,7 +234,6 @@ function DetailNft(props) {
 					setneedUn(false);
 					getData();
 				}
-
 			} else {
 				toast('You have queen staked in list nest !');
 			}
@@ -215,17 +241,25 @@ function DetailNft(props) {
 	};
 
 	const buyNft = async () => {
-		setOpenProcess(true);
-		const resp1 = await token?.approve(
-			Principal.fromText(process.env.SUPERHEROES_CANISTER_ID),
-			99999999
-		);
-		const resp = await superheroes?.buy(Number(dataOrder?.index));
-		setOpenProcess(false);
-		if (resp) {
-			toast('Buy NFT successfully !!!');
+		if (Number(balance) < Number(dataOrder?.price)) {
+			toast('You are not enough token !!!');
+		} else {
+			try {
+				setOpenProcess(true);
+				const resp1 = await token?.approve(
+					Principal.fromText(process.env.SUPERHEROES_CANISTER_ID),
+					99999999
+				);
+				const resp = await superheroes?.buy(Number(dataOrder?.index));
+				setOpenProcess(false);
+				if (resp) {
+					toast('Buy NFT successfully !!!');
+				}
+				getData();
+			} catch (err) {
+				console.log('err', err);
+			}
 		}
-		getData();
 	};
 
 	return (
@@ -329,10 +363,7 @@ function DetailNft(props) {
 													Rarity
 												</div>
 												<div className='wrapper__right-tab-item1-detail'>
-													<img
-														src={rarityImg}
-														alt='rarity'
-													/>
+													<img src={rarityImg} alt='rarity' />
 													<div className='wrapper__right-tab-item1-detail-name'>
 														{itemNft?.attributes[1]?.value}
 													</div>
