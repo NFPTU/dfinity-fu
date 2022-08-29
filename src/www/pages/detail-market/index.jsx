@@ -28,12 +28,16 @@ const style = {
 };
 
 function DetailNft(props) {
+<<<<<<< HEAD
 	const {
 		setOpenProcess,
 		completedCountBreeding,
 		cardSelectedBreeding,
 		balance,
 	} = props;
+=======
+	const { setOpenProcess, completedCountBreeding, cardSelectedBreeding, completedCountFarming } = props;
+>>>>>>> 31858bbaafe4594c6b0967298afeae6b84462efd
 
 	const [open, setOpen] = useState(false);
 
@@ -181,10 +185,14 @@ function DetailNft(props) {
 
 	const unstake = async () => {
 		if (itemNft?.detail?.queen) {
+<<<<<<< HEAD
 			if (
 				!completedCountBreeding &&
 				cardSelectedBreeding?.detail?.queen?.breedingWorkerId
 			) {
+=======
+			if (!completedCountBreeding) {
+>>>>>>> 31858bbaafe4594c6b0967298afeae6b84462efd
 				toast('You need to claim Worker Ant before unstake !!!');
 			} else {
 				setOpenProcess(true);
@@ -200,6 +208,7 @@ function DetailNft(props) {
 				}
 			}
 		} else if (itemNft?.detail?.land) {
+<<<<<<< HEAD
 			if (
 				itemNft?.detail?.land?.nestStaked[0] === 0 ||
 				itemNft?.detail?.land?.nestStaked?.length === 0
@@ -215,8 +224,26 @@ function DetailNft(props) {
 					setneedUn(false);
 					getData();
 				}
+=======
+			if (!completedCountFarming) {
+				toast('You need to claim resource before unstake !!!')
+>>>>>>> 31858bbaafe4594c6b0967298afeae6b84462efd
 			} else {
-				toast('You have nest staked in list land !');
+				if (itemNft?.detail?.land?.nestStaked[0] === 0 || itemNft?.detail?.land?.nestStaked?.length === 0) {
+					setOpenProcess(true);
+					const resp = await superheroes?.unStakeLandToKingdom(
+						itemNft?.tokenId[0],
+						itemNft?.detail?.land?.inKingdom
+					);
+					setOpenProcess(false);
+					if (resp) {
+						toast('Unstake land success');
+						setneedUn(false);
+						getData();
+					}
+				} else {
+					toast('You have nest staked in list land !');
+				}
 			}
 		} else if (itemNft?.detail?.nest) {
 			if (
